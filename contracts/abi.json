@@ -1,0 +1,28 @@
+[
+  {
+    "inputs": [
+      {
+        "internalType": "address payable",
+        "name": "_account1",
+        "type": "address"
+      },
+      {
+        "internalType": "address payable",
+        "name": "_account2",
+        "type": "address"
+      }
+    ],
+    "payable": true,
+    "stateMutability": "payable",
+    "type": "constructor"
+  },
+  {
+    "constant": false,
+    "inputs": [],
+    "name": "split",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]
