@@ -21,17 +21,17 @@ router.get("/deploy", function(req, res){
   }
 });
 
-router.get("/split", async function(req, res){
+router.get("/destroy", async function(req, res){
   try{
     const contract = contractService.getContract();
     const accounts = await web3.eth.getAccounts();
-    let result = await contract.methods.split()
+    let result = await contract.methods.destroy()
       .send({
           from: accounts[0]
       });
 
   }catch(error){
-    res.send(500).send(new Error('Cannot deploy contract'));
+    res.send(500).send(new Error(`Cannot execute method: ${error.message}`));
   }
 });
 
