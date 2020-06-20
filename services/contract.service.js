@@ -7,7 +7,9 @@ const contractFileName = 'Testament.sol';
 const contractName = 'Testament';
 
 
-const methods = {
+class ContractService{
+
+  constructor(){}
 
   compile(){
     const contractPath = path.resolve(process.cwd(), 'contracts', contractFileName);
@@ -37,7 +39,7 @@ const methods = {
     const bytecode = contract.evm;
     const bytecodePath = path.resolve(process.cwd(),'contracts', 'bytecode.json');
     fs.writeFileSync(bytecodePath, JSON.stringify(bytecode, null, 2));
-  },
+  }
 
   async deploy(){
     const bytecodePath = path.resolve(process.cwd(),'contracts', 'bytecode.json');
@@ -53,8 +55,8 @@ const methods = {
       const result = await new web3.eth.Contract(abi)
         .deploy({
           data: '0x' + bytecode.object,
-         // arguments: [accounts[1], accounts[2]]
-         arguments: []
+          arguments: [[accounts[2], accounts[1]], [13, 26], [accounts[3], accounts[4]]]
+        // arguments: []
         })
         .send({
           gas: '3000000',
@@ -67,9 +69,10 @@ const methods = {
         fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
     }catch(error){
       let _error = error;
+      console.log(error.message)
     }
   
-  },
+  }
 
   getContract(){
     const configPath = path.resolve(process.cwd(), 'config.json');
@@ -80,6 +83,8 @@ const methods = {
     return new web3.eth.Contract(abi,config.contractAddress);
   }
 
+
 }
 
-module.exports = {...methods}
+
+module.exports = new ContractService()
