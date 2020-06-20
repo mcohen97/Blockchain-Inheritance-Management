@@ -3,19 +3,20 @@ const fs = require('fs');
 const solc = require('solc');
 
 
-const contractFileName = 'Practico1.sol';
-const contractName = 'Practico1';
+const contractFileName = 'Testament.sol';
+const contractName = 'Testament';
 
 
 const methods = {
 
   compile(){
     const contractPath = path.resolve(process.cwd(), 'contracts', contractFileName);
+    const sourceContent = {};
+    sourceContent[contractName] = {content: fs.readFileSync(contractPath, 'utf8')}
+
     const compilerInput = {
       language: "Solidity",
-      sources: {
-        contractName: {content: fs.readFileSync(contractPath, 'utf8')}
-      },
+      sources: sourceContent,
       settings: {
         outputSelection:{
           "*": {
@@ -28,7 +29,7 @@ const methods = {
 
     const compiledContract = JSON.parse(solc.compile(JSON.stringify(compilerInput)));
 
-    const contract = compiledContract.contracts[contractName].Practico1;
+    const contract = compiledContract.contracts[contractName][contractName];
     const abi = contract.abi;
     const abiPath = path.resolve(process.cwd(), 'contracts', 'abi.json');
     fs.writeFileSync(abiPath, JSON.stringify(abi, null, 2));
@@ -52,7 +53,8 @@ const methods = {
       const result = await new web3.eth.Contract(abi)
         .deploy({
           data: '0x' + bytecode.object,
-          arguments: [accounts[1], accounts[2]]
+         // arguments: [accounts[1], accounts[2]]
+         arguments: []
         })
         .send({
           gas: '3000000',
