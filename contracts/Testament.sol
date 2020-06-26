@@ -27,14 +27,6 @@ contract Testament {
         return aboveManagersLowerLimit(count) && belowManagersUpperLimit(count);
     }
 
-    function belowManagersUpperLimit(uint count) private pure returns (bool) {
-        return count <= 5;
-    }
-
-    function aboveManagersLowerLimit(uint count) private pure returns (bool) {
-        return count >= 2;
-    }
-
     function addUpTo100(uint8[] memory percents) private pure returns (bool) {
         uint sum = 0;
         for(uint i = 0; i < percents.length; i++){
@@ -51,6 +43,18 @@ contract Testament {
         managers = _managers;
     }
 
+    function getManagersCount() public view returns(uint){
+        return managers.length;
+    }
+
+    function getHeirsCount() public view returns(uint){
+        return heirs.length;
+    }
+
+    function getPercentagesCount() public view returns(uint){
+        return percentages.length;
+    }
+
     function suscribeManager(address payable newManager) public onlyOwner{
         require(belowManagersUpperLimit(managers.length + 1), "Managers maximum exceeded");
         managers.push(newManager);
@@ -58,16 +62,51 @@ contract Testament {
 
     function unsuscribeManager(address payable toDelete) public onlyOwner {
         require(aboveManagersLowerLimit(managers.length - 1), "Managers minimum not reached");
-        for(uint8 i = 0; i < managers.length; i++) {
+        uint len = managers.length;
+        for(uint8 i = 0; i < len; i++) {
             if(toDelete == managers[i]){
                 delete managers[i];
                 i++;
-                for(; i < managers.length; i++){
+                for(; i < len; i++){
                     managers[i-1] = managers[i];
                 }
             }
         }
-        delete managers[managers.length - 1];
+        delete managers[len - 1];
+        managers.length--;
+    }
+
+    function suscribeHeir(address payable heir, uint8 percentage, uint8 priority) public onlyOwner {
+        require(priority <= heirs.length, "Invalid priority, must be between 0 and the heirs count");
+        if(priority == heirs.length) {
+            heirs.push(heir);
+            percentages.push(percentage);
+            return;
+        }
+
+        for(uint i = heirs.length; i > priority; i--) {
+            heirs[i] = heirs[i-1];
+            percentages[i] = percentages[i-1];
+        }
+        heirs[priority] = heir;
+        percentages[priority] = percentage;
+    }
+
+    function unsuscribeHeir(address payable toDelete) public onlyOwner {
+        require(heirs.length == 1, "There must be at least one heir in the testament.");
+        for(uint8 i = 0; i < heirs.length; i++) {
+            if(toDelete == heirs[i]){
+                delete heirs[i];
+                delete percentages[i];
+                i++;
+                for(; i < heirs.length; i++){
+                    heirs[i-1] = heirs[i];
+                    percentages[i-1] = percentages[i];
+                }
+            }
+        }
+        delete heirs[heirs.length - 1];
+        delete percentages[percentages.length - 1];
     }
 
     function destroy() public onlyOwner {
@@ -77,6 +116,14 @@ contract Testament {
     modifier onlyOwner(){
         require(msg.sender == owner, "only the contract's owner can perform this action.");
         _;
+    }
+
+    function belowManagersUpperLimit(uint count) private pure returns (bool) {
+        return count <= 5;
+    }
+
+    function aboveManagersLowerLimit(uint count) private pure returns (bool) {
+        return count >= 2;
     }
 }
 
