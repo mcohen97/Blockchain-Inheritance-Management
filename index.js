@@ -1,9 +1,12 @@
 const express = require('express');
 const Web3 = require('web3');
+const bodyParser = require('body-parser');
 
 const port = process.env.port || 3000;
 
 const app = express();
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
 
 //HTTP://127.0.0.1:7545
 const provider = new Web3.providers.HttpProvider('HTTP://127.0.0.1:7545');
