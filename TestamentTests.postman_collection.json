@@ -1,0 +1,217 @@
+{
+	"info": {
+		"_postman_id": "82db35cb-f9ee-41df-86de-9001a7e45816",
+		"name": "TestamentTests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Compile",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/api/contract/compile",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"contract",
+						"compile"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Deploy",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"from\": \"{{ADDRESS_1}}\",\n    \"heirs\": [\"{{ADDRESS_2}}\",\"{{ADDRESS_3}}\"],\n    \"percentages\":[74, 26],\n    \"managers\": [\"{{ADDRESS_4}}\", \"{{ADDRESS_5}}\", \"{{ADDRESS_6}}\"]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/api/contract/deploy",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"contract",
+						"deploy"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Contract Information",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/api/contract/information",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"contract",
+						"information"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Manager",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"from\": \"{{ADDRESS_1}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/api/contract/managers/{{ADDRESS_4}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"contract",
+						"managers",
+						"{{ADDRESS_4}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Manager By Position",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/api/contract/managers/2",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"contract",
+						"managers",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Manager",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"from\": \"{{ADDRESS_1}}\",\n    \"manager\": \"{{ADDRESS_4}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/api/contract/managers",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"contract",
+						"managers"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "bb73c1c9-c90e-4292-85ed-04c5083d00dc",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "3b68f55a-63e5-4766-a96b-0d792773a064",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "942cdab8-6d74-4312-adef-fa73e803dcb5",
+			"key": "URL",
+			"value": "http://localhost:3000/api/contract/"
+		},
+		{
+			"id": "8d47ea51-503d-4d20-b4b9-174864446b46",
+			"key": "ADDRESS_1",
+			"value": "0x8c9a1E92F4101f4f5ab3A58b0963b1040e425b6F"
+		},
+		{
+			"id": "4a43abd5-0d33-4056-94cb-e09349b4e2fd",
+			"key": "ADDRESS_2",
+			"value": "0xF35b3ba2DE9dB8eEBcD5d128B53735e493c0BA64"
+		},
+		{
+			"id": "67e6e8c1-8fc1-4072-8048-a271bf949824",
+			"key": "ADDRESS_3",
+			"value": "0x4A643DddC95aFa8A0f6E7439d9dc760aa84CdEB1"
+		},
+		{
+			"id": "bb5f9a86-9ce3-4332-8f99-d5c487aba9ae",
+			"key": "ADDRESS_4",
+			"value": "0x45F44Dec152224F336432568c8ACA7c9B98baFA8"
+		},
+		{
+			"id": "71cdada6-6b0b-457d-a1d6-8ab1b5583779",
+			"key": "ADDRESS_5",
+			"value": "0xcC09F2d0d887f6098432E7C8BEc51b0B5aC205F9"
+		},
+		{
+			"id": "41c63de7-3b91-484b-8f27-d725a8d0a5aa",
+			"key": "ADDRESS_6",
+			"value": "0xFEdae43693A435fb940a9881CCcD7f3Ff328c08F"
+		},
+		{
+			"id": "5c55a0f2-a58c-487d-a486-4af17a7fd585",
+			"key": "ADDRESS_7",
+			"value": "0xAe372f8F9697dc568AF1aD274351e56f5D467ceE"
+		}
+	],
+	"protocolProfileBehavior": {}
+}
