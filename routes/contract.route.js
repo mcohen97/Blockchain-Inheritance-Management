@@ -22,13 +22,14 @@ router.post("/deploy", function(req, res){
   }
 });
 
-router.get("/destroy", async function(req, res){
+router.delete("/", async function(req, res){
   try{
+    const executor = req.body.from;
     const contract = contractService.getContract();
-    const accounts = await web3.eth.getAccounts();
+
     let result = await contract.methods.destroy()
       .send({
-          from: accounts[0]
+          from: executor
       });
 
     res.status(200).send('Destroyed');
@@ -125,7 +126,7 @@ router.post("/heirs", async function(req, res){
 });
 
 router.get("/heirs/:pos", async function(req, res){
-  
+
   try{
     const manager = req.params.pos;
     const contract = contractService.getContract();
@@ -140,7 +141,5 @@ router.get("/heirs/:pos", async function(req, res){
     res.send(500).send(`Cannot execute method: ${error.message}`);
   }
 });
-
-
 
 module.exports = router;
