@@ -31,7 +31,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"from\": \"{{ADDRESS_1}}\",\n    \"heirs\": [\"{{ADDRESS_2}}\",\"{{ADDRESS_3}}\"],\n    \"percentages\":[74, 26],\n    \"managers\": [\"{{ADDRESS_4}}\", \"{{ADDRESS_5}}\", \"{{ADDRESS_6}}\"]\n}",
+					"raw": "{\n    \"from\": \"{{ADDRESS_1}}\",\n    \"heirs\": [\"{{ADDRESS_2}}\",\"{{ADDRESS_3}}\"],\n    \"percentages\":[50, 50],\n    \"managers\": [\"{{ADDRESS_4}}\", \"{{ADDRESS_5}}\", \"{{ADDRESS_6}}\"]\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -147,6 +147,81 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Add Heir",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"from\": \"{{ADDRESS_1}}\",\n    \"heir\": \"{{ADDRESS_6}}\",\n    \"percentage\": 41,\n    \"priority\": 1\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/api/contract/heirs",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"contract",
+						"heirs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Destroy contract",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"from\": \"{{ADDRESS_1}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/api/contract",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"contract"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Heir By Position",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/api/contract/heirs/2",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"contract",
+						"heirs",
+						"2"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"event": [
@@ -173,42 +248,42 @@
 	],
 	"variable": [
 		{
-			"id": "942cdab8-6d74-4312-adef-fa73e803dcb5",
+			"id": "acfbf400-0982-4f4c-a298-31c2094f32ff",
 			"key": "URL",
 			"value": "http://localhost:3000/api/contract/"
 		},
 		{
-			"id": "8d47ea51-503d-4d20-b4b9-174864446b46",
+			"id": "9fbdb87f-8b08-429a-a5ff-1bbcd84eb8ea",
 			"key": "ADDRESS_1",
 			"value": "0x8c9a1E92F4101f4f5ab3A58b0963b1040e425b6F"
 		},
 		{
-			"id": "4a43abd5-0d33-4056-94cb-e09349b4e2fd",
+			"id": "dd390bdf-3f1e-4bb1-9e1d-49ea4953a26b",
 			"key": "ADDRESS_2",
 			"value": "0xF35b3ba2DE9dB8eEBcD5d128B53735e493c0BA64"
 		},
 		{
-			"id": "67e6e8c1-8fc1-4072-8048-a271bf949824",
+			"id": "448abf4d-eed4-48cc-89a1-c308c45b10b7",
 			"key": "ADDRESS_3",
 			"value": "0x4A643DddC95aFa8A0f6E7439d9dc760aa84CdEB1"
 		},
 		{
-			"id": "bb5f9a86-9ce3-4332-8f99-d5c487aba9ae",
+			"id": "8420bfbf-8fec-47a2-a6c6-c3e855afad89",
 			"key": "ADDRESS_4",
 			"value": "0x45F44Dec152224F336432568c8ACA7c9B98baFA8"
 		},
 		{
-			"id": "71cdada6-6b0b-457d-a1d6-8ab1b5583779",
+			"id": "ecf68d56-3b13-4ce7-b236-2bcb0db97815",
 			"key": "ADDRESS_5",
 			"value": "0xcC09F2d0d887f6098432E7C8BEc51b0B5aC205F9"
 		},
 		{
-			"id": "41c63de7-3b91-484b-8f27-d725a8d0a5aa",
+			"id": "c2c95d51-841d-4a7a-af77-3798a46fb5ef",
 			"key": "ADDRESS_6",
 			"value": "0xFEdae43693A435fb940a9881CCcD7f3Ff328c08F"
 		},
 		{
-			"id": "5c55a0f2-a58c-487d-a486-4af17a7fd585",
+			"id": "c92639cc-959a-4d1a-9fe5-4bab325d9a06",
 			"key": "ADDRESS_7",
 			"value": "0xAe372f8F9697dc568AF1aD274351e56f5D467ceE"
 		}
