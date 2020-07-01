@@ -4,7 +4,7 @@ contract Testament {
 
     address payable public owner;
     address payable[] public heirs;
-    uint8[] public percentages;
+    uint16[] public percentages;
 
     address payable[] public managers;
 
@@ -84,12 +84,21 @@ contract Testament {
             return;
         }
 
-        for(uint i = heirs.length; i > priority; i--) {
+       uint len = heirs.length;
+
+       uint16 sum = adjustPercentages(percentage);
+       uint8 adaptedPercentage = percentage - uint8(sum - 100); // Adjust new percentage to make them all sum 100.
+
+       heirs.push(heirs[heirs.length - 1]);
+       percentages.push(percentages[percentages.length - 1]);
+
+       for(uint i = len; i > priority; i--) {
             heirs[i] = heirs[i-1];
             percentages[i] = percentages[i-1];
         }
+
         heirs[priority] = heir;
-        percentages[priority] = percentage;
+        percentages[priority] = adaptedPercentage;
     }
 
     function unsuscribeHeir(address payable toDelete) public onlyOwner {
@@ -124,6 +133,19 @@ contract Testament {
 
     function aboveManagersLowerLimit(uint count) private pure returns (bool) {
         return count >= 2;
+    }
+
+    function adjustPercentages(uint8 newPercent) private returns (uint16) {
+        uint8 remaining = 100 - newPercent;
+        uint16 sum = newPercent;
+
+        for(uint j = 0; j < percentages.length; j++){
+            uint16 adjPercent = (percentages[j] * remaining) / 100;
+            percentages[j] = uint8(adjPercent);
+            sum += percentages[j];
+        }
+
+        return sum;
     }
 }
 
