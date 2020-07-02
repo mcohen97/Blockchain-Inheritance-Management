@@ -102,20 +102,34 @@ contract Testament {
     }
 
     function unsuscribeHeir(address payable toDelete) public onlyOwner {
-        require(heirs.length == 1, "There must be at least one heir in the testament.");
-        for(uint8 i = 0; i < heirs.length; i++) {
+        require(heirs.length > 1, "There must be at least one heir in the testament.");
+ 
+        uint len = heirs.length;
+
+        for(uint8 i = 0; i < len; i++) {
             if(toDelete == heirs[i]){
+                passInheritanceToOtherHeir(i);
                 delete heirs[i];
                 delete percentages[i];
                 i++;
-                for(; i < heirs.length; i++){
+                for(; i < len; i++){
                     heirs[i-1] = heirs[i];
                     percentages[i-1] = percentages[i];
                 }
             }
         }
-        delete heirs[heirs.length - 1];
-        delete percentages[percentages.length - 1];
+        delete heirs[len - 1];
+        heirs.length--;
+        delete percentages[len - 1];
+        percentages.length--;
+    }
+
+    function passInheritanceToOtherHeir(uint8 priority) private {
+        if (priority == 0){
+            percentages[1] += percentages[0];
+        }else{
+            percentages[priority - 1] += percentages[priority];
+        }
     }
 
     function destroy() public onlyOwner {
