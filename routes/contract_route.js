@@ -27,7 +27,7 @@ router.delete("/", async function(req, res){
     const executor = req.body.from;
     const contract = contractService.getContract();
 
-    let result = await contract.methods.destroy()
+     await contract.methods.destroy()
       .send({
           from: executor
       });
@@ -51,5 +51,37 @@ router.get("/information", async function(req, res){
     res.send(500).send(`Cannot execute method: ${error.message}`);
   }
 });
+
+router.get("/inheritance", async function(req, res){
+  try{
+    const executor = req.body.from;
+    const contract = contractService.getContract();
+    let inheritance = await contract.methods.getInheritance().call({
+        from: executor
+    });
+
+    res.status(200).send(`Inheritance worth: ${inheritance}`);
+
+  }catch(error){
+    res.send(500).send(`Cannot execute method: ${error.message}`);
+  }
+});
+
+router.post("/inheritance/visibility", async function(req, res){
+  try{
+    const executor = req.body.from;
+    const allowed = req.body.value;
+    const contract = contractService.getContract();
+    await contract.methods.allowBalanceRead(allowed).send({
+        from: executor
+    });
+
+    res.status(200).send(`OK`);
+
+  }catch(error){
+    res.send(500).send(`Cannot execute method: ${error.message}`);
+  }
+});
+
 
 module.exports = router;
