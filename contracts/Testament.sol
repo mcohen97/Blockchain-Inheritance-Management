@@ -1,12 +1,19 @@
 pragma solidity ^0.5.1;
 
+import './DataStructures.sol';
+
 contract Testament {
 
+    DataStructures structs = new DataStructures();
+
     address payable public owner;
+    DataStructures.OwnerData public ownerData;
     address payable[] public heirs;
     uint16[] public percentages;
 
     address payable[] public managers;
+
+    bool private balanceVisible;
 
     constructor(address payable[] memory _heirs, uint8[] memory _cutPercents,
                 address payable[] memory _managers) public payable{
@@ -20,8 +27,14 @@ contract Testament {
         setHeirs(_heirs);
         setManagers(_managers);
         percentages = _cutPercents;
+        balanceVisible = false;
     }
 
+    function addOwnerData(string memory _fullName, string memory _id, uint256 _birthdate,
+                          string memory _homeAddress, string memory _telephone, string memory _email) public {
+
+        ownerData = DataStructures.OwnerData(_fullName, _id, _birthdate, _homeAddress, _telephone, _email, now);
+    }
 
     function managersWithinBounds(uint count) private pure returns (bool) {
         return aboveManagersLowerLimit(count) && belowManagersUpperLimit(count);
@@ -132,13 +145,76 @@ contract Testament {
         }
     }
 
+    function changeHeirPriority(address payable heir, uint8 newPriority) public{
+
+        for(uint curP = 0; curP < heirs.length; curP++){
+            if(heirs[curP] == heir){
+               uint16 percent = percentages[curP];
+
+               if(curP == newPriority) return;
+            
+               delete heirs[curP];
+
+               if(curP > newPriority) {
+                shiftHeirsRight(uint8(curP), newPriority);
+               }else{
+                shiftHeirsLeft(uint8(curP), newPriority);
+               }
+
+               heirs[newPriority] = heir;
+               percentages[newPriority] = percent;
+            }
+        }
+    }
+
+    function shiftHeirsRight(uint8 from, uint8 to) private {
+        for(uint8 i = to; i > from; i--){
+            heirs[i] = heirs[i-1];
+            percentages[i] = percentages[i-1];
+        }
+    }
+
+    function shiftHeirsLeft(uint8 from, uint8 to) private {
+        for(uint8 i = from; i < to; i++){
+            heirs[i] = heirs[i+1];
+            percentages[i] = percentages[i+1];
+        }
+    }
+
     function destroy() public onlyOwner {
         selfdestruct(owner);
+    }
+
+    function getInheritance() public view onlyManager balanceReadAllowed returns (uint){
+        return address(this).balance;
+    }
+
+    function allowBalanceRead(bool allowed) public onlyOwner {
+        balanceVisible = allowed;
+    }
+
+    modifier balanceReadAllowed(){
+        require(balanceVisible, "balance read not allowed by the testament's owner.");
+        _;
     }
 
     modifier onlyOwner(){
         require(msg.sender == owner, "only the contract's owner can perform this action.");
         _;
+    }
+
+    modifier onlyManager(){
+        require(containsAddress(msg.sender, managers), "only the testament's managers can perform this action.");
+        _;
+    }
+
+    function containsAddress(address a, address payable[] memory ls) private pure returns (bool) {
+        for(uint i = 0; i < ls.length; i++){
+            if(a == ls[i]){
+                return true;
+            }
+        }
+        return false;
     }
 
     function belowManagersUpperLimit(uint count) private pure returns (bool) {
