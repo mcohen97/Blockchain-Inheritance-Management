@@ -13,6 +13,6 @@ contract DataStructures {
 
     struct HeirData {
         address payable heir;
-        uint8 percentaje;
+        uint8 percentage;
     }
 }
