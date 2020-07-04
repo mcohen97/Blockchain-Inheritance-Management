@@ -185,6 +185,10 @@ contract Testament {
         }
     }
 
+    function increaseInheritance() public payable onlyOwner{
+        //nothing?
+     }
+
     function destroy() public onlyOwner {
         uint balance = address(this).balance;
         if(cancellationFee.isFixed){
