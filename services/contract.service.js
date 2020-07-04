@@ -29,7 +29,9 @@ class ContractService{
 
     }
 
-    const compiledContract = JSON.parse(solc.compile(JSON.stringify(compilerInput)));
+    const compiledContract = JSON.parse(solc.compile(JSON.stringify(compilerInput), 
+                                                    {import: getImports}
+                                                    ));
 
     const contract = compiledContract.contracts[contractName][contractName];
     const abi = contract.abi;
@@ -82,6 +84,10 @@ class ContractService{
     return new web3.eth.Contract(abi,config.contractAddress);
   }
 
+}
+
+function getImports(dependency){
+  return {contents: fs.readFileSync(path.resolve(process.cwd(), 'contracts', dependency), 'utf8')}
 }
 
 
