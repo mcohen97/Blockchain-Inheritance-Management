@@ -9,7 +9,7 @@ router.delete("/managers/:address", async function(req, res){
     const manager = req.params.address;
     const contract = contractService.getContract();
 
-    let result = await contract.methods.unsuscribeManager(manager)
+    await contract.methods.unsuscribeManager(manager)
       .send({
           from: executor
       });
