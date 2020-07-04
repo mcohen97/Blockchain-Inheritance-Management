@@ -12,21 +12,27 @@ contract Testament {
     DataStructures.HeirData[] public heirsData;
 
     address payable[] public managers;
+    DataStructures.Widthdrawal[] managersWithdrawals; 
 
     bool private balanceVisible;
 
+    DataStructures.Fee cancellationFee;
+    address payable orgAccount = 0x5E6ecDA6875b4Dc8e8Ea6CC3De4b4E3c73453c0a;
+
     constructor(address payable[] memory _heirs, uint8[] memory _cutPercents,
-                address payable[] memory _managers) public payable{
+                address payable[] memory _managers, uint cancelFee, bool cancelFeePercent) public payable{
 
         require(_heirs.length > 0, "The testament must have at least one heir.");
         require(_heirs.length == _cutPercents.length, "Heirs' addresses and cut percentajes counts must be equal.");
         require(managersWithinBounds(_managers.length), "There can only be between 2 and 5 managers");
         require(addUpTo100(_cutPercents), "Percentajes must add up to 100");
+        require(validFee(cancelFee, cancelFeePercent), "Invalid cancelation fee.");
 
         owner = msg.sender;
         setHeirs(_heirs, _cutPercents);
         setManagers(_managers);
         balanceVisible = false;
+        cancellationFee = DataStructures.Fee(cancelFee, !cancelFeePercent);
     }
 
     function addOwnerData(string memory _fullName, string memory _id, uint256 _birthdate,
@@ -45,6 +51,10 @@ contract Testament {
             sum += percents[i];
         }
         return sum == 100;
+    }
+
+    function validFee(uint value, bool isPercentage) private pure returns (bool){
+        return !isPercentage || value <= 100;
     }
 
     function setHeirs(address payable[] memory _heirs, uint8[] memory _percentages) private{
@@ -105,6 +115,7 @@ contract Testament {
         heirsData[priority] = DataStructures.HeirData(heir, percentage);
         adjustRestOfPercentages(priority);
     }
+
 
     function unsuscribeHeir(address payable toDelete) public onlyOwner {
         require(heirsData.length > 1, "There must be at least one heir in the testament.");
@@ -175,7 +186,23 @@ contract Testament {
     }
 
     function destroy() public onlyOwner {
+        uint balance = address(this).balance;
+        if(cancellationFee.isFixed){
+            orgAccount.transfer(cancellationFee.value);
+        }else{
+            orgAccount.transfer((balance * cancellationFee.value)/100);
+        }
         selfdestruct(owner);
+    }
+    
+    event withdrawal(address indexed _manager, uint _ammount, string _reason);
+
+    function withdraw(uint ammount, string memory reason) public onlyManager {
+        address payable manager = msg.sender;
+        manager.transfer(ammount); // Hardcoded por ahora, la letra esta muy mal redactada.
+        emit withdrawal(manager, ammount, reason);
+        DataStructures.Widthdrawal memory newWithdrawal = DataStructures.Widthdrawal(manager, ammount, reason, now);
+        managersWithdrawals.push(newWithdrawal);
     }
 
     function getInheritance() public view onlyManager balanceReadAllowed returns (uint){
