@@ -18,7 +18,8 @@ router.post("/deploy", function(req, res){
     contractService.deploy(body.heirs, body.percentages, body.managers);
     res.status(200).send('OK');
   }catch(error){
-    res.send(500).send(new Error('Cannot deploy contract'));
+    //res.send(500).send(new Error('Cannot deploy contract'));
+    console.log('Cannot deploy contract');
   }
 });
 
@@ -44,11 +45,10 @@ router.get("/information", async function(req, res){
     const contract = contractService.getContract();
     let managers = await contract.methods.getManagersCount().call();
     let heirs = await contract.methods.getHeirsCount().call();
-    let percentages = await contract.methods.getPercentagesCount().call();
-    res.status(200).send(`Managers: ${managers}, Heirs: ${heirs}, Percentages: ${percentages}`);
+    res.status(200).send(`Managers: ${managers}, Heirs: ${heirs}`);
 
   }catch(error){
-    res.send(500).send(`Cannot execute method: ${error.message}`);
+    console.log(`Cannot execute method: ${error.message}`);
   }
 });
 
