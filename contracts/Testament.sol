@@ -8,8 +8,8 @@ contract Testament {
 
     address payable public owner;
     DataStructures.OwnerData public ownerData;
-    address payable[] public heirs;
-    uint16[] public percentages;
+
+    DataStructures.HeirData[] public heirsData;
 
     address payable[] public managers;
 
@@ -24,9 +24,8 @@ contract Testament {
         require(addUpTo100(_cutPercents), "Percentajes must add up to 100");
 
         owner = msg.sender;
-        setHeirs(_heirs);
+        setHeirs(_heirs, _cutPercents);
         setManagers(_managers);
-        percentages = _cutPercents;
         balanceVisible = false;
     }
 
@@ -48,8 +47,10 @@ contract Testament {
         return sum == 100;
     }
 
-    function setHeirs(address payable[] memory _heirs) private{
-        heirs = _heirs;
+    function setHeirs(address payable[] memory _heirs, uint8[] memory _percentages) private{
+        for(uint i = 0; i < _heirs.length; i++){
+            heirsData.push(DataStructures.HeirData(_heirs[i], _percentages[i]));
+        }
     }
 
     function setManagers(address payable[] memory _managers) private {
@@ -61,11 +62,7 @@ contract Testament {
     }
 
     function getHeirsCount() public view returns(uint){
-        return heirs.length;
-    }
-
-    function getPercentagesCount() public view returns(uint){
-        return percentages.length;
+        return heirsData.length;
     }
 
     function suscribeManager(address payable newManager) public onlyOwner{
@@ -90,94 +87,90 @@ contract Testament {
     }
 
     function suscribeHeir(address payable heir, uint8 percentage, uint8 priority) public onlyOwner {
-        require(priority <= heirs.length, "Invalid priority, must be between 0 and the heirs count");
-        if(priority == heirs.length) {
-            heirs.push(heir);
-            percentages.push(percentage);
+        require(priority <= heirsData.length, "Invalid priority, must be between 0 and the heirs count");
+        if(priority == heirsData.length) {
+            heirsData.push(DataStructures.HeirData(heir, percentage));
+            adjustRestOfPercentages(priority);
             return;
         }
 
-       uint len = heirs.length;
+       uint len = heirsData.length;
 
-       uint16 sum = adjustPercentages(percentage);
-       uint8 adaptedPercentage = percentage - uint8(sum - 100); // Adjust new percentage to make them all sum 100.
-
-       heirs.push(heirs[heirs.length - 1]);
-       percentages.push(percentages[percentages.length - 1]);
+       heirsData.push(heirsData[heirsData.length - 1]);
 
        for(uint i = len; i > priority; i--) {
-            heirs[i] = heirs[i-1];
-            percentages[i] = percentages[i-1];
+            heirsData[i] = heirsData[i-1];
         }
 
-        heirs[priority] = heir;
-        percentages[priority] = adaptedPercentage;
+        heirsData[priority] = DataStructures.HeirData(heir, percentage);
+        adjustRestOfPercentages(priority);
     }
 
     function unsuscribeHeir(address payable toDelete) public onlyOwner {
-        require(heirs.length > 1, "There must be at least one heir in the testament.");
+        require(heirsData.length > 1, "There must be at least one heir in the testament.");
  
-        uint len = heirs.length;
+        uint len = heirsData.length;
 
         for(uint8 i = 0; i < len; i++) {
-            if(toDelete == heirs[i]){
+            if(toDelete == heirsData[i].heir){
                 passInheritanceToOtherHeir(i);
-                delete heirs[i];
-                delete percentages[i];
+                delete heirsData[i];
                 i++;
                 for(; i < len; i++){
-                    heirs[i-1] = heirs[i];
-                    percentages[i-1] = percentages[i];
+                    heirsData[i-1] = heirsData[i];
                 }
             }
         }
-        delete heirs[len - 1];
-        heirs.length--;
-        delete percentages[len - 1];
-        percentages.length--;
+        delete heirsData[len - 1];
+        heirsData.length--;
     }
 
     function passInheritanceToOtherHeir(uint8 priority) private {
         if (priority == 0){
-            percentages[1] += percentages[0];
+            heirsData[1].percentage += heirsData[0].percentage;
         }else{
-            percentages[priority - 1] += percentages[priority];
+            heirsData[priority - 1].percentage += heirsData[priority].percentage;
         }
     }
 
-    function changeHeirPriority(address payable heir, uint8 newPriority) public{
+    function changeHeirPriority(address payable heir, uint8 newPriority) public onlyOwner{
 
-        for(uint curP = 0; curP < heirs.length; curP++){
-            if(heirs[curP] == heir){
-               uint16 percent = percentages[curP];
-
+        for(uint curP = 0; curP < heirsData.length; curP++){
+            if(heirsData[curP].heir == heir){
                if(curP == newPriority) return;
-            
-               delete heirs[curP];
+
+               DataStructures.HeirData memory toChangePriority = heirsData[curP];
 
                if(curP > newPriority) {
-                shiftHeirsRight(uint8(curP), newPriority);
+                shiftHeirsRight(newPriority, uint8(curP));
                }else{
                 shiftHeirsLeft(uint8(curP), newPriority);
                }
 
-               heirs[newPriority] = heir;
-               percentages[newPriority] = percent;
+               heirsData[newPriority] = toChangePriority;
             }
         }
     }
 
-    function shiftHeirsRight(uint8 from, uint8 to) private {
-        for(uint8 i = to; i > from; i--){
-            heirs[i] = heirs[i-1];
-            percentages[i] = percentages[i-1];
+    function changeHeirPercentage(address payable heir, uint8 newPercentage) public onlyOwner{
+        for(uint curP = 0; curP < heirsData.length; curP++){
+             if(heirsData[curP].heir == heir){
+                 heirsData[curP].percentage = newPercentage;
+                 adjustRestOfPercentages(uint8(curP));
+                 return;
+             }
         }
     }
 
-    function shiftHeirsLeft(uint8 from, uint8 to) private {
-        for(uint8 i = from; i < to; i++){
-            heirs[i] = heirs[i+1];
-            percentages[i] = percentages[i+1];
+    function shiftHeirsRight(uint8 start, uint8 end) private {
+        for(uint8 i = end; i > start; i--){
+            heirsData[i] = heirsData[i-1];
+        }
+    }
+
+    function shiftHeirsLeft(uint8 start, uint8 end) private {
+        for(uint8 i = start; i < end; i++){
+            heirsData[i] = heirsData[i+1];
         }
     }
 
@@ -217,25 +210,47 @@ contract Testament {
         return false;
     }
 
+    function adjustRestOfPercentages(uint8 priority) private {
+        uint8 sum = 0;
+        for(uint j = 0; j < heirsData.length; j++){
+            sum += heirsData[j].percentage;
+        }
+
+        int8 diff = int8(100 - sum);
+        // Part to add/substract for each other heir
+        int8 diffPerHeir = diff / int8(heirsData.length - 1);
+        // No floats are allowed, so the remainder will be given to the first heirs, 1% to each
+        int8 remander = diff % int8(heirsData.length - 1);
+
+        if(diff > 0){
+            for(uint j = 0; j < heirsData.length; j++){
+                if(j == priority) continue;
+                heirsData[j].percentage = uint8(int8(heirsData[j].percentage) + diffPerHeir);
+                if(remander > 0){
+                    heirsData[j].percentage++;
+                    remander--;
+                }
+            }
+        }else if(diff < 0){
+            for(uint i = heirsData.length; i > 0; i--){
+                uint j = i - 1;
+                if(j == priority) continue;
+                heirsData[j].percentage = uint8(int8(heirsData[j].percentage) + diffPerHeir);
+                if(remander < 0){
+                    heirsData[j].percentage--;
+                    remander++;
+                }
+            }
+        }
+
+    }
+
     function belowManagersUpperLimit(uint count) private pure returns (bool) {
         return count <= 5;
     }
 
     function aboveManagersLowerLimit(uint count) private pure returns (bool) {
         return count >= 2;
-    }
-
-    function adjustPercentages(uint8 newPercent) private returns (uint16) {
-        uint8 remaining = 100 - newPercent;
-        uint16 sum = newPercent;
-
-        for(uint j = 0; j < percentages.length; j++){
-            uint16 adjPercent = (percentages[j] * remaining) / 100;
-            percentages[j] = uint8(adjPercent);
-            sum += percentages[j];
-        }
-
-        return sum;
     }
 }
 
