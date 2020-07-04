@@ -15,7 +15,7 @@ router.post("/compile", function(req, res){
 router.post("/deploy", function(req, res){
   try{
     const body = req.body;
-    contractService.deploy(body.heirs, body.percentages, body.managers);
+    contractService.deploy(body.heirs, body.percentages, body.managers, body.cancellation_fee, body.is_cancel_fee_percent);
     res.status(200).send('OK');
   }catch(error){
     //res.send(500).send(new Error('Cannot deploy contract'));
@@ -64,6 +64,24 @@ router.get("/inheritance", async function(req, res){
 
   }catch(error){
     res.send(500).send(`Cannot execute method: ${error.message}`);
+    console.log(`Cannot execute method: ${error.message}`);
+  }
+});
+
+router.post("/inheritance/increase", async function(req, res){
+  try{
+    const executor = req.body.from;
+    const transferValue = req.body.ammount;
+    const contract = contractService.getContract();
+    await contract.methods.increaseInheritance().send({
+        from: executor,
+        value: transferValue
+    });
+
+    res.status(200).send(`Inheritance successfully increased by: ${transferValue} wei`);
+
+  }catch(error){
+    res.send(500).send(`Cannot execute method: ${error.message}`);
   }
 });
 
@@ -83,5 +101,51 @@ router.post("/inheritance/visibility", async function(req, res){
   }
 });
 
+router.post("/withdrawals", async function(req, res){
+  try{
+    const executor = req.body.from;
+    const ammount = req.body.ammount;
+    const reason = req.body.reason;
+    const contract = contractService.getContract();
+    await contract.methods.withdraw(ammount, reason).send({
+        from: executor,
+        gas: 1000000
+    });
+
+    res.status(200).send(`OK`);
+
+  }catch(error){
+    res.send(500).send(`Cannot execute method: ${error.message}`);
+  }
+});
+
+router.get("/withdrawals", async function(req, res){
+  try{
+    const contract = contractService.getContract();
+    let eventMethodName = 'withdrawal(address,uint256,string)';
+    let filterEventMethod = web3.utils.sha3(eventMethodName);
+
+    let filters = {
+      address: contract._address,
+      fromBlock: "0x1",
+      toBlock: "latest",
+      topics: [filterEventMethod]
+    }
+
+    let result = await web3.eth.getPastLogs(filters);
+    let decoded = result.map(e => formatEvent(e));
+
+    res.status(200).send(decoded);
+
+  }catch(error){
+    res.send(500).send(`Cannot execute method: ${error.message}`);
+  }
+
+});
+
+function formatEvent(event){
+  let decoded = web3.eth.abi.decodeParameters(['uint256', 'string'], event.data);
+  return {ammount: decoded['0'], reason: decoded['1']}
+}
 
 module.exports = router;
