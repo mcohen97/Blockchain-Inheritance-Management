@@ -15,4 +15,16 @@ contract DataStructures {
         address payable heir;
         uint8 percentage;
     }
+
+    struct Widthdrawal{
+        address payable manager;
+        uint ammount;
+        string reason;
+        uint256 date;
+    }
+
+    struct Fee{
+        uint value;
+        bool isFixed;
+    }
 }
