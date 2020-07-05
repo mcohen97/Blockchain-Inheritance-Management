@@ -12,27 +12,31 @@ contract Testament {
     DataStructures.HeirData[] public heirsData;
 
     address payable[] public managers;
-    DataStructures.Widthdrawal[] managersWithdrawals; 
+    DataStructures.Widthdrawal[] managersWithdrawals;
 
     bool private balanceVisible;
 
     DataStructures.Fee cancellationFee;
+    DataStructures.Fee reductionFee;
+
     address payable orgAccount = 0x5E6ecDA6875b4Dc8e8Ea6CC3De4b4E3c73453c0a;
 
     constructor(address payable[] memory _heirs, uint8[] memory _cutPercents,
-                address payable[] memory _managers, uint cancelFee, bool cancelFeePercent) public payable{
+                address payable[] memory _managers, uint cancelFee, bool cancelFeePercent, uint redFeeVal, bool redFeePercent) public payable{
 
         require(_heirs.length > 0, "The testament must have at least one heir.");
         require(_heirs.length == _cutPercents.length, "Heirs' addresses and cut percentajes counts must be equal.");
         require(managersWithinBounds(_managers.length), "There can only be between 2 and 5 managers");
         require(addUpTo100(_cutPercents), "Percentajes must add up to 100");
         require(validFee(cancelFee, cancelFeePercent), "Invalid cancelation fee.");
+        require(validFee(redFeeVal, redFeePercent), "Invalid reduction fee.");
 
         owner = msg.sender;
         setHeirs(_heirs, _cutPercents);
         setManagers(_managers);
         balanceVisible = false;
         cancellationFee = DataStructures.Fee(cancelFee, !cancelFeePercent);
+        reductionFee = DataStructures.Fee(redFeeVal, !redFeePercent);
     }
 
     function addOwnerData(string memory _fullName, string memory _id, uint256 _birthdate,
@@ -185,9 +189,20 @@ contract Testament {
         }
     }
 
-    function increaseInheritance() public payable onlyOwner{
-        //nothing?
-     }
+    function increaseInheritance() public payable onlyOwner{}
+
+    function reduceInheritance(uint8 cut) public onlyOwner{
+        uint balance = address(this).balance;
+        uint reduction = (balance * cut) / 100;
+        uint fee;
+        if(reductionFee.isFixed){
+            fee = reductionFee.value;
+        }else{
+            fee = (balance * reductionFee.value) / 100;
+        }
+        owner.transfer(reduction);
+        orgAccount.transfer(fee);
+    }
 
     function destroy() public onlyOwner {
         uint balance = address(this).balance;
