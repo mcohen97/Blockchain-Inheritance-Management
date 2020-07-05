@@ -43,7 +43,7 @@ class ContractService{
     fs.writeFileSync(bytecodePath, JSON.stringify(bytecode, null, 2));
   }
 
-  async deploy(heirs, percentages, managers, cancellationFee, isCancFeePercentage, reductionFee, isRedFeePercent){
+  async deploy(heirs, percentages, managers,managerFee ,cancellationFee, isCancFeePercentage, reductionFee, isRedFeePercent){
     const bytecodePath = path.resolve(process.cwd(),'contracts', 'bytecode.json');
     const abiPath = path.resolve(process.cwd(), 'contracts', 'abi.json');
     const configPath = path.resolve(process.cwd(),'config.json');
@@ -57,7 +57,7 @@ class ContractService{
       const result = await new web3.eth.Contract(abi)
         .deploy({
           data: '0x' + bytecode.object,
-          arguments: [heirs, percentages, managers, cancellationFee, isCancFeePercentage, reductionFee, isRedFeePercent]
+          arguments: [heirs, percentages, managers, managerFee, cancellationFee, isCancFeePercentage, reductionFee, isRedFeePercent]
         })
         .send({
           gas: '5000000',

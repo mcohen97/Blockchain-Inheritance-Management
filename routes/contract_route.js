@@ -15,7 +15,7 @@ router.post("/compile", function(req, res){
 router.post("/deploy", function(req, res){
   try{
     const body = req.body;
-    contractService.deploy(body.heirs, body.percentages, body.managers, body.cancellation_fee, 
+    contractService.deploy(body.heirs, body.percentages, body.managers, body.manager_fee, body.cancellation_fee, 
       body.is_cancel_fee_percent, body.reduction_fee, body.is_reduction_fee_percent);
     res.status(200).send('OK');
   }catch(error){

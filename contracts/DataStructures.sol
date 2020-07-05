@@ -16,6 +16,12 @@ contract DataStructures {
         uint8 percentage;
     }
 
+    struct ManagerData {
+        address payable account;
+        bool banned;
+        bool hasInformedDecease;
+    }
+
     struct Widthdrawal{
         address payable manager;
         uint ammount;
