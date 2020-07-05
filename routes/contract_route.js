@@ -15,7 +15,8 @@ router.post("/compile", function(req, res){
 router.post("/deploy", function(req, res){
   try{
     const body = req.body;
-    contractService.deploy(body.heirs, body.percentages, body.managers, body.cancellation_fee, body.is_cancel_fee_percent);
+    contractService.deploy(body.heirs, body.percentages, body.managers, body.cancellation_fee, 
+      body.is_cancel_fee_percent, body.reduction_fee, body.is_reduction_fee_percent);
     res.status(200).send('OK');
   }catch(error){
     //res.send(500).send(new Error('Cannot deploy contract'));
@@ -85,6 +86,22 @@ router.post("/inheritance/increase", async function(req, res){
   }
 });
 
+router.post("/inheritance/reduce", async function(req, res){
+  try{
+    const executor = req.body.from;
+    const cut = req.body.cut;
+    const contract = contractService.getContract();
+    await contract.methods.reduceInheritance(cut).send({
+        from: executor,
+    });
+
+    res.status(200).send(`Inheritance successfully reduced by: ${cut} percent`);
+
+  }catch(error){
+    res.send(500).send(`Cannot execute method: ${error.message}`);
+  }
+});
+
 router.post("/inheritance/visibility", async function(req, res){
   try{
     const executor = req.body.from;
@@ -136,6 +153,40 @@ router.get("/withdrawals", async function(req, res){
     let decoded = result.map(e => formatEvent(e));
 
     res.status(200).send(decoded);
+
+  }catch(error){
+    res.send(500).send(`Cannot execute method: ${error.message}`);
+  }
+
+});
+
+router.post("/heartbeat", async function(req, res){
+  try{
+    const executor = req.body.from;
+    const contract = contractService.getContract();
+    await contract.methods.heartbeat().send({
+      from: executor,
+      gas: 1000000
+  });
+
+  res.status(200).send('OK');
+
+  }catch(error){
+    res.send(500).send(`Cannot execute method: ${error.message}`);
+  }
+
+});
+
+router.get("/last_signal", async function(req, res){
+  try{
+    const executor = req.body.from;
+    const contract = contractService.getContract();
+    let result = await contract.methods.lastLifeSignal().call({
+      from: executor
+  });
+
+  res.status(200).send(result);
+
 
   }catch(error){
     res.send(500).send(`Cannot execute method: ${error.message}`);

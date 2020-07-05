@@ -7,6 +7,7 @@ contract Testament {
     DataStructures structs = new DataStructures();
 
     address payable public owner;
+    uint256 public lastLifeSignal;
     DataStructures.OwnerData public ownerData;
 
     DataStructures.HeirData[] public heirsData;
@@ -213,7 +214,18 @@ contract Testament {
         }
         selfdestruct(owner);
     }
-    
+
+    function heartbeat() public onlyOwner{
+        lastLifeSignal = now;
+    }
+
+    function liquidate() public view returns(bool) {
+        if(differenceInMonths(lastLifeSignal, now) > 6){
+            return true;
+        }
+        return true;
+    }
+
     event withdrawal(address indexed _manager, uint _ammount, string _reason);
 
     function withdraw(uint ammount, string memory reason) public onlyManager {
@@ -289,6 +301,16 @@ contract Testament {
             }
         }
 
+    }
+
+    function differenceInMonths(uint date1, uint date2) private pure returns (uint){
+        uint monthSeconds = 3600 * 24 * 30;
+        uint diffSeconds = date1 - date2;
+        uint diffMonths = diffSeconds / monthSeconds;
+        if(diffMonths < 0){
+            return -diffMonths;
+        }
+        return diffMonths;
     }
 
     function belowManagersUpperLimit(uint count) private pure returns (bool) {
