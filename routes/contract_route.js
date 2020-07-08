@@ -16,7 +16,7 @@ router.post("/deploy", function(req, res){
   try{
     const body = req.body;
     contractService.deployTestament(body.heirs, body.percentages, body.managers, body.manager_fee, body.cancellation_fee, 
-      body.is_cancel_fee_percent, body.reduction_fee, body.is_reduction_fee_percent);
+      body.is_cancel_fee_percent, body.reduction_fee, body.is_reduction_fee_percent, body.max_withdrawal_percentage);
     res.status(200).send('OK');
   }catch(error){
     //res.send(500).send(new Error('Cannot deploy contract'));
@@ -52,7 +52,6 @@ router.get("/information", async function(req, res){
       from: caller
     });
     res.status(200).send(`Managers: ${managers}, Heirs: ${heirs}`);
-
   }catch(error){
     console.log(`Cannot execute method: ${error.message}`);
   }
@@ -126,7 +125,8 @@ router.post("/inheritance/visibility", async function(req, res){
 router.post("/withdrawals", async function(req, res){
   try{
     const executor = req.body.from;
-    const ammount = req.body.ammount;
+    //const ammount = req.body.ammount;
+    const ammount = 50000;
     const reason = req.body.reason;
     const contract = contractService.getContract();
     await contract.methods.withdraw(ammount, reason).send({
