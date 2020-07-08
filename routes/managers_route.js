@@ -45,8 +45,9 @@ router.get("/managers/:pos", async function(req, res){
     const contract = contractService.getContract();
 
     let result = await contract.methods.managers(manager).call();
-
-    res.status(200).send(result);
+    let response = {account: result.account, debt: result.debt, withdrawal_date: result.withdrawalDate, 
+      has_informed_decease: result.hasInformedDecease}
+    res.status(200).send(response);
 
   }catch(error){
     res.send(500).send(`Cannot execute method: ${error.message}`);
