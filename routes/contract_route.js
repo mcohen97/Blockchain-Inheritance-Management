@@ -5,7 +5,7 @@ const { default: Web3 } = require('web3');
 
 router.post("/compile", function(req, res){
   try{
-    contractService.compile();
+    contractService.compileTestament();
     res.status(200).send('OK');
   }catch(error){
     res.send(500).send(new Error('Cannot compile contract'));
@@ -15,7 +15,7 @@ router.post("/compile", function(req, res){
 router.post("/deploy", function(req, res){
   try{
     const body = req.body;
-    contractService.deploy(body.heirs, body.percentages, body.managers, body.manager_fee, body.cancellation_fee, 
+    contractService.deployTestament(body.heirs, body.percentages, body.managers, body.manager_fee, body.cancellation_fee, 
       body.is_cancel_fee_percent, body.reduction_fee, body.is_reduction_fee_percent);
     res.status(200).send('OK');
   }catch(error){
@@ -43,9 +43,14 @@ router.delete("/", async function(req, res){
 
 router.get("/information", async function(req, res){
   try{
+    const caller = req.body.from;
     const contract = contractService.getContract();
-    let managers = await contract.methods.getManagersCount().call();
-    let heirs = await contract.methods.getHeirsCount().call();
+    let managers = await contract.methods.getManagersCount().call({
+        from: caller
+    });
+    let heirs = await contract.methods.getHeirsCount().call({
+      from: caller
+    });
     res.status(200).send(`Managers: ${managers}, Heirs: ${heirs}`);
 
   }catch(error){
