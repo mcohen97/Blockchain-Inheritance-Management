@@ -18,7 +18,8 @@ contract DataStructures {
 
     struct ManagerData {
         address payable account;
-        bool banned;
+        uint debt;
+        uint256 withdrawalDate;
         bool hasInformedDecease;
     }
 

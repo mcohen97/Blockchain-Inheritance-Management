@@ -1,6 +1,7 @@
 pragma solidity ^0.5.1;
 
 import './DataStructures.sol';
+import './Laws.sol';
 
 contract Testament {
 
@@ -14,6 +15,8 @@ contract Testament {
     DataStructures.ManagerData[] public managers;
     DataStructures.Widthdrawal[] managersWithdrawals;
 
+    Laws rules;
+
     bool private balanceVisible;
 
     DataStructures.Fee cancellationFee;
@@ -22,7 +25,8 @@ contract Testament {
     address payable orgAccount = 0x5E6ecDA6875b4Dc8e8Ea6CC3De4b4E3c73453c0a;
 
     constructor(address payable[] memory _heirs, uint8[] memory _cutPercents,
-                address payable[] memory _managers, uint8 managerFee, uint cancelFee ,bool cancelFeePercent, uint redFeeVal, bool redFeePercent) public payable{
+                address payable[] memory _managers, uint8 managerFee, uint cancelFee,
+                bool cancelFeePercent, uint redFeeVal, bool redFeePercent, Laws _rules) public payable{
 
         require(_heirs.length > 0, "The testament must have at least one heir.");
         require(_heirs.length == _cutPercents.length, "Heirs' addresses and cut percentajes counts must be equal.");
@@ -31,6 +35,7 @@ contract Testament {
         require(validFee(cancelFee, cancelFeePercent), "Invalid cancelation fee.");
         require(validFee(redFeeVal, redFeePercent), "Invalid reduction fee.");
 
+        rules = _rules;
         owner = msg.sender;
         setHeirs(_heirs, _cutPercents);
         setManagers(_managers);
@@ -70,21 +75,22 @@ contract Testament {
 
     function setManagers(address payable[] memory _managers) private {
         for(uint i = 0; i < _managers.length; i++){
-            managers.push(DataStructures.ManagerData(_managers[i], false, false));
+            managers.push(DataStructures.ManagerData(_managers[i], 0, 0, false));
         }
     }
 
-    function getManagersCount() public view returns(uint){
+    function getManagersCount() public view onlyNotSuspendedManager returns(uint){
         return managers.length;
     }
 
-    function getHeirsCount() public view returns(uint){
+    function getHeirsCount() public view onlyNotSuspendedManager returns(uint){
         return heirsData.length;
     }
 
     function suscribeManager(address payable newManager) public onlyOwner{
         require(belowManagersUpperLimit(managers.length + 1), "Managers maximum exceeded");
-        managers.push(DataStructures.ManagerData(newManager, false, false));
+        require(managersPercentageFee * (managers.length + 1) >= 100, "Managers fees combined make up 100% or more");
+        managers.push(DataStructures.ManagerData(newManager, 0, 0, false));
     }
 
     function unsuscribeManager(address payable toDelete) public onlyOwner {
@@ -123,6 +129,9 @@ contract Testament {
         adjustRestOfPercentages(priority);
     }
 
+    function getDollarConversion() public view returns (uint16){
+        return rules.dollarEtherConversion();
+    }
 
     function unsuscribeHeir(address payable toDelete) public onlyOwner {
         require(heirsData.length > 1, "There must be at least one heir in the testament.");
@@ -261,15 +270,29 @@ contract Testament {
 
     event withdrawal(address indexed _manager, uint _ammount, string _reason);
 
-    function withdraw(uint ammount, string memory reason) public onlyManager {
+    function withdraw(uint ammount, string memory reason) public onlyNotSuspendedManager {
         address payable manager = msg.sender;
+        updateManagerDebt(msg.sender, ammount);
         manager.transfer(ammount); // Hardcoded por ahora, la letra esta muy mal redactada.
         emit withdrawal(manager, ammount, reason);
         DataStructures.Widthdrawal memory newWithdrawal = DataStructures.Widthdrawal(manager, ammount, reason, now);
         managersWithdrawals.push(newWithdrawal);
     }
 
-    function getInheritance() public view onlyManager balanceReadAllowed returns (uint){
+    function updateManagerDebt(address account, uint ammount) private{
+        for(uint i = 0; i < managers.length; i++){
+            if(managers[i].account == account){
+                if(managers[i].debt == 0){
+                    managers[i].withdrawalDate = now;
+                }
+                managers[i].debt += ammount;
+                return;
+            }
+        }
+    }
+    
+
+    function getInheritance() public view onlyNotSuspendedManager balanceReadAllowed returns (uint){
         return address(this).balance;
     }
 
@@ -287,9 +310,24 @@ contract Testament {
         _;
     }
 
-    modifier onlyManager(){
+    modifier onlyNotSuspendedManager(){
         require(containsManager(msg.sender), "only the testament's managers can perform this action.");
+        bool expiredDebt = checkManagerDebt(msg.sender);
+        require(!expiredDebt, "this manager is suspended");
         _;
+    }
+
+    function checkManagerDebt(address account) private view returns (bool){
+        for(uint i = 0; i < managers.length; i++){
+            if(account != managers[i].account){
+                continue;
+            }
+            if (managers[i].debt == 0){
+                return false;
+            }
+            return differenceInMonths(managers[i].withdrawalDate, now) > 3;
+        }
+        return false;
     }
 
     function containsManager(address a) private view returns (bool) {
