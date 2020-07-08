@@ -4,5 +4,7 @@ contract Laws {
 
     uint16 public dollarEtherConversion = 30;
 
+    uint8 public withdrawalFeePercent = 5;
+
 
 }
