@@ -12,6 +12,7 @@ contract Testament {
     DataStructures.HeirData[] public heirsData;
 
     uint8 managersPercentageFee;
+    uint8 maxWithdrawalPercentage; 
     DataStructures.ManagerData[] public managers;
     DataStructures.Widthdrawal[] managersWithdrawals;
 
@@ -26,7 +27,7 @@ contract Testament {
 
     constructor(address payable[] memory _heirs, uint8[] memory _cutPercents,
                 address payable[] memory _managers, uint8 managerFee, uint cancelFee,
-                bool cancelFeePercent, uint redFeeVal, bool redFeePercent, Laws _rules) public payable{
+                bool cancelFeePercent, uint redFeeVal, bool redFeePercent,uint8 managerMaxWithdraw ,Laws _rules) public payable{
 
         require(_heirs.length > 0, "The testament must have at least one heir.");
         require(_heirs.length == _cutPercents.length, "Heirs' addresses and cut percentajes counts must be equal.");
@@ -41,6 +42,8 @@ contract Testament {
         setManagers(_managers);
         balanceVisible = false;
         managersPercentageFee = managerFee;
+        maxWithdrawalPercentage = managerMaxWithdraw;
+
         cancellationFee = DataStructures.Fee(cancelFee, !cancelFeePercent);
         reductionFee = DataStructures.Fee(redFeeVal, !redFeePercent);
     }
@@ -273,7 +276,7 @@ contract Testament {
     function withdraw(uint ammount, string memory reason) public onlyNotSuspendedManager {
         address payable manager = msg.sender;
         updateManagerDebt(msg.sender, ammount);
-        manager.transfer(ammount); // Hardcoded por ahora, la letra esta muy mal redactada.
+        manager.transfer(ammount);
         emit withdrawal(manager, ammount, reason);
         DataStructures.Widthdrawal memory newWithdrawal = DataStructures.Widthdrawal(manager, ammount, reason, now);
         managersWithdrawals.push(newWithdrawal);
@@ -282,6 +285,7 @@ contract Testament {
     function updateManagerDebt(address account, uint ammount) private{
         for(uint i = 0; i < managers.length; i++){
             if(managers[i].account == account){
+                require(!exceedsAllowedPercentage(managers[i].debt, ammount), "Cannot withdraw this ammount, exceeds limit");
                 if(managers[i].debt == 0){
                     managers[i].withdrawalDate = now;
                 }
@@ -289,6 +293,11 @@ contract Testament {
                 return;
             }
         }
+    }
+
+    function exceedsAllowedPercentage(uint accumDebt, uint newWithdrawal) private view returns(bool){
+        uint balance = address(this).balance;
+        return ((balance * maxWithdrawalPercentage) / 100) > (accumDebt + newWithdrawal);
     }
     
 
