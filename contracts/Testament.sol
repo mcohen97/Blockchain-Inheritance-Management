@@ -12,7 +12,7 @@ contract Testament {
     DataStructures.HeirData[] public heirsData;
 
     uint8 managersPercentageFee;
-    uint8 maxWithdrawalPercentage; 
+    uint8 maxWithdrawalPercentage;
     DataStructures.ManagerData[] public managers;
     DataStructures.Widthdrawal[] managersWithdrawals;
 
@@ -32,7 +32,7 @@ contract Testament {
         require(_heirs.length > 0, "The testament must have at least one heir.");
         require(_heirs.length == _cutPercents.length, "Heirs' addresses and cut percentajes counts must be equal.");
         require(managersWithinBounds(_managers.length), "There can only be between 2 and 5 managers");
-        require(addUpTo100(_cutPercents), "Percentajes must add up to 100");
+        require(addUpTo100(_cutPercents), "Percentages must add up to 100");
         require(validFee(cancelFee, cancelFeePercent), "Invalid cancelation fee.");
         require(validFee(redFeeVal, redFeePercent), "Invalid reduction fee.");
 
@@ -273,13 +273,20 @@ contract Testament {
 
     event withdrawal(address indexed _manager, uint _ammount, string _reason);
 
-    function withdraw(uint ammount, string memory reason) public onlyNotSuspendedManager {
+    function withdraw(uint256 ammount, string memory reason) public onlyNotSuspendedManager {
         address payable manager = msg.sender;
         updateManagerDebt(msg.sender, ammount);
-        manager.transfer(ammount);
+        uint withdrawalFee = calculateWithdrawalFee(ammount);
+        manager.transfer(ammount - withdrawalFee);
+        orgAccount.transfer(withdrawalFee);
         emit withdrawal(manager, ammount, reason);
         DataStructures.Widthdrawal memory newWithdrawal = DataStructures.Widthdrawal(manager, ammount, reason, now);
         managersWithdrawals.push(newWithdrawal);
+    }
+
+    function calculateWithdrawalFee(uint ammount) private view returns(uint){
+        uint8 percent = rules.withdrawalFeePercent();
+        return (ammount * percent) / 100;
     }
 
     function updateManagerDebt(address account, uint ammount) private{
@@ -297,7 +304,7 @@ contract Testament {
 
     function exceedsAllowedPercentage(uint accumDebt, uint newWithdrawal) private view returns(bool){
         uint balance = address(this).balance;
-        return ((balance * maxWithdrawalPercentage) / 100) > (accumDebt + newWithdrawal);
+        return (accumDebt + newWithdrawal) > ((balance * maxWithdrawalPercentage) / 100) ;
     }
     
 
@@ -383,14 +390,14 @@ contract Testament {
 
     }
 
-    function differenceInMonths(uint date1, uint date2) private pure returns (uint){
-        uint monthSeconds = 3600 * 24 * 30;
-        uint diffSeconds = date1 - date2;
-        uint diffMonths = diffSeconds / monthSeconds;
+    function differenceInMonths(uint date1, uint date2) public pure returns (uint){
+        int monthSeconds = 3600 * 24 * 30;
+        int diffSeconds = int(date1 - date2);
+        int diffMonths = diffSeconds / monthSeconds;
         if(diffMonths < 0){
-            return -diffMonths;
+            return uint(-diffMonths);
         }
-        return diffMonths;
+        return uint(diffMonths);
     }
 
     function belowManagersUpperLimit(uint count) private pure returns (bool) {
