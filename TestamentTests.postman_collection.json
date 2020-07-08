@@ -31,7 +31,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"from\": \"{{ADDRESS_1}}\",\n    \"heirs\": [\"{{ADDRESS_2}}\",\"{{ADDRESS_3}}\"],\n    \"percentages\":[50, 50],\n    \"managers\": [\"{{ADDRESS_4}}\", \"{{ADDRESS_5}}\", \"{{ADDRESS_6}}\"],\n    \"cancellation_fee\": 100000,\n    \"is_cancel_fee_percent\": false,\n    \"reduction_fee\": 5,\n    \"is_reduction_fee_percent\": true\n}",
+					"raw": "{\n    \"from\": \"{{ADDRESS_1}}\",\n    \"heirs\": [\"{{ADDRESS_2}}\",\"{{ADDRESS_3}}\"],\n    \"percentages\":[50, 50],\n    \"managers\": [\"{{ADDRESS_4}}\", \"{{ADDRESS_5}}\", \"{{ADDRESS_6}}\"],\n    \"manager_fee\": 3,\n    \"cancellation_fee\": 100000,\n    \"is_cancel_fee_percent\": false,\n    \"reduction_fee\": 5,\n    \"is_reduction_fee_percent\": true,\n    \"max_withdrawal_percentage\": 10\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -54,9 +54,21 @@
 		},
 		{
 			"name": "Get Contract Information",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
 			"request": {
 				"method": "GET",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"from\": \"{{ADDRESS_4}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
 					"raw": "{{URL}}/api/contract/information",
 					"host": [
@@ -315,7 +327,7 @@
 		{
 			"name": "Change Percentage of Heir",
 			"request": {
-				"method": "GET",
+				"method": "POST",
 				"header": [],
 				"url": {
 					"raw": ""
@@ -330,7 +342,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"from\": \"{{ADDRESS_4}}\",\n    \"ammount\": 100000,\n    \"reason\": \"para comprar merca\"\n}",
+					"raw": "{\n    \"from\": \"{{ADDRESS_4}}\",\n    \"ammount\": 5000000000000000000,\n    \"reason\": \"para comprar merca\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -493,6 +505,72 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Get Dollar Conversion Rate",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/api/laws/dollar",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"laws",
+						"dollar"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Compile Laws",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/api/laws/compile",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"laws",
+						"compile"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Deploy Laws",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"from\": \"{{ADDRESS_7}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/api/laws/deploy",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"laws",
+						"deploy"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"event": [
@@ -519,42 +597,42 @@
 	],
 	"variable": [
 		{
-			"id": "fdf1a0eb-24fa-46d1-ab59-c10f42575e93",
+			"id": "632cd993-263a-4f39-82f0-142d7dabeab5",
 			"key": "URL",
 			"value": "http://localhost:3000"
 		},
 		{
-			"id": "f4482b33-9138-4cd1-bc8c-35a28a90a539",
+			"id": "21979e17-c58a-4aee-bebf-16285f299a1b",
 			"key": "ADDRESS_1",
 			"value": "0x8c9a1E92F4101f4f5ab3A58b0963b1040e425b6F"
 		},
 		{
-			"id": "cda5e33a-c9ef-48b7-992b-f5cc716589ab",
+			"id": "0846d440-98af-4e06-93b5-84b409dc7af8",
 			"key": "ADDRESS_2",
 			"value": "0xF35b3ba2DE9dB8eEBcD5d128B53735e493c0BA64"
 		},
 		{
-			"id": "daf15633-9da1-4518-b962-059ba4c36194",
+			"id": "afeb1f4c-4f83-4bee-9e33-06b90ae43312",
 			"key": "ADDRESS_3",
 			"value": "0x4A643DddC95aFa8A0f6E7439d9dc760aa84CdEB1"
 		},
 		{
-			"id": "b9cfe67e-5546-448e-9a5d-893382d7fc63",
+			"id": "3ae2825e-8952-4846-9016-0ea4626fb9d6",
 			"key": "ADDRESS_4",
 			"value": "0x45F44Dec152224F336432568c8ACA7c9B98baFA8"
 		},
 		{
-			"id": "1ae50a30-ffd9-4a16-9043-8969c8109948",
+			"id": "52e30096-03d0-4c84-b352-3aa740f41123",
 			"key": "ADDRESS_5",
 			"value": "0xcC09F2d0d887f6098432E7C8BEc51b0B5aC205F9"
 		},
 		{
-			"id": "e63e172f-fab4-4ba9-962d-aa00c9d6f26e",
+			"id": "a6f98381-7a6e-4b7b-b929-f1ed9cf1775d",
 			"key": "ADDRESS_6",
 			"value": "0xFEdae43693A435fb940a9881CCcD7f3Ff328c08F"
 		},
 		{
-			"id": "f11bab97-818f-4403-bc7f-a841dc4a34c7",
+			"id": "e295f737-90d8-48ec-90f2-73d73a9dd044",
 			"key": "ADDRESS_7",
 			"value": "0xAe372f8F9697dc568AF1aD274351e56f5D467ceE"
 		}
