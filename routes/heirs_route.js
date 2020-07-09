@@ -21,7 +21,7 @@ router.post("/heirs", async function(req, res){
     res.status(200).send('Ok');
 
   }catch(error){
-    res.send(500).send(`Cannot execute method: ${error.message}`);
+    res.status(500).send(`Cannot execute method: ${error.message}`);
   }
 });
 
@@ -36,7 +36,7 @@ router.get("/heirs/:pos", async function(req, res){
     res.status(200).send(response);
 
   }catch(error){
-    res.send(500).send(`Cannot execute method: ${error.message}`);
+    res.status(500).send(`Cannot execute method: ${error.message}`);
     console.log(`Cannot execute method: ${error.message}`);
   }
 });
@@ -55,7 +55,7 @@ router.delete("/heirs/:address", async function(req, res){
     res.status(200).send('Ok');
 
   }catch(error){
-    res.send(500).send(`Cannot execute method: ${error.message}`);
+    res.status(500).send(`Cannot execute method: ${error.message}`);
   }
 });
 
@@ -74,7 +74,7 @@ router.post("/heirs/:address/priority", async function(req, res){
     res.status(200).send('Ok');
 
   }catch(error){
-    res.send(500).send(`Cannot execute method: ${error.message}`);
+    res.status(500).send(`Cannot execute method: ${error.message}`);
   }
 });
 
@@ -94,7 +94,7 @@ router.post("/heirs/:address/percentage", async function(req, res){
     res.status(200).send('Ok');
 
   }catch(error){
-    res.send(500).send(`Cannot execute method: ${error.message}`);
+    res.status(500).send(`Cannot execute method: ${error.message}`);
   }
 });
 

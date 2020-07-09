@@ -8,7 +8,7 @@ router.post("/compile", function(req, res){
     contractService.compileTestament();
     res.status(200).send('OK');
   }catch(error){
-    res.send(500).send(new Error('Cannot compile contract'));
+    res.status(500).send(new Error('Cannot compile contract'));
   }
 });
 
@@ -19,7 +19,7 @@ router.post("/deploy", function(req, res){
       body.is_cancel_fee_percent, body.reduction_fee, body.is_reduction_fee_percent, body.max_withdrawal_percentage);
     res.status(200).send('OK');
   }catch(error){
-    //res.send(500).send(new Error('Cannot deploy contract'));
+    //res.status(500).send(new Error('Cannot deploy contract'));
     console.log('Cannot deploy contract');
   }
 });
@@ -37,7 +37,7 @@ router.delete("/", async function(req, res){
     res.status(200).send('Destroyed');
 
   }catch(error){
-    res.send(500).send(`Cannot execute method: ${error.message}`);
+    res.status(500).send(`Cannot execute method: ${error.message}`);
   }
 });
 
@@ -68,7 +68,7 @@ router.get("/inheritance", async function(req, res){
     res.status(200).send(`Inheritance worth: ${inheritance}`);
 
   }catch(error){
-    res.send(500).send(`Cannot execute method: ${error.message}`);
+    res.status(500).send(`Cannot execute method: ${error.message}`);
     console.log(`Cannot execute method: ${error.message}`);
   }
 });
@@ -86,7 +86,7 @@ router.post("/inheritance/increase", async function(req, res){
     res.status(200).send(`Inheritance successfully increased by: ${transferValue} wei`);
 
   }catch(error){
-    res.send(500).send(`Cannot execute method: ${error.message}`);
+    res.status(500).send(`Cannot execute method: ${error.message}`);
   }
 });
 
@@ -102,7 +102,7 @@ router.post("/inheritance/reduce", async function(req, res){
     res.status(200).send(`Inheritance successfully reduced by: ${cut} percent`);
 
   }catch(error){
-    res.send(500).send(`Cannot execute method: ${error.message}`);
+    res.status(500).send(`Cannot execute method: ${error.message}`);
   }
 });
 
@@ -118,7 +118,7 @@ router.post("/inheritance/visibility", async function(req, res){
     res.status(200).send(`OK`);
 
   }catch(error){
-    res.send(500).send(`Cannot execute method: ${error.message}`);
+    res.status(500).send(`Cannot execute method: ${error.message}`);
   }
 });
 
@@ -134,7 +134,7 @@ router.get("/inheritance/claim", async function(req, res){
     res.status(200).send(response);
 
   }catch(error){
-    res.send(500).send(`Cannot execute method: ${error.message}`);
+    res.status(500).send(`Cannot execute method: ${error.message}`);
   }
 });
 
@@ -153,7 +153,7 @@ router.post("/withdrawals", async function(req, res){
     res.status(200).send(`OK`);
 
   }catch(error){
-    res.send(500).send(`Cannot execute method: ${error.message}`);
+    res.status(500).send(`Cannot execute method: ${error.message}`);
   }
 });
 
@@ -176,7 +176,7 @@ router.get("/withdrawals", async function(req, res){
     res.status(200).send(decoded);
 
   }catch(error){
-    res.send(500).send(`Cannot execute method: ${error.message}`);
+    res.status(500).send(`Cannot execute method: ${error.message}`);
   }
 
 });
@@ -193,7 +193,7 @@ router.post("/heartbeat", async function(req, res){
   res.status(200).send('OK');
 
   }catch(error){
-    res.send(500).send(`Cannot execute method: ${error.message}`);
+    res.status(500).send(`Cannot execute method: ${error.message}`);
   }
 
 });
@@ -210,7 +210,7 @@ router.get("/last_signal", async function(req, res){
 
 
   }catch(error){
-    res.send(500).send(`Cannot execute method: ${error.message}`);
+    res.status(500).send(`Cannot execute method: ${error.message}`);
   }
 
 });

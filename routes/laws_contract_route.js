@@ -8,7 +8,7 @@ router.post("/compile", function (req, res) {
     contractService.compileLaws();
     res.status(200).send('OK');
   } catch (error) {
-    res.send(500).send(new Error('Cannot compile contract'));
+    res.status(500).send(new Error('Cannot compile contract'));
   }
 });
 
@@ -18,7 +18,7 @@ router.post("/deploy", function (req, res) {
     contractService.deployLaws(body.from);
     res.status(200).send('OK');
   } catch (error) {
-    res.send(500).send(new Error('Cannot deploy contract'));
+    res.status(500).send(new Error('Cannot deploy contract'));
   }
 });
 

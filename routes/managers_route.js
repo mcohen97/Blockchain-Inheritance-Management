@@ -17,7 +17,7 @@ router.delete("/managers/:address", async function(req, res){
     res.status(200).send('Ok');
 
   }catch(error){
-    res.send(500).send(`Cannot execute method: ${error.message}`);
+    res.status(500).send(`Cannot execute method: ${error.message}`);
   }
 });
 
@@ -35,7 +35,7 @@ router.post("/managers", async function(req, res){
     res.status(200).send('Ok');
 
   }catch(error){
-    res.send(500).send(`Cannot execute method: ${error.message}`);
+    res.status(500).send(`Cannot execute method: ${error.message}`);
   }
 });
 
@@ -50,7 +50,7 @@ router.get("/managers/:pos", async function(req, res){
     res.status(200).send(response);
 
   }catch(error){
-    res.send(500).send(`Cannot execute method: ${error.message}`);
+    res.status(500).send(`Cannot execute method: ${error.message}`);
   }
 });
 
