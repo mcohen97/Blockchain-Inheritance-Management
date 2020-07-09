@@ -22,6 +22,21 @@ router.post("/deploy", function (req, res) {
   }
 });
 
+router.post("/judiciaryEmployees", async function (req, res) {
+  try {
+    const executor = req.body.from;
+    const address = req.body.judiciaryEmployee;
+    const contract = contractService.getLawsContract();
+    let result = await contract.methods.addJudiciaryEmployee(address)
+      .send({
+        from: executor
+      });
+    res.status(200).send('Ok');
+  } catch (error) {
+    res.status(500).send(`Cannot execute method: ${error.message}`);
+  }
+});
+
 router.get("", async function (req, res) {
   try {
     const contract = contractService.getLawsContract();
