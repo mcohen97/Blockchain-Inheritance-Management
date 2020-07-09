@@ -571,6 +571,66 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Inform owners death",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"from\": \"{{ADDRESS_4}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/api/contract/inform_decease",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"contract",
+						"inform_decease"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Claim Inheritance",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"from\": \"{{ADDRESS_4}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/api/contract/inheritance/claim",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"contract",
+						"inheritance",
+						"claim"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"event": [
@@ -597,42 +657,42 @@
 	],
 	"variable": [
 		{
-			"id": "632cd993-263a-4f39-82f0-142d7dabeab5",
+			"id": "cc2e2db4-0cad-4ee8-9a9b-5f5613559317",
 			"key": "URL",
 			"value": "http://localhost:3000"
 		},
 		{
-			"id": "21979e17-c58a-4aee-bebf-16285f299a1b",
+			"id": "7bdbfc32-b204-4796-aeec-36dc38c53c4c",
 			"key": "ADDRESS_1",
 			"value": "0x8c9a1E92F4101f4f5ab3A58b0963b1040e425b6F"
 		},
 		{
-			"id": "0846d440-98af-4e06-93b5-84b409dc7af8",
+			"id": "4a110906-a619-40c2-8a0c-12fe8891a0a9",
 			"key": "ADDRESS_2",
 			"value": "0xF35b3ba2DE9dB8eEBcD5d128B53735e493c0BA64"
 		},
 		{
-			"id": "afeb1f4c-4f83-4bee-9e33-06b90ae43312",
+			"id": "854a4392-682a-409b-9494-2b7e6e319546",
 			"key": "ADDRESS_3",
 			"value": "0x4A643DddC95aFa8A0f6E7439d9dc760aa84CdEB1"
 		},
 		{
-			"id": "3ae2825e-8952-4846-9016-0ea4626fb9d6",
+			"id": "1215f762-6c66-4ba1-b3ea-a486d414f95d",
 			"key": "ADDRESS_4",
 			"value": "0x45F44Dec152224F336432568c8ACA7c9B98baFA8"
 		},
 		{
-			"id": "52e30096-03d0-4c84-b352-3aa740f41123",
+			"id": "84dcdf66-4a90-4c73-be30-2a6b89c1259f",
 			"key": "ADDRESS_5",
 			"value": "0xcC09F2d0d887f6098432E7C8BEc51b0B5aC205F9"
 		},
 		{
-			"id": "a6f98381-7a6e-4b7b-b929-f1ed9cf1775d",
+			"id": "0d448549-2196-4860-98d1-e3a5bf999fca",
 			"key": "ADDRESS_6",
 			"value": "0xFEdae43693A435fb940a9881CCcD7f3Ff328c08F"
 		},
 		{
-			"id": "e295f737-90d8-48ec-90f2-73d73a9dd044",
+			"id": "2d4e83f0-7299-4973-8edb-b21226fd88f7",
 			"key": "ADDRESS_7",
 			"value": "0xAe372f8F9697dc568AF1aD274351e56f5D467ceE"
 		}

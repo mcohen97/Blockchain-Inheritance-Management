@@ -122,6 +122,22 @@ router.post("/inheritance/visibility", async function(req, res){
   }
 });
 
+router.get("/inheritance/claim", async function(req, res){
+  try{
+    const executor = req.body.from;
+    const contract = contractService.getContract();
+    result = await contract.methods.claimInheritance().send({
+        from: executor
+    });
+
+    response = formatClaimEvent(result.events.inheritanceClaim);
+    res.status(200).send(response);
+
+  }catch(error){
+    res.send(500).send(`Cannot execute method: ${error.message}`);
+  }
+});
+
 router.post("/withdrawals", async function(req, res){
   try{
     const executor = req.body.from;
@@ -155,7 +171,7 @@ router.get("/withdrawals", async function(req, res){
     }
 
     let result = await web3.eth.getPastLogs(filters);
-    let decoded = result.map(e => formatEvent(e));
+    let decoded = result.map(e => formatWithdrawalEvent(e));
 
     res.status(200).send(decoded);
 
@@ -199,7 +215,27 @@ router.get("/last_signal", async function(req, res){
 
 });
 
-function formatEvent(event){
+router.post("/inform_decease", async function(req, res){
+  try{
+    const executor = req.body.from;
+    const contract = contractService.getContract();
+    let result = await contract.methods.informOwnerDecease().send({
+      from: executor
+  });
+
+  res.status(200).send(result);
+  }catch(error){
+    res.status(500).send(`Cannot execute method: ${error.message}`);
+  }
+
+});
+
+function formatClaimEvent(event){
+  let values = event.returnValues;
+  return {liquidated: values.liquidated, message: values.message}
+}
+
+function formatWithdrawalEvent(event){
   let decoded = web3.eth.abi.decodeParameters(['uint256', 'string'], event.data);
   return {ammount: decoded['0'], reason: decoded['1']}
 }

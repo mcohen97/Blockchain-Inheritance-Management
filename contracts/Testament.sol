@@ -44,6 +44,8 @@ contract Testament {
         managersPercentageFee = managerFee;
         maxWithdrawalPercentage = managerMaxWithdraw;
 
+        lastLifeSignal = now;
+
         cancellationFee = DataStructures.Fee(cancelFee, !cancelFeePercent);
         reductionFee = DataStructures.Fee(redFeeVal, !redFeePercent);
     }
@@ -233,16 +235,25 @@ contract Testament {
         lastLifeSignal = now;
     }
 
-    function claimInheritance() public returns(bool) {
+    event inheritanceClaim(bool liquidated, string message);
+
+    function claimInheritance() public {
         if(differenceInMonths(lastLifeSignal, now) > 6){
             liquidate();
-            return true;
+            emit inheritanceClaim(true, "Contract liquidated successfully.");
         }
-        if(allManagersInformedDecease() && differenceInMonths(lastLifeSignal, now) > 3){
+        bool all = allManagersInformedDecease();
+        if(all && differenceInMonths(lastLifeSignal, now) > 3){
             liquidate();
-            return true;
+            emit inheritanceClaim(true, "Contract liquidated successfully.");
         }
-        return false;
+        string memory message = "";
+        if(!all){
+            message = "Not all managers informed the owners's decease, and last signal was given in less than 6 months ago";
+        }else{
+            message = "All managers informed the owners's decease, but 3 months haven't passed since last owner's signal";
+        }
+        emit inheritanceClaim(false, message);
     }
 
     function allManagersInformedDecease() private view returns (bool){
@@ -252,6 +263,14 @@ contract Testament {
             }
         }
         return true;
+    }
+
+    function informOwnerDecease() public onlyNotSuspendedManager {
+        for(uint i = 0; i < managers.length; i++){
+            if(managers[i].account == msg.sender){
+                managers[i].hasInformedDecease = true;
+            }
+        }
     }
 
     function liquidate() private {
