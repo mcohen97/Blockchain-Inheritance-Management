@@ -7,7 +7,7 @@ router.delete("/managers/:address", async function(req, res){
   try{
     const executor = req.body.from;
     const manager = req.params.address;
-    const contract = contractService.getContract();
+    const contract = contractService.getTestamentContract();
 
     await contract.methods.unsuscribeManager(manager)
       .send({
@@ -25,7 +25,7 @@ router.post("/managers", async function(req, res){
   try{
     const executor = req.body.from;
     const address = req.body.manager;
-    const contract = contractService.getContract();
+    const contract = contractService.getTestamentContract();
 
     let result = await contract.methods.suscribeManager(address)
       .send({
@@ -42,7 +42,7 @@ router.post("/managers", async function(req, res){
 router.get("/managers/:pos", async function(req, res){
   try{
     const manager = req.params.pos;
-    const contract = contractService.getContract();
+    const contract = contractService.getTestamentContract();
 
     let result = await contract.methods.managers(manager).call();
     let response = {account: result.account, debt: result.debt, withdrawal_date: result.withdrawalDate, 

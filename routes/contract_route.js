@@ -27,7 +27,7 @@ router.post("/deploy", function(req, res){
 router.delete("/", async function(req, res){
   try{
     const executor = req.body.from;
-    const contract = contractService.getContract();
+    const contract = contractService.getTestamentContract();
 
      await contract.methods.destroy()
       .send({
@@ -44,7 +44,7 @@ router.delete("/", async function(req, res){
 router.get("/information", async function(req, res){
   try{
     const caller = req.body.from;
-    const contract = contractService.getContract();
+    const contract = contractService.getTestamentContract();
     let managers = await contract.methods.getManagersCount().call({
         from: caller
     });
@@ -60,7 +60,7 @@ router.get("/information", async function(req, res){
 router.get("/inheritance", async function(req, res){
   try{
     const executor = req.body.from;
-    const contract = contractService.getContract();
+    const contract = contractService.getTestamentContract();
     let inheritance = await contract.methods.getInheritance().call({
         from: executor
     });
@@ -77,7 +77,7 @@ router.post("/inheritance/increase", async function(req, res){
   try{
     const executor = req.body.from;
     const transferValue = req.body.ammount;
-    const contract = contractService.getContract();
+    const contract = contractService.getTestamentContract();
     await contract.methods.increaseInheritance().send({
         from: executor,
         value: transferValue
@@ -94,7 +94,7 @@ router.post("/inheritance/reduce", async function(req, res){
   try{
     const executor = req.body.from;
     const cut = req.body.cut;
-    const contract = contractService.getContract();
+    const contract = contractService.getTestamentContract();
     await contract.methods.reduceInheritance(cut).send({
         from: executor,
     });
@@ -110,7 +110,7 @@ router.post("/inheritance/visibility", async function(req, res){
   try{
     const executor = req.body.from;
     const allowed = req.body.value;
-    const contract = contractService.getContract();
+    const contract = contractService.getTestamentContract();
     await contract.methods.allowBalanceRead(allowed).send({
         from: executor
     });
@@ -125,7 +125,7 @@ router.post("/inheritance/visibility", async function(req, res){
 router.get("/inheritance/claim", async function(req, res){
   try{
     const executor = req.body.from;
-    const contract = contractService.getContract();
+    const contract = contractService.getTestamentContract();
     result = await contract.methods.claimInheritance().send({
         from: executor
     });
@@ -144,7 +144,7 @@ router.post("/withdrawals", async function(req, res){
     //const ammount = req.body.ammount;
     const ammount = 50000;
     const reason = req.body.reason;
-    const contract = contractService.getContract();
+    const contract = contractService.getTestamentContract();
     await contract.methods.withdraw(ammount, reason).send({
         from: executor,
         gas: 1000000
@@ -159,7 +159,7 @@ router.post("/withdrawals", async function(req, res){
 
 router.get("/withdrawals", async function(req, res){
   try{
-    const contract = contractService.getContract();
+    const contract = contractService.getTestamentContract();
     let eventMethodName = 'withdrawal(address,uint256,string)';
     let filterEventMethod = web3.utils.sha3(eventMethodName);
 
@@ -184,7 +184,7 @@ router.get("/withdrawals", async function(req, res){
 router.post("/heartbeat", async function(req, res){
   try{
     const executor = req.body.from;
-    const contract = contractService.getContract();
+    const contract = contractService.getTestamentContract();
     await contract.methods.heartbeat().send({
       from: executor,
       gas: 1000000
@@ -201,7 +201,7 @@ router.post("/heartbeat", async function(req, res){
 router.get("/last_signal", async function(req, res){
   try{
     const executor = req.body.from;
-    const contract = contractService.getContract();
+    const contract = contractService.getTestamentContract();
     let result = await contract.methods.lastLifeSignal().call({
       from: executor
   });
@@ -218,7 +218,7 @@ router.get("/last_signal", async function(req, res){
 router.post("/inform_decease", async function(req, res){
   try{
     const executor = req.body.from;
-    const contract = contractService.getContract();
+    const contract = contractService.getTestamentContract();
     let result = await contract.methods.informOwnerDecease().send({
       from: executor
   });
