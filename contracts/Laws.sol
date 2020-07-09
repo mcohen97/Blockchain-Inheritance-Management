@@ -10,6 +10,8 @@ contract Laws {
 
     uint8 public withdrawalFeePercent = 5;
 
+    address payable public charitableOrganization = 0x1DfC1E4a154df46C0d9F0Bd35D8E9350A8187e28;
+
     constructor() public {
         judiciaryEmployees.push(DataStructures.JudiciaryEmployeeData(msg.sender));
     }
@@ -24,6 +26,10 @@ contract Laws {
 
     function changeWithdrawalFeePercent(uint8 newWithdrawalFeePercent) public onlyJudiciaryEmployee {
         withdrawalFeePercent = newWithdrawalFeePercent;
+    }
+
+    function changeCharitableOrganization(address payable newCharitableOrganization) public onlyJudiciaryEmployee {
+        charitableOrganization = newCharitableOrganization;
     }
 
     modifier onlyJudiciaryEmployee() {

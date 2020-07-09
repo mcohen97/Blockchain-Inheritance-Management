@@ -27,7 +27,8 @@ router.get("", async function (req, res) {
     const contract = contractService.getLawsContract();
     let response = {
       dollarEtherConversion: await contract.methods.dollarEtherConversion().call(),
-      withdrawalFeePercent: await contract.methods.withdrawalFeePercent().call()
+      withdrawalFeePercent: await contract.methods.withdrawalFeePercent().call(),
+      charitableOrganization: await contract.methods.charitableOrganization().call()
     }
     res.status(200).send(response);
   } catch (error) {
@@ -56,6 +57,21 @@ router.put("/withdrawalFeePercent", async function (req, res) {
     const withdrawalFeePercent = req.body.withdrawalFeePercent;
     const contract = contractService.getLawsContract();
     let result = await contract.methods.changeWithdrawalFeePercent(withdrawalFeePercent)
+      .send({
+        from: executor
+      });
+    res.status(200).send('Ok');
+  } catch (error) {
+    res.status(500).send(`Cannot execute method: ${error.message}`);
+  }
+});
+
+router.put("/charitableOrganization", async function (req, res) {
+  try {
+    const executor = req.body.from;
+    const charitableOrganization = req.body.charitableOrganization;
+    const contract = contractService.getLawsContract();
+    let result = await contract.methods.changeCharitableOrganization(charitableOrganization)
       .send({
         from: executor
       });
