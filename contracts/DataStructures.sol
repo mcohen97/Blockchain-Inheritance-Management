@@ -14,6 +14,7 @@ contract DataStructures {
     struct HeirData {
         address payable heir;
         uint8 percentage;
+        bool isDeceased;
     }
 
     struct ManagerData {

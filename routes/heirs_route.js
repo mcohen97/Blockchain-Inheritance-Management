@@ -32,7 +32,7 @@ router.get("/heirs/:pos", async function(req, res){
     const contract = contractService.getTestamentContract();
 
     let result = await contract.methods.heirsData(priority).call();
-    let response = {heir:result.heir, percentage: result.percentage}
+    let response = {heir:result.heir, percentage: result.percentage, isDeceased: result.isDeceased}
     res.status(200).send(response);
 
   }catch(error){

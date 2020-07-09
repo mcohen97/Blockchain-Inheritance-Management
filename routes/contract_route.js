@@ -215,7 +215,7 @@ router.get("/last_signal", async function(req, res){
 
 });
 
-router.post("/inform_decease", async function(req, res){
+router.post("/inform_owner_decease", async function(req, res){
   try{
     const executor = req.body.from;
     const contract = contractService.getTestamentContract();
@@ -227,7 +227,21 @@ router.post("/inform_decease", async function(req, res){
   }catch(error){
     res.status(500).send(`Cannot execute method: ${error.message}`);
   }
+});
 
+router.post("/inform_heir_decease", async function (req, res) {
+  try {
+    const executor = req.body.from;
+    const heir = req.body.heir;
+    const contract = contractService.getTestamentContract();
+    let result = await contract.methods.informHeirDecease(heir).send({
+      from: executor
+    });
+
+    res.status(200).send(result);
+  } catch (error) {
+    res.status(500).send(`Cannot execute method: ${error.message}`);
+  }
 });
 
 function formatClaimEvent(event){

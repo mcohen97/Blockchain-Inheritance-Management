@@ -74,7 +74,7 @@ contract Testament {
 
     function setHeirs(address payable[] memory _heirs, uint8[] memory _percentages) private {
         for(uint i = 0; i < _heirs.length; i++){
-            heirsData.push(DataStructures.HeirData(_heirs[i], _percentages[i]));
+            heirsData.push(DataStructures.HeirData(_heirs[i], _percentages[i], false));
         }
     }
 
@@ -117,7 +117,7 @@ contract Testament {
     function suscribeHeir(address payable heir, uint8 percentage, uint8 priority) public onlyOwner {
         require(priority <= heirsData.length, "Invalid priority, must be between 0 and the heirs count");
         if(priority == heirsData.length) {
-            heirsData.push(DataStructures.HeirData(heir, percentage));
+            heirsData.push(DataStructures.HeirData(heir, percentage, false));
             adjustRestOfPercentages(priority);
             return;
         }
@@ -130,7 +130,7 @@ contract Testament {
             heirsData[i] = heirsData[i-1];
         }
 
-        heirsData[priority] = DataStructures.HeirData(heir, percentage);
+        heirsData[priority] = DataStructures.HeirData(heir, percentage, false);
         adjustRestOfPercentages(priority);
     }
 
@@ -229,6 +229,14 @@ contract Testament {
 
     function heartbeat() public onlyOwner{
         lastLifeSignal = now;
+    }
+
+    function informHeirDecease(address payable heir) public onlyNotSuspendedManager {
+        for (uint i = 0; i < heirsData.length; i++) {
+            if (heirsData[i].heir == heir) {
+                heirsData[i].isDeceased = true;
+            }
+        }
     }
 
     event inheritanceClaim(bool liquidated, string message);
@@ -422,5 +430,3 @@ contract Testament {
         return count >= 2;
     }
 }
-
-
