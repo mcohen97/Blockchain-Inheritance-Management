@@ -14,6 +14,7 @@ contract DataStructures {
     struct HeirData {
         address payable heir;
         uint8 percentage;
+        bool isDeceased;
     }
 
     struct ManagerData {
@@ -23,15 +24,19 @@ contract DataStructures {
         bool hasInformedDecease;
     }
 
-    struct Widthdrawal{
+    struct Widthdrawal {
         address payable manager;
         uint ammount;
         string reason;
         uint256 date;
     }
 
-    struct Fee{
+    struct Fee {
         uint value;
         bool isFixed;
+    }
+
+    struct JudiciaryEmployeeData {
+        address account;
     }
 }

@@ -1,643 +1,808 @@
 {
 	"info": {
-		"_postman_id": "82db35cb-f9ee-41df-86de-9001a7e45816",
+		"_postman_id": "b8bb9737-6db8-467a-81f3-73ba4afbbe8b",
 		"name": "TestamentTests",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "Compile",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"url": {
-					"raw": "{{URL}}/api/contract/compile",
-					"host": [
-						"{{URL}}"
-					],
-					"path": [
-						"api",
-						"contract",
-						"compile"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Deploy",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"from\": \"{{ADDRESS_1}}\",\n    \"heirs\": [\"{{ADDRESS_2}}\",\"{{ADDRESS_3}}\"],\n    \"percentages\":[50, 50],\n    \"managers\": [\"{{ADDRESS_4}}\", \"{{ADDRESS_5}}\", \"{{ADDRESS_6}}\"],\n    \"manager_fee\": 3,\n    \"cancellation_fee\": 100000,\n    \"is_cancel_fee_percent\": false,\n    \"reduction_fee\": 5,\n    \"is_reduction_fee_percent\": true,\n    \"max_withdrawal_percentage\": 10\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+			"name": "Laws",
+			"item": [
+				{
+					"name": "Compile Laws",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/api/laws/compile",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"laws",
+								"compile"
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{URL}}/api/contract/deploy",
-					"host": [
-						"{{URL}}"
-					],
-					"path": [
-						"api",
-						"contract",
-						"deploy"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get Contract Information",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"from\": \"{{ADDRESS_4}}\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+				{
+					"name": "Deploy Laws",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"from\": \"{{ADDRESS_7}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/laws/deploy",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"laws",
+								"deploy"
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{URL}}/api/contract/information",
-					"host": [
-						"{{URL}}"
-					],
-					"path": [
-						"api",
-						"contract",
-						"information"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Delete Manager",
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"from\": \"{{ADDRESS_1}}\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+				{
+					"name": "Add judiciary employee",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"from\": \"{{ADDRESS_7}}\",\r\n    \"judiciaryEmployee\": \"{{ADDRESS_6}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/laws/judiciaryEmployees",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"laws",
+								"judiciaryEmployees"
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{URL}}/api/contract/managers/{{ADDRESS_4}}",
-					"host": [
-						"{{URL}}"
-					],
-					"path": [
-						"api",
-						"contract",
-						"managers",
-						"{{ADDRESS_4}}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get Manager By Position",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{URL}}/api/contract/managers/2",
-					"host": [
-						"{{URL}}"
-					],
-					"path": [
-						"api",
-						"contract",
-						"managers",
-						"2"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Add Manager",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"from\": \"{{ADDRESS_1}}\",\n    \"manager\": \"{{ADDRESS_4}}\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+				{
+					"name": "Get laws",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/api/laws",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"laws"
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{URL}}/api/contract/managers",
-					"host": [
-						"{{URL}}"
-					],
-					"path": [
-						"api",
-						"contract",
-						"managers"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Add Heir",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"from\": \"{{ADDRESS_1}}\",\n    \"heir\": \"{{ADDRESS_6}}\",\n    \"percentage\": 41,\n    \"priority\": 1\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+				{
+					"name": "Update dollar-ether conversion",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"from\": \"{{ADDRESS_7}}\",\r\n    \"dollarEtherConversion\": 40\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/laws/dollarEtherConversion",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"laws",
+								"dollarEtherConversion"
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{URL}}/api/contract/heirs",
-					"host": [
-						"{{URL}}"
-					],
-					"path": [
-						"api",
-						"contract",
-						"heirs"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Destroy contract",
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"from\": \"{{ADDRESS_1}}\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+				{
+					"name": "Update withdrawal fee percent",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"from\": \"{{ADDRESS_7}}\",\r\n    \"withdrawalFeePercent\": 10\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/laws/withdrawalFeePercent",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"laws",
+								"withdrawalFeePercent"
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{URL}}/api/contract",
-					"host": [
-						"{{URL}}"
-					],
-					"path": [
-						"api",
-						"contract"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get Heir By Position",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{URL}}/api/contract/heirs/0",
-					"host": [
-						"{{URL}}"
-					],
-					"path": [
-						"api",
-						"contract",
-						"heirs",
-						"0"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Delete Heir",
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"from\": \"{{ADDRESS_1}}\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+				{
+					"name": "Update charitable organization",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"from\": \"{{ADDRESS_7}}\",\r\n    \"charitableOrganization\": \"{{ADDRESS_9}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/laws/charitableOrganization",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"laws",
+								"charitableOrganization"
+							]
 						}
-					}
-				},
-				"url": {
-					"raw": "{{URL}}/api/contract/heirs/{{ADDRESS_2}}",
-					"host": [
-						"{{URL}}"
-					],
-					"path": [
-						"api",
-						"contract",
-						"heirs",
-						"{{ADDRESS_2}}"
-					]
+					},
+					"response": []
 				}
-			},
-			"response": []
+			],
+			"protocolProfileBehavior": {}
 		},
 		{
-			"name": "Get Inheritance",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"from\": \"{{ADDRESS_4}}\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+			"name": "Testament",
+			"item": [
+				{
+					"name": "Managers",
+					"item": [
+						{
+							"name": "Add Manager",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"from\": \"{{ADDRESS_1}}\",\n    \"manager\": \"{{ADDRESS_4}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URL}}/api/contract/managers",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"api",
+										"contract",
+										"managers"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Manager By Position",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{URL}}/api/contract/managers/2",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"api",
+										"contract",
+										"managers",
+										"2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Manager",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"from\": \"{{ADDRESS_1}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URL}}/api/contract/managers/{{ADDRESS_4}}",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"api",
+										"contract",
+										"managers",
+										"{{ADDRESS_4}}"
+									]
+								}
+							},
+							"response": []
 						}
-					}
-				},
-				"url": {
-					"raw": "{{URL}}/api/contract/inheritance",
-					"host": [
-						"{{URL}}"
 					],
-					"path": [
-						"api",
-						"contract",
-						"inheritance"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Set Balance Visibility",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"from\": \"{{ADDRESS_1}}\",\n    \"value\": true\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Heirs",
+					"item": [
+						{
+							"name": "Add Heir",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"from\": \"{{ADDRESS_1}}\",\n    \"heir\": \"{{ADDRESS_6}}\",\n    \"percentage\": 41,\n    \"priority\": 1\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URL}}/api/contract/heirs",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"api",
+										"contract",
+										"heirs"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Heir By Position",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{URL}}/api/contract/heirs/0",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"api",
+										"contract",
+										"heirs",
+										"0"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Heir",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"from\": \"{{ADDRESS_1}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URL}}/api/contract/heirs/{{ADDRESS_2}}",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"api",
+										"contract",
+										"heirs",
+										"{{ADDRESS_2}}"
+									]
+								}
+							},
+							"response": []
 						}
-					}
-				},
-				"url": {
-					"raw": "{{URL}}/api/contract/inheritance/visibility",
-					"host": [
-						"{{URL}}"
 					],
-					"path": [
-						"api",
-						"contract",
-						"inheritance",
-						"visibility"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Change Percentage of Heir",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"url": {
-					"raw": ""
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Withdraw from testament",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"from\": \"{{ADDRESS_4}}\",\n    \"ammount\": 5000000000000000000,\n    \"reason\": \"para comprar merca\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Compile Testament",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/api/contract/compile",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"contract",
+								"compile"
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{URL}}/api/contract/withdrawals",
-					"host": [
-						"{{URL}}"
-					],
-					"path": [
-						"api",
-						"contract",
-						"withdrawals"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get contract events",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
-				"url": {
-					"raw": "{{URL}}/api/contract/withdrawals",
-					"host": [
-						"{{URL}}"
-					],
-					"path": [
-						"api",
-						"contract",
-						"withdrawals"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Increase Inheritance",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"from\": \"{{ADDRESS_1}}\",\n    \"ammount\": 50000000\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+				{
+					"name": "Deploy Testament",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"from\": \"{{ADDRESS_1}}\",\n    \"heirs\": [\"{{ADDRESS_2}}\",\"{{ADDRESS_3}}\"],\n    \"percentages\":[50, 50],\n    \"managers\": [\"{{ADDRESS_4}}\", \"{{ADDRESS_5}}\", \"{{ADDRESS_6}}\"],\n    \"manager_fee\": 3,\n    \"cancellation_fee\": 100000,\n    \"is_cancel_fee_percent\": false,\n    \"reduction_fee\": 5,\n    \"is_reduction_fee_percent\": true,\n    \"max_withdrawal_percentage\": 10\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/contract/deploy",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"contract",
+								"deploy"
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{URL}}/api/contract/inheritance/increase",
-					"host": [
-						"{{URL}}"
-					],
-					"path": [
-						"api",
-						"contract",
-						"inheritance",
-						"increase"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Reduce Inheritance",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"from\": \"{{ADDRESS_1}}\",\n    \"cut\": 20\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+				{
+					"name": "Get Contract Information",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"from\": \"{{ADDRESS_4}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/contract/information",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"contract",
+								"information"
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{URL}}/api/contract/inheritance/reduce",
-					"host": [
-						"{{URL}}"
-					],
-					"path": [
-						"api",
-						"contract",
-						"inheritance",
-						"reduce"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "HeartBeat",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"from\": \"{{ADDRESS_1}}\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+				{
+					"name": "Destroy contract",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"from\": \"{{ADDRESS_1}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/contract",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"contract"
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{URL}}/api/contract/heartbeat",
-					"host": [
-						"{{URL}}"
-					],
-					"path": [
-						"api",
-						"contract",
-						"heartbeat"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get Last Signal",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"from\": \"{{ADDRESS_1}}\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+				{
+					"name": "Get Inheritance",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"from\": \"{{ADDRESS_4}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/contract/inheritance",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"contract",
+								"inheritance"
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{URL}}/api/contract/last_signal",
-					"host": [
-						"{{URL}}"
-					],
-					"path": [
-						"api",
-						"contract",
-						"last_signal"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get Dollar Conversion Rate",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{URL}}/api/laws/dollar",
-					"host": [
-						"{{URL}}"
-					],
-					"path": [
-						"api",
-						"laws",
-						"dollar"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Compile Laws",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"url": {
-					"raw": "{{URL}}/api/laws/compile",
-					"host": [
-						"{{URL}}"
-					],
-					"path": [
-						"api",
-						"laws",
-						"compile"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Deploy Laws",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"from\": \"{{ADDRESS_7}}\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+				{
+					"name": "Set Balance Visibility",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"from\": \"{{ADDRESS_1}}\",\n    \"value\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/contract/inheritance/visibility",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"contract",
+								"inheritance",
+								"visibility"
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{URL}}/api/laws/deploy",
-					"host": [
-						"{{URL}}"
-					],
-					"path": [
-						"api",
-						"laws",
-						"deploy"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Inform owners death",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"from\": \"{{ADDRESS_4}}\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+				{
+					"name": "Change Percentage of Heir",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": ""
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{URL}}/api/contract/inform_decease",
-					"host": [
-						"{{URL}}"
-					],
-					"path": [
-						"api",
-						"contract",
-						"inform_decease"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Claim Inheritance",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"from\": \"{{ADDRESS_4}}\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+				{
+					"name": "Withdraw from testament",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"from\": \"{{ADDRESS_4}}\",\n    \"ammount\": 5000000000000000000,\n    \"reason\": \"para comprar merca\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/contract/withdrawals",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"contract",
+								"withdrawals"
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{URL}}/api/contract/inheritance/claim",
-					"host": [
-						"{{URL}}"
-					],
-					"path": [
-						"api",
-						"contract",
-						"inheritance",
-						"claim"
-					]
+				{
+					"name": "Get contract events",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{URL}}/api/contract/withdrawals",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"contract",
+								"withdrawals"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Increase Inheritance",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"from\": \"{{ADDRESS_1}}\",\n    \"ammount\": 50000000\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/contract/inheritance/increase",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"contract",
+								"inheritance",
+								"increase"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reduce Inheritance",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"from\": \"{{ADDRESS_1}}\",\n    \"cut\": 20\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/contract/inheritance/reduce",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"contract",
+								"inheritance",
+								"reduce"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "HeartBeat",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"from\": \"{{ADDRESS_1}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/contract/heartbeat",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"contract",
+								"heartbeat"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Last Signal",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"from\": \"{{ADDRESS_1}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/contract/last_signal",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"contract",
+								"last_signal"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Inform owners death",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"from\": \"{{ADDRESS_4}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/contract/inform_owner_decease",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"contract",
+								"inform_owner_decease"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Inform heir death",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"from\": \"{{ADDRESS_4}}\",\n    \"heir\": \"{{ADDRESS_2}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/contract/inform_heir_decease",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"contract",
+								"inform_heir_decease"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Claim Inheritance",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"from\": \"{{ADDRESS_4}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/contract/inheritance/claim",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"contract",
+								"inheritance",
+								"claim"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			],
+			"protocolProfileBehavior": {}
 		}
 	],
 	"event": [
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "bb73c1c9-c90e-4292-85ed-04c5083d00dc",
+				"id": "c5baeb79-defd-4ef6-a209-f133429a306a",
 				"type": "text/javascript",
 				"exec": [
 					""
@@ -647,7 +812,7 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "3b68f55a-63e5-4766-a96b-0d792773a064",
+				"id": "c368c9be-4920-4f8a-8492-5aea773e7909",
 				"type": "text/javascript",
 				"exec": [
 					""
@@ -657,44 +822,59 @@
 	],
 	"variable": [
 		{
-			"id": "cc2e2db4-0cad-4ee8-9a9b-5f5613559317",
+			"id": "7eee4cd4-b96b-4119-bbaa-11132329769c",
 			"key": "URL",
 			"value": "http://localhost:3000"
 		},
 		{
-			"id": "7bdbfc32-b204-4796-aeec-36dc38c53c4c",
-			"key": "ADDRESS_1",
+			"id": "98f1f30f-5690-456d-b5a2-1cb418eda8a6",
+			"key": "ADDRESS_0",
 			"value": "0x8c9a1E92F4101f4f5ab3A58b0963b1040e425b6F"
 		},
 		{
-			"id": "4a110906-a619-40c2-8a0c-12fe8891a0a9",
-			"key": "ADDRESS_2",
+			"id": "b9a3d188-53eb-479c-bb86-1bf11f5b8c62",
+			"key": "ADDRESS_1",
 			"value": "0xF35b3ba2DE9dB8eEBcD5d128B53735e493c0BA64"
 		},
 		{
-			"id": "854a4392-682a-409b-9494-2b7e6e319546",
-			"key": "ADDRESS_3",
+			"id": "b3e74aa4-2b91-49c1-bd1d-185bbab5ee68",
+			"key": "ADDRESS_2",
 			"value": "0x4A643DddC95aFa8A0f6E7439d9dc760aa84CdEB1"
 		},
 		{
-			"id": "1215f762-6c66-4ba1-b3ea-a486d414f95d",
+			"id": "3d5a877f-8024-426c-80c0-364b5cb04802",
+			"key": "ADDRESS_3",
+			"value": "0x72a5D1bd8c6e5Feb7399EacE1bcDC6cEcdD5a79C"
+		},
+		{
+			"id": "71ebc7e2-5ef8-4a39-a052-05209e8f866c",
 			"key": "ADDRESS_4",
 			"value": "0x45F44Dec152224F336432568c8ACA7c9B98baFA8"
 		},
 		{
-			"id": "84dcdf66-4a90-4c73-be30-2a6b89c1259f",
+			"id": "4ac4b78c-dd2e-48cd-be6e-4be2e1dd0ba2",
 			"key": "ADDRESS_5",
 			"value": "0xcC09F2d0d887f6098432E7C8BEc51b0B5aC205F9"
 		},
 		{
-			"id": "0d448549-2196-4860-98d1-e3a5bf999fca",
+			"id": "2d5448c6-bc38-4924-b387-359efab06a17",
 			"key": "ADDRESS_6",
 			"value": "0xFEdae43693A435fb940a9881CCcD7f3Ff328c08F"
 		},
 		{
-			"id": "2d4e83f0-7299-4973-8edb-b21226fd88f7",
+			"id": "029ae363-64ac-4a04-a82e-c0cd2859492e",
 			"key": "ADDRESS_7",
 			"value": "0xAe372f8F9697dc568AF1aD274351e56f5D467ceE"
+		},
+		{
+			"id": "5f2550ee-bc50-4bf6-914a-75738e9d714d",
+			"key": "ADDRESS_8",
+			"value": "0x5E6ecDA6875b4Dc8e8Ea6CC3De4b4E3c73453c0a"
+		},
+		{
+			"id": "c3de7453-a5dd-445c-8e17-07018d3ca770",
+			"key": "ADDRESS_9",
+			"value": "0x1DfC1E4a154df46C0d9F0Bd35D8E9350A8187e28"
 		}
 	],
 	"protocolProfileBehavior": {}

@@ -27,7 +27,7 @@ contract Testament {
 
     constructor(address payable[] memory _heirs, uint8[] memory _cutPercents,
                 address payable[] memory _managers, uint8 managerFee, uint cancelFee,
-                bool cancelFeePercent, uint redFeeVal, bool redFeePercent,uint8 managerMaxWithdraw ,Laws _rules) public payable{
+                bool cancelFeePercent, uint redFeeVal, bool redFeePercent, uint8 managerMaxWithdraw, Laws _rules) public payable {
 
         require(_heirs.length > 0, "The testament must have at least one heir.");
         require(_heirs.length == _cutPercents.length, "Heirs' addresses and cut percentajes counts must be equal.");
@@ -68,13 +68,13 @@ contract Testament {
         return sum == 100;
     }
 
-    function validFee(uint value, bool isPercentage) private pure returns (bool){
+    function validFee(uint value, bool isPercentage) private pure returns (bool) {
         return !isPercentage || value <= 100;
     }
 
-    function setHeirs(address payable[] memory _heirs, uint8[] memory _percentages) private{
+    function setHeirs(address payable[] memory _heirs, uint8[] memory _percentages) private {
         for(uint i = 0; i < _heirs.length; i++){
-            heirsData.push(DataStructures.HeirData(_heirs[i], _percentages[i]));
+            heirsData.push(DataStructures.HeirData(_heirs[i], _percentages[i], false));
         }
     }
 
@@ -84,15 +84,15 @@ contract Testament {
         }
     }
 
-    function getManagersCount() public view onlyNotSuspendedManager returns(uint){
+    function getManagersCount() public view onlyNotSuspendedManager returns(uint) {
         return managers.length;
     }
 
-    function getHeirsCount() public view onlyNotSuspendedManager returns(uint){
+    function getHeirsCount() public view onlyNotSuspendedManager returns(uint) {
         return heirsData.length;
     }
 
-    function suscribeManager(address payable newManager) public onlyOwner{
+    function suscribeManager(address payable newManager) public onlyOwner {
         require(belowManagersUpperLimit(managers.length + 1), "Managers maximum exceeded");
         require(managersPercentageFee * (managers.length + 1) >= 100, "Managers fees combined make up 100% or more");
         managers.push(DataStructures.ManagerData(newManager, 0, 0, false));
@@ -117,7 +117,7 @@ contract Testament {
     function suscribeHeir(address payable heir, uint8 percentage, uint8 priority) public onlyOwner {
         require(priority <= heirsData.length, "Invalid priority, must be between 0 and the heirs count");
         if(priority == heirsData.length) {
-            heirsData.push(DataStructures.HeirData(heir, percentage));
+            heirsData.push(DataStructures.HeirData(heir, percentage, false));
             adjustRestOfPercentages(priority);
             return;
         }
@@ -130,17 +130,13 @@ contract Testament {
             heirsData[i] = heirsData[i-1];
         }
 
-        heirsData[priority] = DataStructures.HeirData(heir, percentage);
+        heirsData[priority] = DataStructures.HeirData(heir, percentage, false);
         adjustRestOfPercentages(priority);
-    }
-
-    function getDollarConversion() public view returns (uint16){
-        return rules.dollarEtherConversion();
     }
 
     function unsuscribeHeir(address payable toDelete) public onlyOwner {
         require(heirsData.length > 1, "There must be at least one heir in the testament.");
- 
+
         uint len = heirsData.length;
 
         for(uint8 i = 0; i < len; i++) {
@@ -165,7 +161,7 @@ contract Testament {
         }
     }
 
-    function changeHeirPriority(address payable heir, uint8 newPriority) public onlyOwner{
+    function changeHeirPriority(address payable heir, uint8 newPriority) public onlyOwner {
 
         for(uint curP = 0; curP < heirsData.length; curP++){
             if(heirsData[curP].heir == heir){
@@ -184,7 +180,7 @@ contract Testament {
         }
     }
 
-    function changeHeirPercentage(address payable heir, uint8 newPercentage) public onlyOwner{
+    function changeHeirPercentage(address payable heir, uint8 newPercentage) public onlyOwner {
         for(uint curP = 0; curP < heirsData.length; curP++){
              if(heirsData[curP].heir == heir){
                  heirsData[curP].percentage = newPercentage;
@@ -208,7 +204,7 @@ contract Testament {
 
     function increaseInheritance() public payable onlyOwner{}
 
-    function reduceInheritance(uint8 cut) public onlyOwner{
+    function reduceInheritance(uint8 cut) public onlyOwner {
         uint balance = address(this).balance;
         uint reduction = (balance * cut) / 100;
         uint fee;
@@ -235,6 +231,14 @@ contract Testament {
         lastLifeSignal = now;
     }
 
+    function informHeirDecease(address payable heir) public onlyNotSuspendedManager {
+        for (uint i = 0; i < heirsData.length; i++) {
+            if (heirsData[i].heir == heir) {
+                heirsData[i].isDeceased = true;
+            }
+        }
+    }
+
     event inheritanceClaim(bool liquidated, string message);
 
     function claimInheritance() public {
@@ -256,7 +260,7 @@ contract Testament {
         emit inheritanceClaim(false, message);
     }
 
-    function allManagersInformedDecease() private view returns (bool){
+    function allManagersInformedDecease() private view returns (bool) {
         for(uint i = 0; i < managers.length; i++){
             if(!managers[i].hasInformedDecease){
                 return false;
@@ -276,18 +280,31 @@ contract Testament {
     function liquidate() private {
         uint inheritance = address(this).balance;
         uint managersCost = (inheritance * managersPercentageFee) / 100;
-        
+
         for(uint8 i = 0; i < managers.length; i++) {
             managers[i].account.transfer(managersCost);
         }
 
         uint inheritanceAfterCosts = address(this).balance;
 
-        for(uint i = 0; i < heirsData.length - 1; i++){
-            heirsData[i].heir.transfer((inheritanceAfterCosts * heirsData[i].percentage)/100);
+        bool eligibleHeirsAvailable = false;
+        for (uint i = 0; i < heirsData.length - 1; i++) {
+            DataStructures.HeirData memory heirToTransferTo = heirsData[i];
+            if (isEligibleHeir(heirToTransferTo)) {
+                eligibleHeirsAvailable = true;
+                heirToTransferTo.heir.transfer((inheritanceAfterCosts * heirsData[i].percentage)/100);
+            }
+        }
+
+        if (!eligibleHeirsAvailable) {
+            rules.charitableOrganization().transfer(inheritanceAfterCosts);
         }
         // Destruct the contract and send the remaining to the last heir.
         selfdestruct(heirsData[heirsData.length - 1].heir);
+    }
+
+    function isEligibleHeir(DataStructures.HeirData memory heir) private pure returns(bool) {
+        return !heir.isDeceased;
     }
 
     event withdrawal(address indexed _manager, uint _ammount, string _reason);
@@ -321,13 +338,12 @@ contract Testament {
         }
     }
 
-    function exceedsAllowedPercentage(uint accumDebt, uint newWithdrawal) private view returns(bool){
+    function exceedsAllowedPercentage(uint accumDebt, uint newWithdrawal) private view returns(bool) {
         uint balance = address(this).balance;
         return (accumDebt + newWithdrawal) > ((balance * maxWithdrawalPercentage) / 100) ;
     }
-    
 
-    function getInheritance() public view onlyNotSuspendedManager balanceReadAllowed returns (uint){
+    function getInheritance() public view onlyNotSuspendedManager balanceReadAllowed returns (uint) {
         return address(this).balance;
     }
 
@@ -427,5 +443,3 @@ contract Testament {
         return count >= 2;
     }
 }
-
-

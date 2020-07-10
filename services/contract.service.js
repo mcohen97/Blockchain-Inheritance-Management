@@ -82,13 +82,22 @@ class ContractService{
   
   }
 
-  getContract(){
+  getTestamentContract(){
     const configPath = path.resolve(process.cwd(), 'config.json');
     const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
     const abiPath = path.resolve(process.cwd(), 'contracts', `${contractTestament}_abi.json`);
     const abi = JSON.parse(fs.readFileSync(abiPath, 'utf8'));
 
     return new web3.eth.Contract(abi,config.testamentAddress);
+  }
+
+  getLawsContract(){
+    const configPath = path.resolve(process.cwd(), 'config.json');
+    const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+    const abiPath = path.resolve(process.cwd(), 'contracts', `${contractLaws}_abi.json`);
+    const abi = JSON.parse(fs.readFileSync(abiPath, 'utf8'));
+
+    return new web3.eth.Contract(abi,config.lawsAddress);
   }
 
 }
