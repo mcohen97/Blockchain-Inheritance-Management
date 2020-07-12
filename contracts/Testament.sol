@@ -15,6 +15,7 @@ contract Testament {
     uint8 maxWithdrawalPercentage;
     DataStructures.ManagerData[] public managers;
     DataStructures.Widthdrawal[] managersWithdrawals;
+    mapping (address => uint) users; //0 - unset, 1 - owner, 2 - manager, 3 - heir
 
     Laws rules;
 
@@ -38,6 +39,7 @@ contract Testament {
 
         rules = _rules;
         owner = msg.sender;
+        users[owner] = 1;
         setHeirs(_heirs, _cutPercents);
         setManagers(_managers);
         balanceVisible = false;
@@ -74,13 +76,19 @@ contract Testament {
 
     function setHeirs(address payable[] memory _heirs, uint8[] memory _percentages) private {
         for(uint i = 0; i < _heirs.length; i++){
-            heirsData.push(DataStructures.HeirData(_heirs[i], _percentages[i], false));
+            if(users[_heirs[i]]==0){
+                heirsData.push(DataStructures.HeirData(_heirs[i], _percentages[i], false));
+                users[_heirs[i]] = 3;
+            }
         }
     }
 
     function setManagers(address payable[] memory _managers) private {
         for(uint i = 0; i < _managers.length; i++){
-            managers.push(DataStructures.ManagerData(_managers[i], 0, 0, false));
+            if(users[_managers[i]]==0){
+                managers.push(DataStructures.ManagerData(_managers[i], 0, 0, false));
+                users[_managers[i]] = 2;
+            }
         }
     }
 
@@ -95,7 +103,9 @@ contract Testament {
     function suscribeManager(address payable newManager) public onlyOwner {
         require(belowManagersUpperLimit(managers.length + 1), "Managers maximum exceeded");
         require(managersPercentageFee * (managers.length + 1) >= 100, "Managers fees combined make up 100% or more");
+        require(users[newManager]==0, "Invalid manager, selected address already has another role");
         managers.push(DataStructures.ManagerData(newManager, 0, 0, false));
+        users[newManager] = 2;
     }
 
     function unsuscribeManager(address payable toDelete) public onlyOwner {
@@ -116,20 +126,17 @@ contract Testament {
 
     function suscribeHeir(address payable heir, uint8 percentage, uint8 priority) public onlyOwner {
         require(priority <= heirsData.length, "Invalid priority, must be between 0 and the heirs count");
+        require(users[heir]==0, "Invalid heir, selected address already has another role");
         if(priority == heirsData.length) {
             heirsData.push(DataStructures.HeirData(heir, percentage, false));
             adjustRestOfPercentages(priority);
             return;
         }
-
-       uint len = heirsData.length;
-
-       heirsData.push(heirsData[heirsData.length - 1]);
-
-       for(uint i = len; i > priority; i--) {
+        uint len = heirsData.length;
+        heirsData.push(heirsData[heirsData.length - 1]);
+        for(uint i = len; i > priority; i--) {
             heirsData[i] = heirsData[i-1];
         }
-
         heirsData[priority] = DataStructures.HeirData(heir, percentage, false);
         adjustRestOfPercentages(priority);
     }
