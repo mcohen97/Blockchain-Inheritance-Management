@@ -122,6 +122,7 @@ contract Testament {
         }
         delete managers[len - 1];
         managers.length--;
+        users[toDelete] = 0;
     }
 
     function suscribeHeir(address payable heir, uint8 percentage, uint8 priority) public onlyOwner {
@@ -158,6 +159,7 @@ contract Testament {
         }
         delete heirsData[len - 1];
         heirsData.length--;
+        users[toDelete] = 0;
     }
 
     function passInheritanceToOtherHeir(uint8 priority) private {
