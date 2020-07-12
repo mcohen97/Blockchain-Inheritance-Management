@@ -279,10 +279,9 @@ contract Testament {
 
 
     function claimToOrganization() public onlyOrganization{
-        if(differenceInMonths(lastLifeSignal, now) > 36){
-            emit inheritanceClaim(true, "Contract liquidated by the organization.");
-            selfdestruct(orgAccount);
-        }
+        require(differenceInMonths(lastLifeSignal, now) > 36, "36 months haven't passed for the organization to claim the funds");
+        emit inheritanceClaim(true, "Contract liquidated by the organization.");
+        selfdestruct(orgAccount);
     }
 
     function liquidate() private {
