@@ -369,10 +369,18 @@ contract Testament {
     }
 
     modifier onlyNotSuspendedManagerOrHeir(){
-        require(containsManager(msg.sender) || containsHeir(msg.sender), "only the testament's managers or heirs can perform this action.");
-        bool expiredDebt = checkManagerDebt(msg.sender);
-        require(!expiredDebt, "this manager is suspended");
+        require(isElegibleManagerOrHeir(msg.sender), "only the testament's managers or heirs can perform this action.");
         _;
+    }
+
+    function isElegibleManagerOrHeir(address account) private view returns (bool){
+        bool isManager = containsManager(account);
+        bool isHeir = containsHeir(account);
+        if(isManager){
+            bool expiredDebt = checkManagerDebt(msg.sender);
+            return !expiredDebt;
+        }
+        return isHeir;
     }
 
     function checkManagerDebt(address account) private view returns (bool){
