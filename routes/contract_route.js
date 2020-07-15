@@ -15,12 +15,14 @@ router.post("/compile", function(req, res){
 router.post("/deploy", function(req, res){
   try{
     const body = req.body;
+    const onwerInfo = body.owner_personal_info;
     contractService.deployTestament(body.heirs, body.percentages, body.managers, body.manager_fee, body.cancellation_fee, 
-      body.is_cancel_fee_percent, body.reduction_fee, body.is_reduction_fee_percent, body.max_withdrawal_percentage);
+      body.is_cancel_fee_percent, body.reduction_fee, body.is_reduction_fee_percent, body.max_withdrawal_percentage,
+      onwerInfo.full_name, onwerInfo.id, onwerInfo.birth_date, onwerInfo.home_address, onwerInfo.telephone, onwerInfo.email);
+
     res.status(200).send('OK');
   }catch(error){
-    //res.status(500).send(new Error('Cannot deploy contract'));
-    console.log('Cannot deploy contract');
+    res.status(500).send(new Error('Cannot deploy contract'));
   }
 });
 
@@ -41,6 +43,25 @@ router.delete("/", async function(req, res){
   }
 });
 
+router.get("/owner", async function(req, res){
+  try{
+    const caller = req.body.from;
+    const contract = contractService.getTestamentContract();
+    let result = await contract.methods.getOwnersInformation().call({
+        from: caller
+    });
+
+    let ownerData = {'account': result[0], 'full_name': result[1], 'id_number': result[2], 
+    'birth_date': result[3], 'home_address': result[4], 'telephone': result[5], 'email': result[6],
+    'issue_date': result[7]};
+
+    res.status(200).send(ownerData);
+  }catch(error){
+    res.status(500).send(`Cannot execute method: ${error.message}`);
+    console.log(`Cannot execute method: ${error.message}`);
+  }
+});
+
 router.get("/information", async function(req, res){
   try{
     const caller = req.body.from;
@@ -53,7 +74,7 @@ router.get("/information", async function(req, res){
     });
     res.status(200).send(`Managers: ${managers}, Heirs: ${heirs}`);
   }catch(error){
-    console.log(`Cannot execute method: ${error.message}`);
+    res.status(500).send(`Cannot execute method: ${error.message}`);
   }
 });
 

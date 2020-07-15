@@ -50,7 +50,8 @@ class ContractService{
 
   }
 
-  async deployTestament(heirs, percentages, managers,managerFee ,cancellationFee, isCancFeePercentage, reductionFee, isRedFeePercent, maxWithdrawalPercentage){    
+  async deployTestament(heirs, percentages, managers,managerFee ,cancellationFee, isCancFeePercentage, reductionFee,
+     isRedFeePercent, maxWithdrawalPercentage, fullName, id, birthDate, homeAddress, telephone, email){    
     const bytecodePath = path.resolve(process.cwd(),'contracts', `${contractTestament}_bytecode.json`);
     const abiPath = path.resolve(process.cwd(), 'contracts', `${contractTestament}_abi.json`);
     const configPath = path.resolve(process.cwd(),'config.json');
@@ -65,10 +66,12 @@ class ContractService{
       const result = await new web3.eth.Contract(abi)
         .deploy({
           data: '0x' + bytecode.object,
-          arguments: [heirs, percentages, managers, managerFee, cancellationFee, isCancFeePercentage, reductionFee, isRedFeePercent, maxWithdrawalPercentage, config.lawsAddress]
+          arguments: [heirs, percentages, managers, managerFee, cancellationFee, isCancFeePercentage,
+          reductionFee, isRedFeePercent, maxWithdrawalPercentage, config.lawsAddress, fullName, id, 123423,
+          homeAddress, telephone] //TODO: add email
         })
         .send({
-          gas: '5000000',
+          gas: '6000000',
           from: accounts[0],
           value: web3.utils.toWei('10', 'ether')
         });
