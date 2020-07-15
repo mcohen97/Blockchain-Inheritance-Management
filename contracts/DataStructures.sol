@@ -2,6 +2,7 @@ pragma solidity ^0.5.1;
 
 contract DataStructures {
     struct OwnerData {
+        address payable account;
         string fullName;
         string id;
         uint256 birthdate;

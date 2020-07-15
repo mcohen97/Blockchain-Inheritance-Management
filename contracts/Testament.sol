@@ -28,7 +28,9 @@ contract Testament {
 
     constructor(address payable[] memory _heirs, uint8[] memory _cutPercents,
                 address payable[] memory _managers, uint8 managerFee, uint cancelFee,
-                bool cancelFeePercent, uint redFeeVal, bool redFeePercent, uint8 managerMaxWithdraw, Laws _rules) public payable {
+                bool cancelFeePercent, uint redFeeVal, bool redFeePercent, uint8 managerMaxWithdraw, Laws _rules,
+                string memory _ownerfullName, string memory _ownerId, uint256 _ownerBirthdate,
+                string memory _ownerHomeAddress, string memory _ownerTelephone) public payable {
 
         require(_heirs.length > 0, "The testament must have at least one heir.");
         require(_heirs.length == _cutPercents.length, "Heirs' addresses and cut percentajes counts must be equal.");
@@ -50,12 +52,31 @@ contract Testament {
 
         cancellationFee = DataStructures.Fee(cancelFee, !cancelFeePercent);
         reductionFee = DataStructures.Fee(redFeeVal, !redFeePercent);
+        //addOwnerData(_ownerfullName, _ownerId, _ownerBirthdate, _ownerHomeAddress,_ownerTelephone, _ownerEmail, msg.sender);
+        addOwnerData(_ownerfullName, _ownerId, _ownerBirthdate, _ownerHomeAddress,_ownerTelephone, "", msg.sender);
     }
 
     function addOwnerData(string memory _fullName, string memory _id, uint256 _birthdate,
-                          string memory _homeAddress, string memory _telephone, string memory _email) public {
+                          string memory _homeAddress, string memory _telephone, string memory _email,
+                          address payable _account) private {
 
-        ownerData = DataStructures.OwnerData(_fullName, _id, _birthdate, _homeAddress, _telephone, _email, now);
+        ownerData = DataStructures.OwnerData(_account, _fullName, _id, _birthdate, _homeAddress, _telephone, _email, now);
+    }
+
+    // TESTAMENT INFORMATION.
+
+    function getOwnersInformation() public view onlyNotSuspendedManager returns(address, string memory, string memory,
+                                                                                uint256, string memory, string memory, string memory, uint256) {
+        return (ownerData.account, ownerData.fullName, ownerData.id, ownerData.birthdate,
+                ownerData.homeAddress, ownerData.telephone, ownerData.email, ownerData.issueDate);
+    }
+
+    function getManagersCount() public view onlyNotSuspendedManager returns(uint) {
+        return managers.length;
+    }
+
+    function getHeirsCount() public view onlyNotSuspendedManager returns(uint) {
+        return heirsData.length;
     }
 
     function managersWithinBounds(uint count) private pure returns (bool) {
@@ -92,13 +113,7 @@ contract Testament {
         }
     }
 
-    function getManagersCount() public view onlyNotSuspendedManager returns(uint) {
-        return managers.length;
-    }
 
-    function getHeirsCount() public view onlyNotSuspendedManager returns(uint) {
-        return heirsData.length;
-    }
 
     function suscribeManager(address payable newManager) public onlyOwner {
         require(belowManagersUpperLimit(managers.length + 1), "Managers maximum exceeded");
