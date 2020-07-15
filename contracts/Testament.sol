@@ -277,6 +277,13 @@ contract Testament {
         }
     }
 
+
+    function claimToOrganization() public onlyOrganization{
+        require(differenceInMonths(lastLifeSignal, now) > 36, "36 months haven't passed for the organization to claim the funds");
+        emit inheritanceClaim(true, "Contract liquidated by the organization.");
+        selfdestruct(orgAccount);
+    }
+
     function liquidate() private {
         uint inheritance = address(this).balance;
         uint managersCost = (inheritance * managersPercentageFee) / 100;
@@ -365,6 +372,11 @@ contract Testament {
         require(containsManager(msg.sender), "only the testament's managers can perform this action.");
         bool expiredDebt = checkManagerDebt(msg.sender);
         require(!expiredDebt, "this manager is suspended");
+        _;
+    }
+
+    modifier onlyOrganization(){
+        require(orgAccount == msg.sender, "Only the organization can perform this action.");
         _;
     }
 
