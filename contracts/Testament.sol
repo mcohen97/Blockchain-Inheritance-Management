@@ -133,11 +133,11 @@ contract Testament {
                 for(; i < len; i++){
                     managers[i-1] = managers[i];
                 }
+                delete managers[len - 1];
+                managers.length--;
+                users[toDelete] = 0;
             }
         }
-        delete managers[len - 1];
-        managers.length--;
-        users[toDelete] = 0;
     }
 
     function suscribeHeir(address payable heir, uint8 percentage, uint8 priority) public onlyOwner {
