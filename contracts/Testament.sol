@@ -156,8 +156,10 @@ contract Testament {
     function passInheritanceToOtherHeir(uint8 priority) private {
         if (priority == 0){
             heirsData[1].percentage += heirsData[0].percentage;
+            heirsData[0].percentage = 0;
         }else{
             heirsData[priority - 1].percentage += heirsData[priority].percentage;
+            heirsData[priority].percentage = 0;
         }
     }
 
@@ -235,6 +237,7 @@ contract Testament {
         for (uint i = 0; i < heirsData.length; i++) {
             if (heirsData[i].heir == heir) {
                 heirsData[i].isDeceased = true;
+                passInheritanceToOtherHeir(uint8(i));
             }
         }
     }
