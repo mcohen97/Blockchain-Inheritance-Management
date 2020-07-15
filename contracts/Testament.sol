@@ -117,7 +117,7 @@ contract Testament {
 
     function suscribeManager(address payable newManager) public onlyOwner {
         require(belowManagersUpperLimit(managers.length + 1), "Managers maximum exceeded");
-        require(managersPercentageFee * (managers.length + 1) >= 100, "Managers fees combined make up 100% or more");
+        require(managersPercentageFee * (managers.length + 1) <= 100, "Managers fees combined make up 100% or more");
         require(users[newManager]==0, "Invalid manager, selected address already has another role");
         managers.push(DataStructures.ManagerData(newManager, 0, 0, false));
         users[newManager] = 2;
