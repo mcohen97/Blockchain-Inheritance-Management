@@ -164,13 +164,40 @@ contract Testament {
 
     function passInheritanceToOtherHeir(uint8 priority) private {
         if (priority == 0){
-            heirsData[1].percentage += heirsData[0].percentage;
-            heirsData[0].percentage = 0;
+            passToNextHeir(priority);
         }else{
-            heirsData[priority - 1].percentage += heirsData[priority].percentage;
-            heirsData[priority].percentage = 0;
+            bool foundPrevious = passToPreviousHeir(priority);
+            if(!foundPrevious){
+                passToNextHeir(priority);
+            }
         }
     }
+
+    function passToPreviousHeir(uint8 priority) private returns(bool){
+        for (uint i = priority-1; i >= 0; i--) {
+            DataStructures.HeirData memory heirToPassTo = heirsData[i];
+            if (isEligibleHeir(heirToPassTo)) {
+                heirsData[i].percentage += heirsData[priority].percentage;
+                heirsData[priority].percentage = 0;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function passToNextHeir(uint8 priority) private{
+        uint8 percentageToAssign = heirsData[priority].percentage;
+        heirsData[priority].percentage = 0;
+        if(priority+1 < heirsData.length){
+            for (uint i = priority+1; i < heirsData.length; i++) {
+                DataStructures.HeirData memory heirToPassTo = heirsData[i];
+                if (isEligibleHeir(heirToPassTo)) {
+                    heirsData[i].percentage += percentageToAssign;
+                }
+            }
+        }
+    }
+
 
     function changeHeirPriority(address payable heir, uint8 newPriority) public onlyOwner {
 
