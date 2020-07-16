@@ -59,7 +59,7 @@ router.delete("/heirs/:address", async function(req, res){
   }
 });
 
-router.post("/heirs/:address/priority", async function(req, res){
+router.put("/heirs/:address/priority", async function(req, res){
   try{
     const executor = req.body.from;
     const priority = req.body.priority;
@@ -79,7 +79,7 @@ router.post("/heirs/:address/priority", async function(req, res){
 });
 
 
-router.post("/heirs/:address/percentage", async function(req, res){
+router.put("/heirs/:address/percentage", async function(req, res){
   try{
     const executor = req.body.from;
     const percentage = req.body.percentage;
