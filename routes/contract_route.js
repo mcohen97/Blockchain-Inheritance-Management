@@ -221,6 +221,23 @@ router.get("/withdrawals", async function(req, res){
 
 });
 
+router.post("/withdrawals/pay", async function(req, res){
+  try{
+    const executor = req.body.from;
+    const ammount = req.body.ammount;
+    const contract = contractService.getTestamentContract();
+    await contract.methods.payDebt().send({
+      from: executor,
+      value: ammount
+    });
+
+    res.status(200).send(`OK`);
+
+  }catch(error){
+    res.status(500).send(`Cannot execute method: ${error.message}`);
+  }
+});
+
 router.post("/heartbeat", async function(req, res){
   try{
     const executor = req.body.from;
