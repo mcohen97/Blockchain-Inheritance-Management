@@ -5,7 +5,7 @@ contract DataStructures {
         address payable account;
         string fullName;
         string id;
-        uint256 birthdate;
+        int256 birthdate; // Can and will possibly be negative.
         string homeAddress;
         string telephone;
         string email;
