@@ -28,9 +28,7 @@ contract Testament {
 
     constructor(address payable[] memory _heirs, uint8[] memory _cutPercents,
                 address payable[] memory _managers, uint8 managerFee, uint cancelFee,
-                bool cancelFeePercent, uint redFeeVal, bool redFeePercent, uint8 managerMaxWithdraw, Laws _rules,
-                string memory _ownerfullName, string memory _ownerId, uint256 _ownerBirthdate,
-                string memory _ownerHomeAddress, string memory _ownerTelephone) public payable {
+                bool cancelFeePercent, uint redFeeVal, bool redFeePercent, uint8 managerMaxWithdraw, Laws _rules) public payable {
 
         require(_heirs.length > 0, "The testament must have at least one heir.");
         require(_heirs.length == _cutPercents.length, "Heirs' addresses and cut percentajes counts must be equal.");
@@ -52,21 +50,18 @@ contract Testament {
 
         cancellationFee = DataStructures.Fee(cancelFee, !cancelFeePercent);
         reductionFee = DataStructures.Fee(redFeeVal, !redFeePercent);
-        //addOwnerData(_ownerfullName, _ownerId, _ownerBirthdate, _ownerHomeAddress,_ownerTelephone, _ownerEmail, msg.sender);
-        addOwnerData(_ownerfullName, _ownerId, _ownerBirthdate, _ownerHomeAddress,_ownerTelephone, "", msg.sender);
     }
 
-    function addOwnerData(string memory _fullName, string memory _id, uint256 _birthdate,
-                          string memory _homeAddress, string memory _telephone, string memory _email,
-                          address payable _account) private {
+    function addOwnerData(string memory _fullName, string memory _id, int256 _birthdate,
+                          string memory _homeAddress, string memory _telephone, string memory _email) public onlyOwner {
 
-        ownerData = DataStructures.OwnerData(_account, _fullName, _id, _birthdate, _homeAddress, _telephone, _email, now);
+        ownerData = DataStructures.OwnerData(msg.sender, _fullName, _id, _birthdate, _homeAddress, _telephone, _email, now);
     }
 
     // -------------TESTAMENT INFORMATION. ---------------------------------
 
     function getOwnersInformation() public view onlyNotSuspendedManager returns(address, string memory, string memory,
-                                                                                uint256, string memory, string memory, string memory, uint256) {
+                                                                                int256, string memory, string memory, string memory, uint256) {
         return (ownerData.account, ownerData.fullName, ownerData.id, ownerData.birthdate,
                 ownerData.homeAddress, ownerData.telephone, ownerData.email, ownerData.issueDate);
     }
@@ -251,6 +246,12 @@ contract Testament {
             require( msg.value >= (manager.debt + fine),
             "The payment must make up to what the manager owes, plus the fine");
         }
+
+        if(manager.debt < msg.value){ // If you payed more that you owed, it's your problem.
+            managers[pos].debt = 0;
+        } else {
+            managers[pos].debt -= msg.value;
+        }
     }
 
     function calculateWithdrawalFine(DataStructures.ManagerData memory manager) private view returns(uint){
@@ -353,6 +354,7 @@ contract Testament {
 
         for(uint8 i = 0; i < managers.length; i++) {
             managers[i].account.transfer(managersCost);
+            
         }
 
         uint inheritanceAfterCosts = address(this).balance;
