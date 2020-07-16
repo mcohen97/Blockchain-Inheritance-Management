@@ -125,8 +125,6 @@ contract Testament {
         }
     }
 
-
-
     function suscribeManager(address payable newManager) public onlyOwner {
         require(belowManagersUpperLimit(managers.length + 1), "Managers maximum exceeded");
         require(managersPercentageFee * (managers.length + 1) <= 100, "Managers fees combined make up 100% or more");
@@ -243,6 +241,30 @@ contract Testament {
     }
 
     function increaseInheritance() public payable onlyOwner{}
+
+    function payDebt() public payable onlyManager{
+        uint pos = getManagerPos(msg.sender);
+        DataStructures.ManagerData memory manager = managers[pos];
+        bool suspended = hasExpiredDebt(manager);
+        if(suspended){
+            uint fine = calculateWithdrawalFine(manager);
+            require( msg.value >= (manager.debt + fine),
+            "The payment must make up to what the manager owes, plus the fine");
+        }
+    }
+
+    function calculateWithdrawalFine(DataStructures.ManagerData memory manager) private view returns(uint){
+        uint finePerDay = manager.debt * rules.withdrawalFinePercent() / 100;
+        uint debtDays = differenceInDays(manager.withdrawalDate, now);
+        return finePerDay * max(debtDays, rules.withdrawalFineMaxDays());
+    }
+
+    function max(uint a, uint b) private pure returns(uint){
+        if(a >= b){
+            return a;
+        }
+        return b;
+    }
 
     function reduceInheritance(uint8 cut) public onlyOwner {
         uint balance = address(this).balance;
@@ -411,8 +433,13 @@ contract Testament {
 
     modifier onlyNotSuspendedManager(){
         require(containsManager(msg.sender), "only the testament's managers can perform this action.");
-        bool expiredDebt = checkManagerDebt(msg.sender);
+        bool expiredDebt = isManagerDebtExpired(msg.sender);
         require(!expiredDebt, "this manager is suspended");
+        _;
+    }
+
+    modifier onlyManager(){
+        require(containsManager(msg.sender), "only the testament's managers can perform this action.");
         _;
     }
 
@@ -421,17 +448,18 @@ contract Testament {
         _;
     }
 
-    function checkManagerDebt(address account) private view returns (bool){
+    function isManagerDebtExpired(address account) private view returns (bool){
         for(uint i = 0; i < managers.length; i++){
             if(account != managers[i].account){
                 continue;
             }
-            if (managers[i].debt == 0){
-                return false;
-            }
-            return differenceInMonths(managers[i].withdrawalDate, now) > 3;
+            return hasExpiredDebt(managers[i]);
         }
         return false;
+    }
+
+    function hasExpiredDebt(DataStructures.ManagerData memory manager) private view returns(bool){
+        return manager.debt > 0 && differenceInMonths(manager.withdrawalDate, now) > 3;
     }
 
     function containsManager(address a) private view returns (bool) {
@@ -488,11 +516,30 @@ contract Testament {
         return uint(diffMonths);
     }
 
+    function differenceInDays(uint date1, uint date2) public pure returns (uint){
+        int dayInSeconds = 3600 * 24;
+        int diffSeconds = int(date1 - date2);
+        int diffDays = diffSeconds / dayInSeconds;
+        if(diffDays < 0){
+            return uint(-diffDays);
+        }
+        return uint(diffDays);
+    }
+
     function belowManagersUpperLimit(uint count) private pure returns (bool) {
         return count <= 5;
     }
 
     function aboveManagersLowerLimit(uint count) private pure returns (bool) {
         return count >= 2;
+    }
+
+    function getManagerPos(address account) private view returns (uint){
+        for(uint i = 0; i < managers.length; i++){
+            if(managers[i].account == account){
+                return i;
+            }
+        }
+        require(false, "Manager does not exist.");
     }
 }
