@@ -143,6 +143,7 @@ contract Testament {
     function suscribeHeir(address payable heir, uint8 percentage, uint8 priority) public onlyOwner {
         require(priority <= heirsData.length, "Invalid priority, must be between 0 and the heirs count");
         require(users[heir]==0, "Invalid heir, selected address already has another role");
+        users[heir] = 3;
         if(priority == heirsData.length) {
             heirsData.push(DataStructures.HeirData(heir, percentage, false));
             adjustRestOfPercentages(priority);
@@ -170,11 +171,11 @@ contract Testament {
                 for(; i < len; i++){
                     heirsData[i-1] = heirsData[i];
                 }
+                delete heirsData[len - 1];
+                heirsData.length--;
+                users[toDelete] = 0;
             }
         }
-        delete heirsData[len - 1];
-        heirsData.length--;
-        users[toDelete] = 0;
     }
 
     function passInheritanceToOtherHeir(uint8 priority) private {
