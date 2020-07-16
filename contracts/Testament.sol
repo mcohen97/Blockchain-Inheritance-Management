@@ -5,6 +5,7 @@ import './Laws.sol';
 
 contract Testament {
 
+    uint totalInheritance;
     address payable owner;
     uint256 public lastLifeSignal;
     DataStructures.OwnerData ownerData;
@@ -47,7 +48,7 @@ contract Testament {
         maxWithdrawalPercentage = managerMaxWithdraw;
 
         lastLifeSignal = now;
-
+        totalInheritance = msg.value;
         cancellationFee = DataStructures.Fee(cancelFee, !cancelFeePercent);
         reductionFee = DataStructures.Fee(redFeeVal, !redFeePercent);
     }
@@ -83,6 +84,10 @@ contract Testament {
                                                                                     uint256 withdrawalDate, bool hasInformedDecease) {
      DataStructures.ManagerData memory manager = managers[pos];
      return (manager.account, manager.debt, manager.withdrawalDate, manager.hasInformedDecease);
+    }
+
+    function getInheritance() public view onlyNotSuspendedManager balanceReadAllowed returns (uint total, uint currentFunds) {
+        return (totalInheritance, address(this).balance);
     }
 
     //-------------------------------------------------------------------------------
@@ -235,7 +240,9 @@ contract Testament {
         }
     }
 
-    function increaseInheritance() public payable onlyOwner{}
+    function increaseInheritance() public payable onlyOwner{
+        totalInheritance += msg.value;
+    }
 
     function payDebt() public payable onlyManager{
         uint pos = getManagerPos(msg.sender);
@@ -268,24 +275,25 @@ contract Testament {
     }
 
     function reduceInheritance(uint8 cut) public onlyOwner {
-        uint balance = address(this).balance;
-        uint reduction = (balance * cut) / 100;
+        uint reduction = (totalInheritance * cut) / 100;
+        require(cut <= 100, "Invalid percentage");
+        require(reduction <= address(this).balance, "There are not enought funds currently.");
         uint fee;
         if(reductionFee.isFixed){
             fee = reductionFee.value;
         }else{
-            fee = (balance * reductionFee.value) / 100;
+            fee = (totalInheritance * reductionFee.value) / 100;
         }
         owner.transfer(reduction);
         orgAccount.transfer(fee);
+        totalInheritance -= reduction;
     }
 
     function destroy() public onlyOwner {
-        uint balance = address(this).balance;
         if(cancellationFee.isFixed){
             orgAccount.transfer(cancellationFee.value);
         }else{
-            orgAccount.transfer((balance * cancellationFee.value)/100);
+            orgAccount.transfer((totalInheritance * cancellationFee.value)/100);
         }
         selfdestruct(owner);
     }
@@ -349,12 +357,10 @@ contract Testament {
     }
 
     function liquidate() private {
-        uint inheritance = address(this).balance;
-        uint managersCost = (inheritance * managersPercentageFee) / 100;
+        uint managersCost = (totalInheritance * managersPercentageFee) / 100;
 
         for(uint8 i = 0; i < managers.length; i++) {
             managers[i].account.transfer(managersCost);
-            
         }
 
         uint inheritanceAfterCosts = address(this).balance;
@@ -411,13 +417,10 @@ contract Testament {
     }
 
     function exceedsAllowedPercentage(uint accumDebt, uint newWithdrawal) private view returns(bool) {
-        uint balance = address(this).balance;
-        return (accumDebt + newWithdrawal) > ((balance * maxWithdrawalPercentage) / 100) ;
+        return (accumDebt + newWithdrawal) > ((totalInheritance * maxWithdrawalPercentage) / 100) ;
     }
 
-    function getInheritance() public view onlyNotSuspendedManager balanceReadAllowed returns (uint) {
-        return address(this).balance;
-    }
+
 
     function allowBalanceRead(bool allowed) public onlyOwner {
         balanceVisible = allowed;

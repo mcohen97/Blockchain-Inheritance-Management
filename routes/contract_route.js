@@ -90,7 +90,7 @@ router.get("/inheritance", async function(req, res){
         from: executor
     });
 
-    res.status(200).send(`Inheritance worth: ${inheritance}`);
+    res.status(200).send(`Inheritance worth: ${inheritance.total}, Current funds (considering withdrawals): ${inheritance.currentFunds}`);
 
   }catch(error){
     res.status(500).send(`Cannot execute method: ${error.message}`);
@@ -262,14 +262,10 @@ router.get("/last_signal", async function(req, res){
     let result = await contract.methods.lastLifeSignal().call({
       from: executor
   });
-
   res.status(200).send(utils.unixToDateString(result));
-
-
   }catch(error){
     res.status(500).send(`Cannot execute method: ${error.message}`);
   }
-
 });
 
 router.post("/inform_owner_decease", async function(req, res){
