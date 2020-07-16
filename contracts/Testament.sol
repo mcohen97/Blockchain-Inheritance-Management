@@ -208,6 +208,7 @@ contract Testament {
     }
 
     function changeHeirPercentage(address payable heir, uint8 newPercentage) public onlyOwner {
+        require(newPercentage <= 100, "The new percentage exceeds 100%");
         for(uint curP = 0; curP < heirsData.length; curP++){
              if(heirsData[curP].heir == heir){
                  heirsData[curP].percentage = newPercentage;
