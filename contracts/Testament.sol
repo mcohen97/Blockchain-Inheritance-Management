@@ -5,15 +5,15 @@ import './Laws.sol';
 
 contract Testament {
 
-    address payable public owner;
+    address payable owner;
     uint256 public lastLifeSignal;
-    DataStructures.OwnerData public ownerData;
+    DataStructures.OwnerData ownerData;
 
-    DataStructures.HeirData[] public heirsData;
+    DataStructures.HeirData[] heirsData;
 
     uint8 managersPercentageFee;
     uint8 maxWithdrawalPercentage;
-    DataStructures.ManagerData[] public managers;
+    DataStructures.ManagerData[] managers;
     DataStructures.Widthdrawal[] managersWithdrawals;
     mapping (address => uint) users; //0 - unset, 1 - owner, 2 - manager, 3 - heir
 
@@ -63,7 +63,7 @@ contract Testament {
         ownerData = DataStructures.OwnerData(_account, _fullName, _id, _birthdate, _homeAddress, _telephone, _email, now);
     }
 
-    // TESTAMENT INFORMATION.
+    // -------------TESTAMENT INFORMATION. ---------------------------------
 
     function getOwnersInformation() public view onlyNotSuspendedManager returns(address, string memory, string memory,
                                                                                 uint256, string memory, string memory, string memory, uint256) {
@@ -79,6 +79,18 @@ contract Testament {
         return heirsData.length;
     }
 
+    function getHeirInPos(uint8 pos) public view onlyNotSuspendedManager returns(address account, uint8 percentage, bool isDead) {
+     DataStructures.HeirData memory heir = heirsData[pos];
+     return (heir.heir, heir.percentage, heir.isDeceased);
+    }
+
+    function getManagerInPos(uint8 pos) public view onlyNotSuspendedManager returns(address account, uint debt,
+                                                                                    uint256 withdrawalDate, bool hasInformedDecease) {
+     DataStructures.ManagerData memory manager = managers[pos];
+     return (manager.account, manager.debt, manager.withdrawalDate, manager.hasInformedDecease);
+    }
+
+    //-------------------------------------------------------------------------------
     function managersWithinBounds(uint count) private pure returns (bool) {
         return aboveManagersLowerLimit(count) && belowManagersUpperLimit(count);
     }

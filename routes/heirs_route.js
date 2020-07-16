@@ -28,10 +28,14 @@ router.post("/heirs", async function(req, res){
 router.get("/heirs/:pos", async function(req, res){
 
   try{
+    const executor = req.body.from;
     const priority = req.params.pos;
     const contract = contractService.getTestamentContract();
 
-    let result = await contract.methods.heirsData(priority).call();
+    let result = await contract.methods.getHeirInPos(priority).call({
+      from: executor
+    });
+    
     let response = {heir:result.heir, percentage: result.percentage, isDeceased: result.isDeceased}
     res.status(200).send(response);
 
