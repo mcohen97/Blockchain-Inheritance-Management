@@ -193,6 +193,7 @@ contract Testament {
                 DataStructures.HeirData memory heirToPassTo = heirsData[i];
                 if (isEligibleHeir(heirToPassTo)) {
                     heirsData[i].percentage += percentageToAssign;
+                    return;
                 }
             }
         }
