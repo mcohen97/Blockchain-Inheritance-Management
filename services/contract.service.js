@@ -1,6 +1,8 @@
 const path = require('path');
 const fs = require('fs');
 const solc = require('solc');
+const moment = require('moment')
+const utils = require('./utils')
 
 
 const testamentFile = 'Testament.sol';
@@ -22,12 +24,9 @@ class ContractService{
   }
 
   async deployLaws(executor){
-    const bytecodePath = path.resolve(process.cwd(),'contracts', `${contractLaws}_bytecode.json`);
-    const abiPath = path.resolve(process.cwd(), 'contracts', `${contractLaws}_abi.json`);
-    const configPath = path.resolve(process.cwd(),'config.json');
-
-    const bytecode = JSON.parse(fs.readFileSync(bytecodePath, 'utf8')).bytecode;
-    const abi = JSON.parse(fs.readFileSync(abiPath, 'utf8'));
+    const bytecode = getContractBytecode(contractLaws);
+    const abi = getContractAbi(contractLaws);
+    const config = getConfig();
 
     try{
       const result = await new web3.eth.Contract(abi)
@@ -40,7 +39,6 @@ class ContractService{
           from: executor,
         });
         
-        const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
         config.lawsAddress = result.options.address;
         fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
     }catch(error){
@@ -51,38 +49,40 @@ class ContractService{
   }
 
   async deployTestament(heirs, percentages, managers,managerFee ,cancellationFee, isCancFeePercentage, reductionFee,
-     isRedFeePercent, maxWithdrawalPercentage, fullName, id, birthDate, homeAddress, telephone, email){    
-    const bytecodePath = path.resolve(process.cwd(),'contracts', `${contractTestament}_bytecode.json`);
-    const abiPath = path.resolve(process.cwd(), 'contracts', `${contractTestament}_abi.json`);
-    const configPath = path.resolve(process.cwd(),'config.json');
-    const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+     isRedFeePercent, maxWithdrawalPercentage, owner, ownerData, inheritanceEthers){
 
-    const bytecode = JSON.parse(fs.readFileSync(bytecodePath, 'utf8')).bytecode;
-    const abi = JSON.parse(fs.readFileSync(abiPath, 'utf8'));
-
-    const accounts = await web3.eth.getAccounts();
+    const bytecode = getContractBytecode(contractTestament);
+    const abi = getContractAbi(contractTestament);
+    const config = getConfig();
 
     try{
       const result = await new web3.eth.Contract(abi)
         .deploy({
           data: '0x' + bytecode.object,
           arguments: [heirs, percentages, managers, managerFee, cancellationFee, isCancFeePercentage,
-          reductionFee, isRedFeePercent, maxWithdrawalPercentage, config.lawsAddress, fullName, id, 123423,
-          homeAddress, telephone] //TODO: add email
+          reductionFee, isRedFeePercent, maxWithdrawalPercentage, config.lawsAddress]
         })
         .send({
           gas: '6000000',
-          from: accounts[0],
-          value: web3.utils.toWei('10', 'ether')
+          from: owner,
+          value: web3.utils.toWei(`${inheritanceEthers}`, 'ether')
         });
-        
+
         config.testamentAddress = result.options.address;
-        fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+        updateConfig(config);
+        
+        //After deploy, set owner's data.
+        let dateUnix = utils.dateStringToUnix(ownerData.birthDate);
+        let contract = await this.getTestamentContract();
+        await contract.methods.addOwnerData(ownerData.fullName, ownerData.id, dateUnix,
+          ownerData.homeAddress,ownerData.telephone, ownerData.email).send({
+            gas: '1000000',
+            from: owner
+        });
+
     }catch(error){
-      let _error = error;
       console.log(error.message)
     }
-  
   }
 
   getTestamentContract(){
@@ -95,10 +95,8 @@ class ContractService{
   }
 
   getLawsContract(){
-    const configPath = path.resolve(process.cwd(), 'config.json');
-    const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
-    const abiPath = path.resolve(process.cwd(), 'contracts', `${contractLaws}_abi.json`);
-    const abi = JSON.parse(fs.readFileSync(abiPath, 'utf8'));
+    const config = getConfig()
+    const abi = getContractBytecode(contractLaws);
 
     return new web3.eth.Contract(abi,config.lawsAddress);
   }
@@ -106,6 +104,26 @@ class ContractService{
 }
 
 module.exports = new ContractService()
+
+function getContractBytecode(contractName){
+  const bytecodePath = path.resolve(process.cwd(),'contracts', `${contractName}_bytecode.json`);
+  return JSON.parse(fs.readFileSync(bytecodePath, 'utf8')).bytecode;
+}
+
+function getContractAbi(contractName){
+  const abiPath = path.resolve(process.cwd(), 'contracts', `${contractName}_abi.json`);
+  return JSON.parse(fs.readFileSync(abiPath, 'utf8'));
+}
+
+function getConfig(){
+  const configPath = path.resolve(process.cwd(),'config.json');
+  return JSON.parse(fs.readFileSync(configPath, 'utf8'));
+}
+
+function updateConfig(configObject){
+  const configPath = path.resolve(process.cwd(),'config.json');
+  fs.writeFileSync(configPath, JSON.stringify(configObject, null, 2));
+}
 
 function getImports(dependency){
   return {contents: fs.readFileSync(path.resolve(process.cwd(), 'contracts', dependency), 'utf8')}

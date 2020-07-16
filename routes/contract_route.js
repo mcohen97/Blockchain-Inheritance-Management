@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const contractService = require('../services/contract.service');
+const utils = require('../services/utils');
 const { default: Web3 } = require('web3');
 
 router.post("/compile", function(req, res){
@@ -12,13 +13,16 @@ router.post("/compile", function(req, res){
   }
 });
 
-router.post("/deploy", function(req, res){
+router.post("/deploy", async function(req, res){
   try{
     const body = req.body;
-    const onwerInfo = body.owner_personal_info;
-    contractService.deployTestament(body.heirs, body.percentages, body.managers, body.manager_fee, body.cancellation_fee, 
+    let ownerInfo = body.owner_personal_info;
+    ownerInfo = {fullName: ownerInfo.full_name, id: ownerInfo.id, birthDate: ownerInfo.birth_date, 
+      homeAddress: ownerInfo.home_address, telephone: ownerInfo.telephone, email: ownerInfo.email}
+
+    await contractService.deployTestament(body.heirs, body.percentages, body.managers, body.manager_fee, body.cancellation_fee, 
       body.is_cancel_fee_percent, body.reduction_fee, body.is_reduction_fee_percent, body.max_withdrawal_percentage,
-      onwerInfo.full_name, onwerInfo.id, onwerInfo.birth_date, onwerInfo.home_address, onwerInfo.telephone, onwerInfo.email);
+      body.from, ownerInfo, body.inheritance_in_ethers);
 
     res.status(200).send('OK');
   }catch(error){
@@ -53,7 +57,7 @@ router.get("/owner", async function(req, res){
 
     let ownerData = {'account': result[0], 'full_name': result[1], 'id_number': result[2], 
     'birth_date': result[3], 'home_address': result[4], 'telephone': result[5], 'email': result[6],
-    'issue_date': result[7]};
+    'issue_date': utils.unixToDateString(result[7])};
 
     res.status(200).send(ownerData);
   }catch(error){
@@ -242,7 +246,7 @@ router.get("/last_signal", async function(req, res){
       from: executor
   });
 
-  res.status(200).send(result);
+  res.status(200).send(utils.unixToDateString(result));
 
 
   }catch(error){
