@@ -122,6 +122,22 @@ router.post("/inheritance/visibility", async function(req, res){
   }
 });
 
+router.get("/inheritance/organizationclaim", async function(req, res){
+  try{
+    const executor = req.body.from;
+    const contract = contractService.getTestamentContract();
+    result = await contract.methods.claimToOrganization().send({
+        from: executor
+    });
+
+    response = formatClaimEvent(result.events.inheritanceClaim);
+    res.status(200).send(response);
+
+  }catch(error){
+    res.status(500).send(`Cannot execute method: ${error.message}`);
+  }
+});
+
 router.get("/inheritance/claim", async function(req, res){
   try{
     const executor = req.body.from;
