@@ -143,7 +143,7 @@ router.post("/inheritance/visibility", async function(req, res){
   }
 });
 
-router.get("/inheritance/organizationclaim", async function(req, res){
+router.get("/inheritance/organization_claim", async function(req, res){
   try{
     const executor = req.body.from;
     const contract = contractService.getTestamentContract();
@@ -178,8 +178,7 @@ router.get("/inheritance/claim", async function(req, res){
 router.post("/withdrawals", async function(req, res){
   try{
     const executor = req.body.from;
-    //const ammount = req.body.ammount;
-    const ammount = 50000;
+    const ammount = req.body.ammount;
     const reason = req.body.reason;
     const contract = contractService.getTestamentContract();
     await contract.methods.withdraw(ammount, reason).send({
