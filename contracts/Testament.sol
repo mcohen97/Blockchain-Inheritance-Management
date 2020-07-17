@@ -254,11 +254,11 @@ contract Testament {
     function calculateWithdrawalFine(DataStructures.ManagerData memory manager) private view returns(uint){
         uint finePerDay = manager.debt * rules.withdrawalFinePercent() / 100;
         uint debtDays = differenceInDays(manager.withdrawalDate, now);
-        return finePerDay * max(debtDays, rules.withdrawalFineMaxDays());
+        return finePerDay * min(debtDays, rules.withdrawalFineMaxDays());
     }
 
-    function max(uint a, uint b) private pure returns(uint){
-        if(a >= b){
+    function min(uint a, uint b) private pure returns(uint){
+        if(a <= b){
             return a;
         }
         return b;
