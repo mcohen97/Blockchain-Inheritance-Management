@@ -41,10 +41,14 @@ router.post("/managers", async function(req, res){
 
 router.get("/managers/:pos", async function(req, res){
   try{
+    const executor = req.body.from;
     const manager = req.params.pos;
     const contract = contractService.getTestamentContract();
 
-    let result = await contract.methods.managers(manager).call();
+    let result = await contract.methods.getManagerInPos(manager).call({
+      from: executor
+    });
+
     let response = {account: result.account, debt: result.debt, withdrawal_date: result.withdrawalDate, 
       has_informed_decease: result.hasInformedDecease}
     res.status(200).send(response);

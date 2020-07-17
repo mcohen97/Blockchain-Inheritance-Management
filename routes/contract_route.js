@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const contractService = require('../services/contract.service');
+const utils = require('../services/utils');
 const { default: Web3 } = require('web3');
 
 router.post("/compile", function(req, res){
@@ -12,15 +13,20 @@ router.post("/compile", function(req, res){
   }
 });
 
-router.post("/deploy", function(req, res){
+router.post("/deploy", async function(req, res){
   try{
     const body = req.body;
-    contractService.deployTestament(body.heirs, body.percentages, body.managers, body.manager_fee, body.cancellation_fee, 
-      body.is_cancel_fee_percent, body.reduction_fee, body.is_reduction_fee_percent, body.max_withdrawal_percentage);
+    let ownerInfo = body.owner_personal_info;
+    ownerInfo = {fullName: ownerInfo.full_name, id: ownerInfo.id, birthDate: ownerInfo.birth_date, 
+      homeAddress: ownerInfo.home_address, telephone: ownerInfo.telephone, email: ownerInfo.email}
+
+    await contractService.deployTestament(body.heirs, body.percentages, body.managers, body.manager_fee, body.cancellation_fee, 
+      body.is_cancel_fee_percent, body.reduction_fee, body.is_reduction_fee_percent, body.max_withdrawal_percentage,
+      body.from, ownerInfo, body.inheritance_in_ethers);
+
     res.status(200).send('OK');
   }catch(error){
-    //res.status(500).send(new Error('Cannot deploy contract'));
-    console.log('Cannot deploy contract');
+    res.status(500).send(new Error('Cannot deploy contract'));
   }
 });
 
@@ -41,6 +47,25 @@ router.delete("/", async function(req, res){
   }
 });
 
+router.get("/owner", async function(req, res){
+  try{
+    const caller = req.body.from;
+    const contract = contractService.getTestamentContract();
+    let result = await contract.methods.getOwnersInformation().call({
+        from: caller
+    });
+
+    let ownerData = {'account': result[0], 'full_name': result[1], 'id_number': result[2], 
+    'birth_date': result[3], 'home_address': result[4], 'telephone': result[5], 'email': result[6],
+    'issue_date': utils.unixToDateString(result[7])};
+
+    res.status(200).send(ownerData);
+  }catch(error){
+    res.status(500).send(`Cannot execute method: ${error.message}`);
+    console.log(`Cannot execute method: ${error.message}`);
+  }
+});
+
 router.get("/information", async function(req, res){
   try{
     const caller = req.body.from;
@@ -53,7 +78,7 @@ router.get("/information", async function(req, res){
     });
     res.status(200).send(`Managers: ${managers}, Heirs: ${heirs}`);
   }catch(error){
-    console.log(`Cannot execute method: ${error.message}`);
+    res.status(500).send(`Cannot execute method: ${error.message}`);
   }
 });
 
@@ -65,7 +90,7 @@ router.get("/inheritance", async function(req, res){
         from: executor
     });
 
-    res.status(200).send(`Inheritance worth: ${inheritance}`);
+    res.status(200).send(`Inheritance worth: ${inheritance.total}, Current funds (considering withdrawals): ${inheritance.currentFunds}`);
 
   }catch(error){
     res.status(500).send(`Cannot execute method: ${error.message}`);
@@ -122,7 +147,7 @@ router.post("/inheritance/visibility", async function(req, res){
   }
 });
 
-router.get("/inheritance/organizationclaim", async function(req, res){
+router.get("/inheritance/organization_claim", async function(req, res){
   try{
     const executor = req.body.from;
     const contract = contractService.getTestamentContract();
@@ -157,8 +182,7 @@ router.get("/inheritance/claim", async function(req, res){
 router.post("/withdrawals", async function(req, res){
   try{
     const executor = req.body.from;
-    //const ammount = req.body.ammount;
-    const ammount = 50000;
+    const ammount = req.body.ammount;
     const reason = req.body.reason;
     const contract = contractService.getTestamentContract();
     await contract.methods.withdraw(ammount, reason).send({
@@ -197,6 +221,23 @@ router.get("/withdrawals", async function(req, res){
 
 });
 
+router.post("/withdrawals/pay", async function(req, res){
+  try{
+    const executor = req.body.from;
+    const ammount = req.body.ammount;
+    const contract = contractService.getTestamentContract();
+    await contract.methods.payDebt().send({
+      from: executor,
+      value: ammount
+    });
+
+    res.status(200).send(`OK`);
+
+  }catch(error){
+    res.status(500).send(`Cannot execute method: ${error.message}`);
+  }
+});
+
 router.post("/heartbeat", async function(req, res){
   try{
     const executor = req.body.from;
@@ -221,25 +262,21 @@ router.get("/last_signal", async function(req, res){
     let result = await contract.methods.lastLifeSignal().call({
       from: executor
   });
-
-  res.status(200).send(result);
-
-
+  res.status(200).send(utils.unixToDateString(result));
   }catch(error){
     res.status(500).send(`Cannot execute method: ${error.message}`);
   }
-
 });
 
 router.post("/inform_owner_decease", async function(req, res){
   try{
     const executor = req.body.from;
     const contract = contractService.getTestamentContract();
-    let result = await contract.methods.informOwnerDecease().send({
+    await contract.methods.informOwnerDecease().send({
       from: executor
   });
 
-  res.status(200).send(result);
+  res.status(200).send('OK');
   }catch(error){
     res.status(500).send(`Cannot execute method: ${error.message}`);
   }
@@ -260,6 +297,50 @@ router.post("/inform_heir_decease", async function (req, res) {
   }
 });
 
+router.post("/month_length", async function (req, res) {
+  try {
+    await setMonthLength(req.body.from, req.body.length);
+    res.status(200).send(`OK - Set month length to ${req.body.length}`);
+  } catch (error) {
+    res.status(500).send(`Cannot execute method: ${error.message}`);
+  }
+});
+
+router.get("/month_length", async function (req, res) {
+  try {
+    const contract = contractService.getTestamentContract();
+    let result = await contract.methods.monthInSeconds().call();
+    res.status(200).send(`Month length in seconds: ${result}`);
+  } catch (error) {
+    res.status(500).send(`Cannot execute method: ${error.message}`);
+  }
+});
+
+module.exports = router;
+
+async function setMonthLength(executor, length){
+  const contract = contractService.getTestamentContract();
+  switch (length) {
+    case "second":
+      await contract.methods.setMonthLengthTo1Second().send({
+        from: executor
+      });
+      break;
+    case "minute":
+      await contract.methods.setMonthLengthTo1Minute().send({
+        from: executor
+      });      
+      break;
+    case "month":
+      await contract.methods.setMonthLengthToOriginal().send({
+        from: executor
+      });      
+      break;
+    default:
+      throw new Error('invalid month length mode');  
+  }
+}
+
 function formatClaimEvent(event){
   let values = event.returnValues;
   return {liquidated: values.liquidated, message: values.message}
@@ -269,5 +350,3 @@ function formatWithdrawalEvent(event){
   let decoded = web3.eth.abi.decodeParameters(['uint256', 'string'], event.data);
   return {ammount: decoded['0'], reason: decoded['1']}
 }
-
-module.exports = router;

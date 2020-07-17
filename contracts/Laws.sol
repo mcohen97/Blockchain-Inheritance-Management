@@ -10,6 +10,10 @@ contract Laws {
 
     uint8 public withdrawalFeePercent = 5;
 
+    uint8 public withdrawalFinePercent = 3;
+
+    uint public withdrawalFineMaxDays = 10;
+
     address payable public charitableOrganization = 0x1DfC1E4a154df46C0d9F0Bd35D8E9350A8187e28;
 
     constructor() public {
