@@ -301,6 +301,7 @@ contract Testament {
     event inheritanceClaim(bool liquidated, string message);
 
     function claimInheritance() public onlyNotSuspendedManagerOrHeir {
+
         if(differenceInMonths(lastLifeSignal, now) > 6){
             liquidate();
         }
@@ -422,7 +423,7 @@ contract Testament {
 
     modifier onlyNotSuspendedManagerOrHeir(){
         require((containsManager(msg.sender) && !isManagerDebtExpired(msg.sender)) ||
-                users[msg.sender] == 3, "Only valid managers or heirs can perform this action.");
+                containsHeir(msg.sender), "Only valid managers or heirs can perform this action.");
         _;
     }
 
@@ -447,6 +448,11 @@ contract Testament {
 
     function containsManager(address a) private view returns (bool) {
         return users[a] == 2;
+    }
+
+    function containsHeir(address a) private view returns (bool) {
+        uint i = getHeirPos(a);
+        return !heirsData[i].isDeceased;
     }
 
     function adjustRestOfPercentages(uint8 priority) private {
