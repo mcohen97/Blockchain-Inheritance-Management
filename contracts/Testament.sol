@@ -28,6 +28,8 @@ contract Testament {
     DataStructures.Fee reductionFee;
 
     address payable orgAccount = 0x5E6ecDA6875b4Dc8e8Ea6CC3De4b4E3c73453c0a;
+    uint minManagers = 2;
+    uint maxManagers = 5;
 
     constructor(address payable[] memory _heirs, uint8[] memory _cutPercents,
                 address payable[] memory _managers, uint8 managerFee, uint cancelFee,
@@ -94,8 +96,8 @@ contract Testament {
     }
 
     //-------------------------------------------------------------------------------
-    function managersWithinBounds(uint count) private pure returns (bool) {
-        return aboveManagersLowerLimit(count) && belowManagersUpperLimit(count);
+    function managersWithinBounds(uint count) private view returns (bool) {
+        return minManagers <= count && count <= maxManagers;
     }
 
     function addUpTo100(uint8[] memory percents) private pure returns (bool) {
@@ -129,7 +131,7 @@ contract Testament {
     }
 
     function suscribeManager(address payable newManager) public onlyOwner {
-        require(belowManagersUpperLimit(managers.length + 1), "Managers maximum exceeded");
+        require(managers.length + 1 <= maxManagers, "Managers maximum exceeded");
         require(managersPercentageFee * (managers.length + 1) <= 100, "Managers fees combined make up 100% or more");
         require(users[newManager]==0, "Invalid manager, selected address already has another role");
         managers.push(DataStructures.ManagerData(newManager, 0, 0, false));
@@ -137,20 +139,17 @@ contract Testament {
     }
 
     function unsuscribeManager(address payable toDelete) public onlyOwner {
-        require(aboveManagersLowerLimit(managers.length - 1), "Managers minimum not reached");
+        uint i = getManagerPos(toDelete);
+        require(minManagers <= managers.length - 1, "Managers minimum not reached");
         uint len = managers.length;
-        for(uint8 i = 0; i < len; i++) {
-            if(toDelete == managers[i].account){
-                delete managers[i];
-                i++;
-                for(; i < len; i++){
-                    managers[i-1] = managers[i];
-                }
-                delete managers[len - 1];
-                managers.length--;
-                users[toDelete] = 0;
-            }
+        delete managers[i];
+        i++;
+        for(; i < len; i++){
+            managers[i-1] = managers[i];
         }
+        delete managers[len - 1];
+        managers.length--;
+        users[toDelete] = 0;
     }
 
     function suscribeHeir(address payable heir, uint8 percentage, uint8 priority) public onlyOwner {
@@ -175,23 +174,20 @@ contract Testament {
         require(heirsData.length > 1, "There must be at least one heir in the testament.");
 
         uint len = heirsData.length;
+        uint i = getHeirPos(toDelete);
 
-        for(uint8 i = 0; i < len; i++) {
-            if(toDelete == heirsData[i].heir){
-                passInheritanceToOtherHeir(i);
-                delete heirsData[i];
-                i++;
-                for(; i < len; i++){
-                    heirsData[i-1] = heirsData[i];
-                }
-                delete heirsData[len - 1];
-                heirsData.length--;
-                users[toDelete] = 0;
-            }
+        passInheritanceToOtherHeir(i);
+        delete heirsData[i];
+        i++;
+        for(; i < len; i++){
+            heirsData[i-1] = heirsData[i];
         }
+        delete heirsData[len - 1];
+        heirsData.length--;
+        users[toDelete] = 0;
     }
 
-    function passInheritanceToOtherHeir(uint8 priority) private {
+    function passInheritanceToOtherHeir(uint priority) private {
         if (priority == 0){
             heirsData[1].percentage += heirsData[0].percentage;
             heirsData[0].percentage = 0;
@@ -202,33 +198,23 @@ contract Testament {
     }
 
     function changeHeirPriority(address payable heir, uint8 newPriority) public onlyOwner {
-
-        for(uint curP = 0; curP < heirsData.length; curP++){
-            if(heirsData[curP].heir == heir){
-               if(curP == newPriority) return;
-
-               DataStructures.HeirData memory toChangePriority = heirsData[curP];
-
-               if(curP > newPriority) {
-                shiftHeirsRight(newPriority, uint8(curP));
-               }else{
-                shiftHeirsLeft(uint8(curP), newPriority);
-               }
-
-               heirsData[newPriority] = toChangePriority;
-            }
+        uint curP = getHeirPos(heir);
+        if(curP == newPriority) return;
+        DataStructures.HeirData memory toChangePriority = heirsData[curP];
+        
+        if(curP > newPriority) {
+            shiftHeirsRight(newPriority, uint8(curP));
+        }else{
+            shiftHeirsLeft(uint8(curP), newPriority);
         }
+        heirsData[newPriority] = toChangePriority;
     }
 
     function changeHeirPercentage(address payable heir, uint8 newPercentage) public onlyOwner {
         require(newPercentage <= 100, "The new percentage exceeds 100%");
-        for(uint curP = 0; curP < heirsData.length; curP++){
-             if(heirsData[curP].heir == heir){
-                 heirsData[curP].percentage = newPercentage;
-                 adjustRestOfPercentages(uint8(curP));
-                 return;
-             }
-        }
+        uint curP = getHeirPos(heir);
+        heirsData[curP].percentage = newPercentage;
+        adjustRestOfPercentages(uint8(curP));
     }
 
     function shiftHeirsRight(uint8 start, uint8 end) private {
@@ -306,12 +292,9 @@ contract Testament {
     }
 
     function informHeirDecease(address payable heir) public onlyNotSuspendedManager {
-        for (uint i = 0; i < heirsData.length; i++) {
-            if (heirsData[i].heir == heir) {
-                heirsData[i].isDeceased = true;
-                passInheritanceToOtherHeir(uint8(i));
-            }
-        }
+        uint i = getHeirPos(heir);
+        heirsData[i].isDeceased = true;
+        passInheritanceToOtherHeir(uint8(i));
     }
 
     event inheritanceClaim(bool liquidated, string message);
@@ -319,12 +302,10 @@ contract Testament {
     function claimInheritance() public {
         if(differenceInMonths(lastLifeSignal, now) > 6){
             liquidate();
-            emit inheritanceClaim(true, "Contract liquidated successfully.");
         }
         bool all = allManagersInformedDecease();
-        if(all && differenceInMonths(lastLifeSignal, now) > 3){
+        if(all && differenceInMonths(lastLifeSignal, now) > 3){          
             liquidate();
-            emit inheritanceClaim(true, "Contract liquidated successfully.");
         }
         string memory message = "";
         if(!all){
@@ -345,13 +326,9 @@ contract Testament {
     }
 
     function informOwnerDecease() public onlyNotSuspendedManager {
-        for(uint i = 0; i < managers.length; i++){
-            if(managers[i].account == msg.sender){
-                managers[i].hasInformedDecease = true;
-            }
-        }
+        uint i = getManagerPos(msg.sender);
+        managers[i].hasInformedDecease = true;
     }
-
 
     function claimToOrganization() public onlyOrganization{
         require(differenceInMonths(lastLifeSignal, now) > 36, "36 months haven't passed for the organization to claim the funds");
@@ -380,6 +357,7 @@ contract Testament {
         if (!eligibleHeirsAvailable) {
             rules.charitableOrganization().transfer(inheritanceAfterCosts);
         }
+        emit inheritanceClaim(true, "Contract liquidated successfully.");
         // Destruct the contract and send the remaining to the last heir.
         selfdestruct(heirsData[heirsData.length - 1].heir);
     }
@@ -407,23 +385,18 @@ contract Testament {
     }
 
     function updateManagerDebt(address account, uint ammount) private{
-        for(uint i = 0; i < managers.length; i++){
-            if(managers[i].account == account){
-                require(!exceedsAllowedPercentage(managers[i].debt, ammount), "Cannot withdraw this ammount, exceeds limit");
-                if(managers[i].debt == 0){
-                    managers[i].withdrawalDate = now;
-                }
-                managers[i].debt += ammount;
-                return;
-            }
+        uint i = getManagerPos(account);
+        require(!exceedsAllowedPercentage(managers[i].debt, ammount), "Cannot withdraw this ammount, exceeds limit");
+        if(managers[i].debt == 0){
+            managers[i].withdrawalDate = now;
         }
+        managers[i].debt += ammount;
+        return;
     }
 
     function exceedsAllowedPercentage(uint accumDebt, uint newWithdrawal) private view returns(bool) {
         return (accumDebt + newWithdrawal) > ((totalInheritance * maxWithdrawalPercentage) / 100) ;
     }
-
-
 
     function allowBalanceRead(bool allowed) public onlyOwner {
         balanceVisible = allowed;
@@ -457,13 +430,8 @@ contract Testament {
     }
 
     function isManagerDebtExpired(address account) private view returns (bool){
-        for(uint i = 0; i < managers.length; i++){
-            if(account != managers[i].account){
-                continue;
-            }
-            return hasExpiredDebt(managers[i]);
-        }
-        return false;
+        uint i = getManagerPos(account);
+        return hasExpiredDebt(managers[i]);
     }
 
     function hasExpiredDebt(DataStructures.ManagerData memory manager) private view returns(bool){
@@ -511,11 +479,10 @@ contract Testament {
                 }
             }
         }
-
     }
 
     function differenceInMonths(uint date1, uint date2) public view returns (uint){
-        int diffSeconds = int(date1 - date2);
+        int diffSeconds = int(date2) - int(date1);
         int diffMonths = diffSeconds / int(monthInSeconds);
         if(diffMonths < 0){
             return uint(-diffMonths);
@@ -525,20 +492,12 @@ contract Testament {
 
     function differenceInDays(uint date1, uint date2) public pure returns (uint){
         int dayInSeconds = 3600 * 24;
-        int diffSeconds = int(date1 - date2);
+        int diffSeconds = int(date2 - date1);
         int diffDays = diffSeconds / dayInSeconds;
         if(diffDays < 0){
             return uint(-diffDays);
         }
         return uint(diffDays);
-    }
-
-    function belowManagersUpperLimit(uint count) private pure returns (bool) {
-        return count <= 5;
-    }
-
-    function aboveManagersLowerLimit(uint count) private pure returns (bool) {
-        return count >= 2;
     }
 
     function getManagerPos(address account) private view returns (uint){
@@ -548,6 +507,15 @@ contract Testament {
             }
         }
         require(false, "Manager does not exist.");
+    }
+
+    function getHeirPos(address account) private view returns(uint){
+        for(uint i = 0; i < heirsData.length; i++){
+            if(heirsData[i].heir == account){
+                return i;
+            }
+        }
+        require(false, "Heir does not exist.");
     }
 
     function setMonthLengthToOriginal() public {
