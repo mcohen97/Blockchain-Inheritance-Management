@@ -116,7 +116,7 @@ contract Testament {
     function setHeirs(address payable[] memory _heirs, uint8[] memory _percentages) private {
         for(uint i = 0; i < _heirs.length; i++){
             if(users[_heirs[i]]==0){
-                heirsData.push(DataStructures.HeirData(_heirs[i], _percentages[i], false));
+                heirsData.push(DataStructures.HeirData(_heirs[i], _percentages[i], false, false));
                 users[_heirs[i]] = 3;
             }
         }
@@ -158,7 +158,7 @@ contract Testament {
         require(users[heir]==0, "Invalid heir, selected address already has another role");
         users[heir] = 3;
         if(priority == heirsData.length) {
-            heirsData.push(DataStructures.HeirData(heir, percentage, false));
+            heirsData.push(DataStructures.HeirData(heir, percentage, false, false));
             adjustRestOfPercentages(priority);
             return;
         }
@@ -167,7 +167,7 @@ contract Testament {
         for(uint i = len; i > priority; i--) {
             heirsData[i] = heirsData[i-1];
         }
-        heirsData[priority] = DataStructures.HeirData(heir, percentage, false);
+        heirsData[priority] = DataStructures.HeirData(heir, percentage, false, false);
         adjustRestOfPercentages(priority);
     }
 
