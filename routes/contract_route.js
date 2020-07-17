@@ -272,11 +272,11 @@ router.post("/inform_owner_decease", async function(req, res){
   try{
     const executor = req.body.from;
     const contract = contractService.getTestamentContract();
-    let result = await contract.methods.informOwnerDecease().send({
+    await contract.methods.informOwnerDecease().send({
       from: executor
   });
 
-  res.status(200).send(result);
+  res.status(200).send('OK');
   }catch(error){
     res.status(500).send(`Cannot execute method: ${error.message}`);
   }
