@@ -36,9 +36,12 @@ router.get("/heirs/:pos", async function(req, res){
       from: executor
     });
     
-    let response = {heir:result.heir, percentage: result.percentage, isDeceased: result.isDeceased}
+    let response = {heir:result.account, percentage: result.percentage, is_dead: result.isDead, 
+      has_minor_child: result.hasMinorChild}
+    if(response.has_minor_child) {
+      response['priority_before_child_announced'] = result.priorityBeforeChild;
+    }
     res.status(200).send(response);
-
   }catch(error){
     res.status(500).send(`Cannot execute method: ${error.message}`);
     console.log(`Cannot execute method: ${error.message}`);
@@ -91,6 +94,25 @@ router.put("/heirs/:address/percentage", async function(req, res){
     const contract = contractService.getTestamentContract();
 
     let result = await contract.methods.changeHeirPercentage(heir, percentage)
+      .send({
+          from: executor
+      });
+
+    res.status(200).send('Ok');
+
+  }catch(error){
+    res.status(500).send(`Cannot execute method: ${error.message}`);
+  }
+});
+
+
+router.put("/heirs/:address/minor", async function(req, res){
+  try{
+    const executor = req.body.from;
+    const heir = req.params.address;
+    const contract = contractService.getTestamentContract();
+
+    await contract.methods.announceHeirMinorChild(heir)
       .send({
           from: executor
       });
