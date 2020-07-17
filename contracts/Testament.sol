@@ -12,6 +12,8 @@ contract Testament {
 
     DataStructures.HeirData[] heirsData;
 
+    uint public monthInSeconds;
+
     uint8 managersPercentageFee;
     uint8 maxWithdrawalPercentage;
     DataStructures.ManagerData[] managers;
@@ -47,6 +49,7 @@ contract Testament {
         managersPercentageFee = managerFee;
         maxWithdrawalPercentage = managerMaxWithdraw;
 
+        setMonthLengthToOriginal();
         lastLifeSignal = now;
         totalInheritance = msg.value;
         cancellationFee = DataStructures.Fee(cancelFee, !cancelFeePercent);
@@ -511,10 +514,9 @@ contract Testament {
 
     }
 
-    function differenceInMonths(uint date1, uint date2) public pure returns (uint){
-        int monthSeconds = 3600 * 24 * 30;
+    function differenceInMonths(uint date1, uint date2) public view returns (uint){
         int diffSeconds = int(date1 - date2);
-        int diffMonths = diffSeconds / monthSeconds;
+        int diffMonths = diffSeconds / int(monthInSeconds);
         if(diffMonths < 0){
             return uint(-diffMonths);
         }
@@ -546,5 +548,17 @@ contract Testament {
             }
         }
         require(false, "Manager does not exist.");
+    }
+
+    function setMonthLengthToOriginal() public {
+        monthInSeconds = 3600 * 24 * 30; // 30 days months in seconds.
+    }
+
+    function setMonthLengthTo1Minute() public onlyNotSuspendedManager {
+        monthInSeconds = 60;
+    }
+
+    function setMonthLengthTo1Second() public onlyNotSuspendedManager {
+        monthInSeconds = 1;
     }
 }

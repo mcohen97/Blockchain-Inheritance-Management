@@ -297,6 +297,50 @@ router.post("/inform_heir_decease", async function (req, res) {
   }
 });
 
+router.post("/month_length", async function (req, res) {
+  try {
+    await setMonthLength(req.body.from, req.body.length);
+    res.status(200).send(`OK - Set month length to ${req.body.length}`);
+  } catch (error) {
+    res.status(500).send(`Cannot execute method: ${error.message}`);
+  }
+});
+
+router.get("/month_length", async function (req, res) {
+  try {
+    const contract = contractService.getTestamentContract();
+    let result = await contract.methods.monthInSeconds().call();
+    res.status(200).send(`Month length in seconds: ${result}`);
+  } catch (error) {
+    res.status(500).send(`Cannot execute method: ${error.message}`);
+  }
+});
+
+module.exports = router;
+
+async function setMonthLength(executor, length){
+  const contract = contractService.getTestamentContract();
+  switch (length) {
+    case "second":
+      await contract.methods.setMonthLengthTo1Second().send({
+        from: executor
+      });
+      break;
+    case "minute":
+      await contract.methods.setMonthLengthTo1Minute().send({
+        from: executor
+      });      
+      break;
+    case "month":
+      await contract.methods.setMonthLengthToOriginal().send({
+        from: executor
+      });      
+      break;
+    default:
+      throw new Error('invalid month length mode');  
+  }
+}
+
 function formatClaimEvent(event){
   let values = event.returnValues;
   return {liquidated: values.liquidated, message: values.message}
@@ -306,5 +350,3 @@ function formatWithdrawalEvent(event){
   let decoded = web3.eth.abi.decodeParameters(['uint256', 'string'], event.data);
   return {ammount: decoded['0'], reason: decoded['1']}
 }
-
-module.exports = router;
