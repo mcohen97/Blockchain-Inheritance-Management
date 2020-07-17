@@ -17,10 +17,16 @@ const contractRoute = require('./routes/contract_route');
 const managersRoute = require('./routes/managers_route');
 const heirsRoute = require('./routes/heirs_route');
 const lawsRoute = require('./routes/laws_contract_route');
+const timeConfigRoute = require('./routes/time_route');
+const inheritanceRoute = require('./routes/inheritance_route');
+const withdrawalsRoute = require('./routes/withdrawals_route');
 
 app.use('/api/contract', contractRoute);
 app.use('/api/contract', managersRoute);
 app.use('/api/contract', heirsRoute);
+app.use('/api/contract/time', timeConfigRoute);
+app.use('/api/contract/inheritance', inheritanceRoute);
+app.use('/api/contract/withdrawals', withdrawalsRoute);
 app.use('/api/laws', lawsRoute);
 
 app.listen(port, () => console.log('Listening on port 3000'));
