@@ -13,6 +13,7 @@ contract Testament {
     DataStructures.HeirData[] heirsData;
 
     uint public monthInSeconds;
+    uint public dayInSeconds;
 
     uint8 managersPercentageFee;
     uint8 maxWithdrawalPercentage;
@@ -51,7 +52,7 @@ contract Testament {
         managersPercentageFee = managerFee;
         maxWithdrawalPercentage = managerMaxWithdraw;
 
-        setMonthLengthToOriginal();
+        resetTimeDimensions();
         lastLifeSignal = now;
         totalInheritance = msg.value;
         cancellationFee = DataStructures.Fee(cancelFee, !cancelFeePercent);
@@ -483,22 +484,20 @@ contract Testament {
     }
 
     function differenceInMonths(uint date1, uint date2) public view returns (uint){
-        int diffSeconds = int(date2) - int(date1);
-        int diffMonths = diffSeconds / int(monthInSeconds);
-        if(diffMonths < 0){
-            return uint(-diffMonths);
-        }
-        return uint(diffMonths);
+        return timeDiff(date1, date2, monthInSeconds);
     }
 
-    function differenceInDays(uint date1, uint date2) public pure returns (uint){
-        int dayInSeconds = 3600 * 24;
-        int diffSeconds = int(date2 - date1);
-        int diffDays = diffSeconds / dayInSeconds;
-        if(diffDays < 0){
-            return uint(-diffDays);
+    function differenceInDays(uint date1, uint date2) public view returns (uint){
+        return timeDiff(date1, date2, dayInSeconds);
+    }
+
+    function timeDiff(uint date1, uint date2, uint unit) public pure returns(uint){
+        int diffSeconds = int(date2) - int(date1);
+        int diffUnit = diffSeconds / int(unit);
+        if(diffUnit < 0){
+            return uint(-diffUnit);
         }
-        return uint(diffDays);
+        return uint(diffUnit);
     }
 
     function getManagerPos(address account) private view returns (uint){
@@ -519,15 +518,16 @@ contract Testament {
         require(false, "Heir does not exist.");
     }
 
-    function setMonthLengthToOriginal() public {
-        monthInSeconds = 3600 * 24 * 30; // 30 days months in seconds.
+    function resetTimeDimensions() public {
+        dayInSeconds = 3600 * 24;
+        monthInSeconds = dayInSeconds * 30; // 30 days months in seconds.
     }
 
-    function setMonthLengthTo1Minute() public onlyNotSuspendedManager {
-        monthInSeconds = 60;
+    function setMonthLengthSeconds(uint secs) public onlyNotSuspendedManager {
+        monthInSeconds = secs;
     }
 
-    function setMonthLengthTo1Second() public onlyNotSuspendedManager {
-        monthInSeconds = 1;
+    function setDayLengthSeconds(uint secs) public onlyNotSuspendedManager {
+        dayInSeconds = secs;
     }
 }
