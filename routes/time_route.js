@@ -11,30 +11,10 @@ router.post("/month_length", async function (req, res) {
   }
 });
 
-router.get("/month_length", async function (req, res) {
-  try {
-    const contract = contractService.getTestamentContract();
-    let result = await contract.methods.monthInSeconds().call();
-    res.status(200).send(`Month length in seconds: ${result}`);
-  } catch (error) {
-    res.status(500).send(`Cannot execute method: ${error.message}`);
-  }
-});
-
 router.post("/day_length", async function (req, res) {
   try {
     await setDayLength(req.body.from, req.body.length);
     res.status(200).send(`OK - Set day length to ${req.body.length}`);
-  } catch (error) {
-    res.status(500).send(`Cannot execute method: ${error.message}`);
-  }
-});
-
-router.get("/day_length", async function (req, res) {
-  try {
-    const contract = contractService.getTestamentContract();
-    let result = await contract.methods.dayInSeconds().call();
-    res.status(200).send(`Day length in seconds: ${result}`);
   } catch (error) {
     res.status(500).send(`Cannot execute method: ${error.message}`);
   }
