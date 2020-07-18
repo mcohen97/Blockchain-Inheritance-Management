@@ -54,9 +54,9 @@ router.get("/owner", async function(req, res){
     let result = await contract.methods.getOwnersInformation().call({
         from: caller
     });
-
+    
     let ownerData = {'account': result[0], 'full_name': result[1], 'id_number': result[2], 
-    'birth_date': result[3], 'home_address': result[4], 'telephone': result[5], 'email': result[6],
+    'birth_date': utils.unixToDateString(result[3]), 'home_address': result[4], 'telephone': result[5], 'email': result[6],
     'issue_date': utils.unixToDateString(result[7])};
 
     res.status(200).send(ownerData);

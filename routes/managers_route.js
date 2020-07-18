@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const contractService = require('../services/contract.service');
+const utils = require('../services/utils');
 const { default: Web3 } = require('web3');
 
 router.delete("/managers/:address", async function(req, res){
@@ -49,7 +50,8 @@ router.get("/managers/:pos", async function(req, res){
       from: executor
     });
 
-    let response = {account: result.account, debt: result.debt, withdrawal_date: result.withdrawalDate, 
+    let withDate = result.withdrawalDate == 0 ? undefined : utils.unixToDateString(result.withdrawalDate);
+    let response = {account: result.account, debt: result.debt, withdrawal_date: withDate, 
       has_informed_decease: result.hasInformedDecease}
     res.status(200).send(response);
 
