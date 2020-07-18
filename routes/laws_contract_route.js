@@ -41,7 +41,7 @@ router.get("", async function (req, res) {
   try {
     const contract = contractService.getLawsContract();
     let response = {
-      dollarEtherConversion: await contract.methods.dollarEtherConversion().call(),
+      dollarToWeiConversion: await contract.methods.dollarToWeiConversion().call(),
       withdrawalFeePercent: await contract.methods.withdrawalFeePercent().call(),
       charitableOrganization: await contract.methods.charitableOrganization().call()
     }
@@ -51,12 +51,12 @@ router.get("", async function (req, res) {
   }
 });
 
-router.put("/dollarEtherConversion", async function (req, res) {
+router.put("/dollarToWeiConversion", async function (req, res) {
   try {
     const executor = req.body.from;
-    const dollarEtherConversion = req.body.dollarEtherConversion;
+    const dollarToWeiConversion = req.body.dollarToWeiConversion;
     const contract = contractService.getLawsContract();
-    let result = await contract.methods.changeDollarEtherConversion(dollarEtherConversion)
+    let result = await contract.methods.changeDollarToWeiConversion(dollarToWeiConversion)
       .send({
         from: executor
       });

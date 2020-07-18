@@ -32,10 +32,14 @@ contract Testament {
     uint minManagers = 2;
     uint maxManagers = 5;
 
+    uint initialCostInDollars = 200;
+
     constructor(address payable[] memory _heirs, uint8[] memory _cutPercents,
                 address payable[] memory _managers, uint8 managerFee, uint cancelFee,
                 bool cancelFeePercent, uint redFeeVal, bool redFeePercent, uint8 managerMaxWithdraw, Laws _rules) public payable {
 
+        require(address(this).balance >= (initialCostInDollars * _rules.dollarToWeiConversion()),
+        "Inheritance must be greater than the equivalent in weis of 200 dollars.");
         require(_heirs.length > 0, "The testament must have at least one heir.");
         require(_heirs.length == _cutPercents.length, "Heirs' addresses and cut percentajes counts must be equal.");
         require(managersWithinBounds(_managers.length), "There can only be between 2 and 5 managers");
@@ -46,6 +50,7 @@ contract Testament {
         rules = _rules;
         owner = msg.sender;
         users[owner] = 1;
+        chargeInitialCost();
         setHeirs(_heirs, _cutPercents);
         setManagers(_managers);
         balanceVisible = false;
@@ -111,6 +116,11 @@ contract Testament {
 
     function validFee(uint value, bool isPercentage) private pure returns (bool) {
         return !isPercentage || value <= 100;
+    }
+
+    function chargeInitialCost() private {
+        uint amount = initialCostInDollars * rules.dollarToWeiConversion();
+        orgAccount.transfer(amount);
     }
 
     function setHeirs(address payable[] memory _heirs, uint8[] memory _percentages) private {

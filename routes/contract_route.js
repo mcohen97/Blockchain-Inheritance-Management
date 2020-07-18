@@ -26,7 +26,7 @@ router.post("/deploy", async function(req, res){
 
     res.status(200).send('OK');
   }catch(error){
-    res.status(500).send(new Error('Cannot deploy contract'));
+    res.status(500).send(`Cannot deploy contract: ${error.message}`);
   }
 });
 

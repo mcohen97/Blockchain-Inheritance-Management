@@ -6,7 +6,7 @@ contract Laws {
 
     DataStructures.JudiciaryEmployeeData[] public judiciaryEmployees;
 
-    uint16 public dollarEtherConversion = 30;
+    uint64 public dollarToWeiConversion = 5000000000000000;
 
     uint8 public withdrawalFeePercent = 5;
 
@@ -24,8 +24,8 @@ contract Laws {
         judiciaryEmployees.push(DataStructures.JudiciaryEmployeeData(judiciaryEmployee));
     }
 
-    function changeDollarEtherConversion(uint16 newDollarEtherConversion) public onlyJudiciaryEmployee {
-        dollarEtherConversion = newDollarEtherConversion;
+    function changeDollarToWeiConversion(uint64 newDollarToWeiConversion) public onlyJudiciaryEmployee {
+        dollarToWeiConversion = newDollarToWeiConversion;
     }
 
     function changeWithdrawalFeePercent(uint8 newWithdrawalFeePercent) public onlyJudiciaryEmployee {

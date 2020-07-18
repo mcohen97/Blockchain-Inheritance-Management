@@ -97,7 +97,7 @@ class ContractService{
 
   getLawsContract(){
     const config = getConfig()
-    const abi = getContractBytecode(contractLaws);
+    const abi = getContractAbi(contractLaws);
 
     return new web3.eth.Contract(abi,config.lawsAddress);
   }
