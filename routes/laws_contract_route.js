@@ -43,6 +43,8 @@ router.get("", async function (req, res) {
     let response = {
       dollarToWeiConversion: await contract.methods.dollarToWeiConversion().call(),
       withdrawalFeePercent: await contract.methods.withdrawalFeePercent().call(),
+      withdrawalFinePercent: await contract.methods.withdrawalFinePercent().call(),
+      withdrawalFineMaxDays: await contract.methods.withdrawalFineMaxDays().call(),
       charitableOrganization: await contract.methods.charitableOrganization().call()
     }
     res.status(200).send(response);
@@ -72,6 +74,36 @@ router.put("/withdrawalFeePercent", async function (req, res) {
     const withdrawalFeePercent = req.body.withdrawalFeePercent;
     const contract = contractService.getLawsContract();
     let result = await contract.methods.changeWithdrawalFeePercent(withdrawalFeePercent)
+      .send({
+        from: executor
+      });
+    res.status(200).send('Ok');
+  } catch (error) {
+    res.status(500).send(`Cannot execute method: ${error.message}`);
+  }
+});
+
+router.put("/withdrawalFinePercent", async function (req, res) {
+  try {
+    const executor = req.body.from;
+    const withdrawalFinePercent = req.body.withdrawalFinePercent;
+    const contract = contractService.getLawsContract();
+    let result = await contract.methods.changeWithdrawalFinePercent(withdrawalFinePercent)
+      .send({
+        from: executor
+      });
+    res.status(200).send('Ok');
+  } catch (error) {
+    res.status(500).send(`Cannot execute method: ${error.message}`);
+  }
+});
+
+router.put("/withdrawalFineMaxDays", async function (req, res) {
+  try {
+    const executor = req.body.from;
+    const withdrawalFineMaxDays = req.body.withdrawalFineMaxDays;
+    const contract = contractService.getLawsContract();
+    let result = await contract.methods.changeWithdrawalFineMaxDays(withdrawalFineMaxDays)
       .send({
         from: executor
       });
