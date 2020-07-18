@@ -1,6 +1,7 @@
 const express = require('express');
 const Web3 = require('web3');
 const bodyParser = require('body-parser');
+const HDWalletProvider = require('truffle-hdwallet-provider');
 
 const port = process.env.port || 3000;
 
@@ -8,9 +9,14 @@ const app = express();
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
+const seedPhrase = 'wolf cake game reason oyster clutch artefact prevent poverty flat stumble mansion';
+const accessPoint = 'https://ropsten.infura.io/v3/8fca5fe5d6f048b7ba0a9cad31a27def';
+
 //HTTP://127.0.0.1:7545
-const provider = new Web3.providers.HttpProvider('HTTP://127.0.0.1:7545');
-web3 = new Web3(provider);
+const ganacheProvider = new Web3.providers.HttpProvider('HTTP://127.0.0.1:7545');
+const infuraProvider = new HDWalletProvider(seedPhrase, accessPoint, 0,10);
+
+web3 = new Web3(infuraProvider);
 
 //routes
 const contractRoute = require('./routes/contract_route');
