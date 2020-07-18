@@ -22,7 +22,7 @@ router.post("/deploy", async function(req, res){
 
     await contractService.deployTestament(body.heirs, body.percentages, body.managers, body.manager_fee, body.cancellation_fee, 
       body.is_cancel_fee_percent, body.reduction_fee, body.is_reduction_fee_percent, body.max_withdrawal_percentage,
-      body.from, ownerInfo, body.inheritance_in_ethers);
+      body.from, ownerInfo, body.inheritance_in_ethers, body.org_account);
 
     res.status(200).send('OK');
   }catch(error){

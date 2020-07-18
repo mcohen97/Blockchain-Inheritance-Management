@@ -49,7 +49,7 @@ class ContractService{
   }
 
   async deployTestament(heirs, percentages, managers,managerFee ,cancellationFee, isCancFeePercentage, reductionFee,
-     isRedFeePercent, maxWithdrawalPercentage, owner, ownerData, inheritanceEthers){
+     isRedFeePercent, maxWithdrawalPercentage, owner, ownerData, inheritanceEthers, organizationAccount){
 
     const bytecode = getContractBytecode(contractTestament);
     const abi = getContractAbi(contractTestament);
@@ -60,7 +60,7 @@ class ContractService{
         .deploy({
           data: '0x' + bytecode.object,
           arguments: [heirs, percentages, managers, managerFee, cancellationFee, isCancFeePercentage,
-          reductionFee, isRedFeePercent, maxWithdrawalPercentage, config.lawsAddress]
+          reductionFee, isRedFeePercent, maxWithdrawalPercentage, config.lawsAddress, organizationAccount]
         })
         .send({
           gas: '6000000',

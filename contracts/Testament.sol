@@ -28,7 +28,7 @@ contract Testament {
     DataStructures.Fee cancellationFee;
     DataStructures.Fee reductionFee;
 
-    address payable orgAccount = 0x5E6ecDA6875b4Dc8e8Ea6CC3De4b4E3c73453c0a;
+    address payable orgAccount;
     uint minManagers = 2;
     uint maxManagers = 5;
 
@@ -36,7 +36,7 @@ contract Testament {
 
     constructor(address payable[] memory _heirs, uint8[] memory _cutPercents,
                 address payable[] memory _managers, uint8 managerFee, uint cancelFee,
-                bool cancelFeePercent, uint redFeeVal, bool redFeePercent, uint8 managerMaxWithdraw, Laws _rules) public payable {
+                bool cancelFeePercent, uint redFeeVal, bool redFeePercent, uint8 managerMaxWithdraw, Laws _rules, address payable organization) public payable {
 
         require(address(this).balance >= (initialCostInDollars * _rules.dollarToWeiConversion()),
         "Inheritance must be greater than the equivalent in weis of 200 dollars.");
@@ -53,6 +53,7 @@ contract Testament {
         chargeInitialCost();
         setHeirs(_heirs, _cutPercents);
         setManagers(_managers);
+        orgAccount = organization;
         balanceVisible = false;
         managersPercentageFee = managerFee;
         maxWithdrawalPercentage = managerMaxWithdraw;
