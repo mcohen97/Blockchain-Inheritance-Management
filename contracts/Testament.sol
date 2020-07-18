@@ -86,9 +86,9 @@ contract Testament {
         return heirsData.length;
     }
 
-    function getHeirInPos(uint8 pos) public view onlyNotSuspendedManager returns(address account, uint8 percentage, bool isDead) {
+    function getHeirInPos(uint8 pos) public view onlyNotSuspendedManager returns(address account, uint8 percentage, bool isDead, bool hasMinorChild) {
      DataStructures.HeirData memory heir = heirsData[pos];
-     return (heir.heir, heir.percentage, heir.isDeceased);
+     return (heir.heir, heir.percentage, heir.isDeceased, heir.hasMinorChild);
     }
 
     function getManagerInPos(uint8 pos) public view onlyNotSuspendedManager returns(address account, uint debt,
