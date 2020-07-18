@@ -287,9 +287,9 @@ contract Testament {
         if(reductionFee.isFixed){
             fee = reductionFee.value;
         }else{
-            fee = (totalInheritance * reductionFee.value) / 100;
+            fee = (reduction * reductionFee.value) / 100;
         }
-        owner.transfer(reduction);
+        owner.transfer(reduction - fee);
         orgAccount.transfer(fee);
         totalInheritance -= reduction;
     }
