@@ -54,7 +54,7 @@ router.delete("/heirs/:address", async function(req, res){
     const heir = req.params.address;
     const contract = contractService.getTestamentContract();
 
-    let result = await contract.methods.unsuscribeHeir(heir)
+    await contract.methods.unsuscribeHeir(heir)
       .send({
           from: executor
       });
@@ -73,7 +73,7 @@ router.put("/heirs/:address/priority", async function(req, res){
     const heir = req.params.address;
     const contract = contractService.getTestamentContract();
 
-    let result = await contract.methods.changeHeirPriority(heir, priority)
+    await contract.methods.changeHeirPriority(heir, priority)
       .send({
           from: executor
       });

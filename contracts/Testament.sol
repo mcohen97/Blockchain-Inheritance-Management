@@ -12,8 +12,8 @@ contract Testament {
 
     DataStructures.HeirData[] heirsData;
 
-    uint public monthInSeconds;
-    uint public dayInSeconds;
+    uint monthInSeconds;
+    uint dayInSeconds;
 
     uint8 managersPercentageFee;
     uint8 maxWithdrawalPercentage;
@@ -209,11 +209,11 @@ contract Testament {
         }
     }
 
-   /* function changeHeirPriority(address payable heir, uint8 newPriority) public onlyOwner {
+    function changeHeirPriority(address payable heir, uint8 newPriority) public onlyOwner {
         uint curP = getHeirPos(heir);
         if(curP == newPriority) return;
         movePriority(uint8(curP), (newPriority - 1)); // It is 0 based.
-    }*/
+    }
 
     function movePriority(uint8 oldPriority, uint8 newPriority) private {
         DataStructures.HeirData memory toChangePriority = heirsData[oldPriority];
@@ -314,7 +314,7 @@ contract Testament {
 
     function announceHeirMinorChild(address payable heir) public onlyNotSuspendedManager {
         uint i = getHeirPos(heir);
-        heirsData[i].isDeceased = true;
+        heirsData[i].hasMinorChild = true;
         movePriority(uint8(i), 0);
     }
 
