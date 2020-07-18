@@ -86,7 +86,8 @@ contract Testament {
         return heirsData.length;
     }
 
-    function getHeirInPos(uint8 pos) public view onlyNotSuspendedManager returns(address account, uint8 percentage, bool isDead, bool hasMinorChild) {
+    function getHeirInPos(uint8 pos) public view onlyNotSuspendedManager returns(address account, uint8 percentage,
+                                                                                 bool isDead, bool hasMinorChild) {
      DataStructures.HeirData memory heir = heirsData[pos];
      return (heir.heir, heir.percentage, heir.isDeceased, heir.hasMinorChild);
     }
@@ -308,8 +309,6 @@ contract Testament {
         passInheritanceToOtherHeir(uint8(i));
     }
 
-    event inheritanceClaim(bool liquidated, string message);
-
     function claimInheritance() public onlyNotSuspendedManagerOrHeir {
 
         if(differenceInMonths(lastLifeSignal, now) > 6){
@@ -325,7 +324,7 @@ contract Testament {
         }else{
             message = "All managers informed the owners's decease, but 3 months haven't passed since last owner's signal";
         }
-        emit inheritanceClaim(false, message);
+        require(false, message);
     }
 
     function allManagersInformedDecease() private view returns (bool) {
@@ -343,8 +342,8 @@ contract Testament {
     }
 
     function claimToOrganization() public onlyOrganization{
-        require(differenceInMonths(lastLifeSignal, now) > 36, "36 months haven't passed for the organization to claim the funds");
-        emit inheritanceClaim(true, "Contract liquidated by the organization.");
+        require(differenceInMonths(lastLifeSignal, now) > 36,
+        "36 months haven't passed for the organization to claim the funds");
         selfdestruct(orgAccount);
     }
 
@@ -369,7 +368,6 @@ contract Testament {
         if (!eligibleHeirsAvailable) {
             rules.charitableOrganization().transfer(inheritanceAfterCosts);
         }
-        emit inheritanceClaim(true, "Contract liquidated successfully.");
         // Destruct the contract and send the remaining to the last heir.
         selfdestruct(heirsData[heirsData.length - 1].heir);
     }

@@ -76,8 +76,7 @@ router.get("/organization_claim", async function(req, res){
         from: executor
     });
 
-    response = formatClaimEvent(result.events.inheritanceClaim);
-    res.status(200).send(response);
+    res.status(200).send('Inheritance liquidated successfully.');
 
   }catch(error){
     res.status(500).send(`Cannot execute method: ${error.message}`);
