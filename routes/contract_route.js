@@ -20,11 +20,11 @@ router.post("/deploy", async function(req, res){
     ownerInfo = {fullName: ownerInfo.full_name, id: ownerInfo.id, birthDate: ownerInfo.birth_date, 
       homeAddress: ownerInfo.home_address, telephone: ownerInfo.telephone, email: ownerInfo.email}
 
-    await contractService.deployTestament(body.heirs, body.percentages, body.managers, body.manager_fee, body.cancellation_fee, 
+    let result = await contractService.deployTestament(body.heirs, body.percentages, body.managers, body.manager_fee, body.cancellation_fee, 
       body.is_cancel_fee_percent, body.reduction_fee, body.is_reduction_fee_percent, body.max_withdrawal_percentage,
       body.from, ownerInfo, body.inheritance_in_ethers, body.org_account);
 
-    res.status(200).send('OK');
+    res.status(result.status).send(result.message);
   }catch(error){
     res.status(500).send(`Cannot deploy contract: ${error.message}`);
   }

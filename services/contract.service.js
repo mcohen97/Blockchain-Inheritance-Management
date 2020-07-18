@@ -56,7 +56,8 @@ class ContractService{
     const config = getConfig();
 
     try{
-      const result = await new web3.eth.Contract(abi)
+      if(config.lawsAddress){
+        const result = await new web3.eth.Contract(abi)
         .deploy({
           data: '0x' + bytecode.object,
           arguments: [heirs, percentages, managers, managerFee, cancellationFee, isCancFeePercentage,
@@ -79,6 +80,10 @@ class ContractService{
             gas: '1000000',
             from: owner
         });
+        return {status: 200, message: 'OK'};
+      }else{
+        return {status: 400, message: 'Laws need to be compiled and deployed first'};
+      }
 
     }catch(error){
       console.log(error.message)
