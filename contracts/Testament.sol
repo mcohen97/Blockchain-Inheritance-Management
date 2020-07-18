@@ -209,15 +209,18 @@ contract Testament {
         }
     }
 
-    function changeHeirPriority(address payable heir, uint8 newPriority) public onlyOwner {
+   /* function changeHeirPriority(address payable heir, uint8 newPriority) public onlyOwner {
         uint curP = getHeirPos(heir);
         if(curP == newPriority) return;
-        DataStructures.HeirData memory toChangePriority = heirsData[curP];
-        
-        if(curP > newPriority) {
-            shiftHeirsRight(newPriority, uint8(curP));
+        movePriority(uint8(curP), (newPriority - 1)); // It is 0 based.
+    }*/
+
+    function movePriority(uint8 oldPriority, uint8 newPriority) private {
+        DataStructures.HeirData memory toChangePriority = heirsData[oldPriority];
+        if(oldPriority > newPriority) {
+            shiftHeirsRight(newPriority, oldPriority);
         }else{
-            shiftHeirsLeft(uint8(curP), newPriority);
+            shiftHeirsLeft(oldPriority, newPriority);
         }
         heirsData[newPriority] = toChangePriority;
     }
@@ -307,6 +310,12 @@ contract Testament {
         uint i = getHeirPos(heir);
         heirsData[i].isDeceased = true;
         passInheritanceToOtherHeir(uint8(i));
+    }
+
+    function announceHeirMinorChild(address payable heir) public onlyNotSuspendedManager {
+        uint i = getHeirPos(heir);
+        heirsData[i].isDeceased = true;
+        movePriority(uint8(i), 0);
     }
 
     function claimInheritance() public onlyNotSuspendedManagerOrHeir {
