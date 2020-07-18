@@ -3,6 +3,32 @@ const router = express.Router();
 const contractService = require('../services/contract.service');
 const { default: Web3 } = require('web3');
 
+
+router.get("/heirs", async function(req, res){
+  try{
+    const executor = req.body.from;
+    
+    const contract = contractService.getTestamentContract();
+
+    let heirsCount = await contract.methods.getHeirsCount().call({
+      from: executor
+    });
+
+    let heirs = [];
+    for (let i = 0; i < heirsCount; i++) {
+      let heir = await contract.methods.getHeirInPos(i).call({
+        from: executor
+      });
+      heirs.push(formatHeirResult(heir, i));
+    }
+
+    res.status(200).send(heirs);
+
+  }catch(error){
+    res.status(500).send(`Cannot execute method: ${error.message}`);
+  }
+});
+
 router.post("/heirs", async function(req, res){
   try{
     const executor = req.body.from;
@@ -36,8 +62,7 @@ router.get("/heirs/:pos", async function(req, res){
       from: executor
     });
     
-    let response = {heir:result.account, percentage: result.percentage, is_dead: result.isDead, 
-      has_minor_child: result.hasMinorChild}
+    let response = formatHeirResult(result, priority);
     if(response.has_minor_child) {
       response['priority_before_child_announced'] = result.priorityBeforeChild;
     }
@@ -126,3 +151,8 @@ router.put("/heirs/:address/minor", async function(req, res){
 
 
 module.exports = router;
+
+function formatHeirResult(result, pos){
+  return {priority: pos+1,heir:result.account, percentage: result.percentage, is_dead: result.isDead, 
+    has_minor_child: result.hasMinorChild}
+}
