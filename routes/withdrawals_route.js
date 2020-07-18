@@ -25,13 +25,20 @@ router.get("/", async function(req, res){
   try{
     const contract = contractService.getTestamentContract();
     let eventMethodName = 'withdrawal(address,uint256,string)';
+    let account = req.body.manager;
     let filterEventMethod = web3.utils.sha3(eventMethodName);
 
+    topics = [filterEventMethod]
+
+    if (account != undefined) {
+      let managerIndex = web3.utils.padLeft(web3.utils.toHex(account), 64);
+      topics = [filterEventMethod, managerIndex]
+    }
     let filters = {
       address: contract._address,
       fromBlock: "0x1",
       toBlock: "latest",
-      topics: [filterEventMethod]
+      topics: topics
     }
 
     let result = await web3.eth.getPastLogs(filters);
