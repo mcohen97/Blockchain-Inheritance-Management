@@ -39,10 +39,10 @@ contract Testament {
                 bool cancelFeePercent, uint redFeeVal, bool redFeePercent, uint8 managerMaxWithdraw, Laws _rules, address payable organization) public payable {
 
         require(address(this).balance >= (initialCostInDollars * _rules.dollarToWeiConversion()),
-        "Inheritance must be greater than the equivalent in weis of 200 dollars.");
-        require(_heirs.length > 0, "The testament must have at least one heir.");
-        require(_heirs.length == _cutPercents.length, "Heirs' addresses and cut percentajes counts must be equal.");
-        require(managersWithinBounds(_managers.length), "There can only be between 2 and 5 managers");
+        "Inheritance must be greater than 200 dollars.");
+        require(_heirs.length > 0, "Must have at least one heir.");
+        require(_heirs.length == _cutPercents.length, "Heirs' addresses and percentajes counts must be equal.");
+        require(managersWithinBounds(_managers.length), "Can only be between 2 and 5 managers");
         require(addUpTo100(_cutPercents), "Percentages must add up to 100");
         require(validFee(cancelFee, cancelFeePercent), "Invalid cancelation fee.");
         require(validFee(redFeeVal, redFeePercent), "Invalid reduction fee.");
@@ -145,8 +145,8 @@ contract Testament {
 
     function suscribeManager(address payable newManager) public onlyOwner {
         require(managers.length + 1 <= maxManagers, "Managers maximum exceeded");
-        require(managersPercentageFee * (managers.length + 1) <= 100, "Managers fees combined make up 100% or more");
-        require(users[newManager]==0, "Invalid manager, selected address already has another role");
+        require(managersPercentageFee * (managers.length + 1) <= 100, "Managers fees combined exceed 100%");
+        require(users[newManager]==0, "Invalid manager, address already has another role");
         managers.push(DataStructures.ManagerData(newManager, 0, 0, false));
         users[newManager] = 2;
     }
@@ -167,7 +167,7 @@ contract Testament {
 
     function suscribeHeir(address payable heir, uint8 percentage, uint8 priority) public onlyOwner {
         require(priority <= heirsData.length, "Invalid priority, must be between 0 and the heirs count");
-        require(users[heir]==0, "Invalid heir, selected address already has another role");
+        require(users[heir]==0, "Invalid heir, address already has another role");
         users[heir] = 3;
         if(priority == heirsData.length) {
             heirsData.push(DataStructures.HeirData(heir, percentage, false, false));
@@ -184,7 +184,7 @@ contract Testament {
     }
 
     function unsuscribeHeir(address payable toDelete) public onlyOwner {
-        require(heirsData.length > 1, "There must be at least one heir in the testament.");
+        require(heirsData.length > 1, "Must be at least one heir.");
 
         uint len = heirsData.length;
         uint i = getHeirPos(toDelete);
@@ -227,7 +227,7 @@ contract Testament {
     }
 
     function changeHeirPercentage(address payable heir, uint8 newPercentage) public onlyOwner {
-        require(newPercentage <= 100, "The new percentage exceeds 100%");
+        require(newPercentage <= 100, "Percentage exceeds 100%");
         uint curP = getHeirPos(heir);
         heirsData[curP].percentage = newPercentage;
         adjustRestOfPercentages(uint8(curP));
@@ -256,7 +256,7 @@ contract Testament {
         if(suspended){
             uint fine = calculateWithdrawalFine(manager);
             require( msg.value >= (manager.debt + fine),
-            "The payment must make up to what the manager owes, plus the fine");
+            "The payment must make up to debt, plus the fine");
         }
 
         if(manager.debt < msg.value){ // If you payed more that you owed, it's your problem.
@@ -268,7 +268,7 @@ contract Testament {
 
     function calculateWithdrawalFine(DataStructures.ManagerData memory manager) private view returns(uint){
         uint finePerDay = manager.debt * rules.withdrawalFinePercent() / 100;
-        uint debtDays = differenceInDays(manager.withdrawalDate, now);
+        uint debtDays = differenceInDays(now, manager.withdrawalDate);
         return finePerDay * min(debtDays, rules.withdrawalFineMaxDays());
     }
 
@@ -282,7 +282,7 @@ contract Testament {
     function reduceInheritance(uint8 cut) public onlyOwner {
         uint reduction = (totalInheritance * cut) / 100;
         require(cut <= 100, "Invalid percentage");
-        require(reduction <= address(this).balance, "There are not enought funds currently.");
+        require(reduction <= address(this).balance, "Not enought funds currently.");
         uint fee;
         if(reductionFee.isFixed){
             fee = reductionFee.value;
@@ -353,7 +353,7 @@ contract Testament {
 
     function claimToOrganization() public onlyOrganization{
         require(differenceInMonths(lastLifeSignal, now) > 36,
-        "36 months haven't passed for the organization to claim the funds");
+        "36 months haven't passed since last signal");
         selfdestruct(orgAccount);
     }
 
@@ -361,6 +361,7 @@ contract Testament {
         uint managersCost = (totalInheritance * managersPercentageFee) / 100;
 
         for(uint8 i = 0; i < managers.length; i++) {
+            if(managers[i].debt >= managersCost) continue; // Solved outside blockchain
             managers[i].account.transfer(managersCost);
         }
 
@@ -406,7 +407,7 @@ contract Testament {
 
     function updateManagerDebt(address account, uint ammount) private{
         uint i = getManagerPos(account);
-        require(!exceedsAllowedPercentage(managers[i].debt, ammount), "Cannot withdraw this ammount, exceeds limit");
+        require(!exceedsAllowedPercentage(managers[i].debt, ammount), "Withdrawal exceeds limit");
         if(managers[i].debt == 0){
             managers[i].withdrawalDate = now;
         }
@@ -423,7 +424,7 @@ contract Testament {
     }
 
     modifier balanceReadAllowed(){
-        require(balanceVisible, "balance read not allowed by the testament's owner.");
+        require(balanceVisible, "Not allowed by the testament's owner.");
         _;
     }
 
@@ -446,7 +447,7 @@ contract Testament {
     }
 
     modifier onlyManager(){
-        require(containsManager(msg.sender), "only the testament's managers can perform this action.");
+        require(containsManager(msg.sender), "Only the testament's managers can perform this action.");
         _;
     }
 
