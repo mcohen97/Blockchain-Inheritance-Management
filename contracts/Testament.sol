@@ -59,7 +59,7 @@ contract Testament {
 
         resetTimeDimensions();
         lastLifeSignal = now;
-        totalInheritance = msg.value;
+        totalInheritance = address(this).balance;
         cancellationFee = DataStructures.Fee(cancelFee, !cancelFeePercent);
         reductionFee = DataStructures.Fee(redFeeVal, !redFeePercent);
     }
