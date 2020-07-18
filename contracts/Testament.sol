@@ -362,7 +362,7 @@ contract Testament {
 
         for(uint8 i = 0; i < managers.length; i++) {
             if(managers[i].debt >= managersCost) continue; // Solved outside blockchain
-            managers[i].account.transfer(managersCost);
+            managers[i].account.transfer(managersCost - managers[i].debt); //Discount debt, which can be 0.
         }
 
         uint inheritanceAfterCosts = address(this).balance;
@@ -370,7 +370,7 @@ contract Testament {
         bool eligibleHeirsAvailable = false;
         for (uint i = 0; i < heirsData.length - 1; i++) {
             DataStructures.HeirData memory heirToTransferTo = heirsData[i];
-            if (isEligibleHeir(heirToTransferTo)) {
+            if (!heirToTransferTo.isDeceased) {
                 eligibleHeirsAvailable = true;
                 heirToTransferTo.heir.transfer((inheritanceAfterCosts * heirsData[i].percentage)/100);
             }
@@ -381,10 +381,6 @@ contract Testament {
         }
         // Destruct the contract and send the remaining to the last heir.
         selfdestruct(heirsData[heirsData.length - 1].heir);
-    }
-
-    function isEligibleHeir(DataStructures.HeirData memory heir) private pure returns(bool) {
-        return !heir.isDeceased;
     }
 
     event withdrawal(address indexed _manager, uint _ammount, string _reason);
