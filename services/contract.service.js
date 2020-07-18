@@ -40,7 +40,7 @@ class ContractService{
         });
         
         config.lawsAddress = result.options.address;
-        fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+        updateConfig(config);
     }catch(error){
       let _error = error;
       console.log(error.message)
