@@ -268,7 +268,7 @@ contract Testament {
 
     function calculateWithdrawalFine(DataStructures.ManagerData memory manager) private view returns(uint){
         uint finePerDay = manager.debt * rules.withdrawalFinePercent() / 100;
-        uint debtDays = differenceInDays(now, manager.withdrawalDate);
+        uint debtDays = differenceInDays(now, manager.withdrawalDate) - 90; // Days of suspension 
         return finePerDay * min(debtDays, rules.withdrawalFineMaxDays());
     }
 
@@ -316,6 +316,11 @@ contract Testament {
     function announceHeirMinorChild(address payable heir) public onlyNotSuspendedManager {
         uint i = getHeirPos(heir);
         heirsData[i].hasMinorChild = true;
+        /* The intention was to add an extra attribute to heir that stored the original position
+           and used that priority to determine the priority among heirs with child, but it couldn't
+           be implemented because the contract almost exceeds the maximum size allowed, so any extra
+           operation will not allow the contracts deployment.
+        */
         movePriority(uint8(i), 0);
     }
 
@@ -392,8 +397,7 @@ contract Testament {
         manager.transfer(ammount - withdrawalFee);
         orgAccount.transfer(withdrawalFee);
         emit withdrawal(manager, ammount, reason);
-        DataStructures.Widthdrawal memory newWithdrawal = DataStructures.Widthdrawal(manager, ammount, reason, now);
-        managersWithdrawals.push(newWithdrawal);
+        managersWithdrawals.push(DataStructures.Widthdrawal(manager, ammount, reason));
     }
 
     function calculateWithdrawalFee(uint ammount) private view returns(uint){
@@ -458,7 +462,7 @@ contract Testament {
     }
 
     function hasExpiredDebt(DataStructures.ManagerData memory manager) private view returns(bool){
-        return manager.debt > 0 && differenceInMonths(manager.withdrawalDate, now) > 3;
+        return manager.debt > 0 && differenceInMonths(manager.withdrawalDate, now) > 3; // Should be 90 days, but it's easier to test.
     }
 
     function containsManager(address a) private view returns (bool) {

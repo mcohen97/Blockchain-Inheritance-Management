@@ -17,6 +17,7 @@ contract DataStructures {
         uint8 percentage;
         bool isDeceased;
         bool hasMinorChild;
+        //uint8 priorityBeforeChildAnnounced -> If added, contract exceeds maximum size.
     }
 
     struct ManagerData {
@@ -27,10 +28,9 @@ contract DataStructures {
     }
 
     struct Widthdrawal {
-        address payable manager;
+        address manager;
         uint ammount;
         string reason;
-        uint256 date;
     }
 
     struct Fee {
