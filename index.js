@@ -16,7 +16,7 @@ const accessPoint = 'https://ropsten.infura.io/v3/8fca5fe5d6f048b7ba0a9cad31a27d
 const ganacheProvider = new Web3.providers.HttpProvider('HTTP://127.0.0.1:7545');
 const infuraProvider = new HDWalletProvider(seedPhrase, accessPoint, 0,10);
 
-web3 = new Web3(infuraProvider);
+web3 = new Web3(ganacheProvider);
 
 //routes
 const contractRoute = require('./routes/contract_route');
@@ -28,8 +28,8 @@ const inheritanceRoute = require('./routes/inheritance_route');
 const withdrawalsRoute = require('./routes/withdrawals_route');
 
 app.use('/api/contract', contractRoute);
-app.use('/api/contract', managersRoute);
-app.use('/api/contract', heirsRoute);
+app.use('/api/contract/manangers', managersRoute);
+app.use('/api/contract/heirs', heirsRoute);
 app.use('/api/contract/time', timeConfigRoute);
 app.use('/api/contract/inheritance', inheritanceRoute);
 app.use('/api/contract/withdrawals', withdrawalsRoute);

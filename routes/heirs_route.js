@@ -4,7 +4,7 @@ const contractService = require('../services/contract.service');
 const { default: Web3 } = require('web3');
 
 
-router.get("/heirs", async function(req, res){
+router.get("/", async function(req, res){
   try{
     const executor = req.body.from;
     
@@ -29,7 +29,7 @@ router.get("/heirs", async function(req, res){
   }
 });
 
-router.post("/heirs", async function(req, res){
+router.post("/", async function(req, res){
   try{
     const executor = req.body.from;
     const address = req.body.heir;
@@ -51,7 +51,7 @@ router.post("/heirs", async function(req, res){
   }
 });
 
-router.get("/heirs/:pos", async function(req, res){
+router.get("/:pos", async function(req, res){
 
   try{
     const executor = req.body.from;
@@ -73,7 +73,7 @@ router.get("/heirs/:pos", async function(req, res){
   }
 });
 
-router.delete("/heirs/:address", async function(req, res){
+router.delete("/:address", async function(req, res){
   try{
     const executor = req.body.from;
     const heir = req.params.address;
@@ -91,7 +91,7 @@ router.delete("/heirs/:address", async function(req, res){
   }
 });
 
-router.put("/heirs/:address/priority", async function(req, res){
+router.put("/:address/priority", async function(req, res){
   try{
     const executor = req.body.from;
     const priority = req.body.priority;
@@ -111,7 +111,7 @@ router.put("/heirs/:address/priority", async function(req, res){
 });
 
 
-router.put("/heirs/:address/percentage", async function(req, res){
+router.put("/:address/percentage", async function(req, res){
   try{
     const executor = req.body.from;
     const percentage = req.body.percentage;
@@ -131,7 +131,7 @@ router.put("/heirs/:address/percentage", async function(req, res){
 });
 
 
-router.put("/heirs/:address/minor", async function(req, res){
+router.put("/:address/minor", async function(req, res){
   try{
     const executor = req.body.from;
     const heir = req.params.address;

@@ -4,7 +4,7 @@ const contractService = require('../services/contract.service');
 const utils = require('../services/utils');
 const { default: Web3 } = require('web3');
 
-router.delete("/managers/:address", async function(req, res){
+router.delete("/:address", async function(req, res){
   try{
     const executor = req.body.from;
     const manager = req.params.address;
@@ -22,7 +22,7 @@ router.delete("/managers/:address", async function(req, res){
   }
 });
 
-router.post("/managers", async function(req, res){
+router.post("/", async function(req, res){
   try{
     const executor = req.body.from;
     const address = req.body.manager;
@@ -40,7 +40,7 @@ router.post("/managers", async function(req, res){
   }
 });
 
-router.get("/managers", async function(req, res){
+router.get("/", async function(req, res){
   try{
     const executor = req.body.from;
     const contract = contractService.getTestamentContract();
