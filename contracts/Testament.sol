@@ -87,6 +87,10 @@ contract Testament {
         return heirsData.length;
     }
 
+    /*function getWithdrawal(uint8 pos) public view onlyOwner returns(address manager, uint ammount, string memory reason){
+        return (managersWithdrawals[pos].manager, managersWithdrawals[pos].ammount, managersWithdrawals[pos].reason);
+    }*/ // Can't add more functions, exceeds maximum size.
+
     function getHeirInPos(uint8 pos) public view onlyNotSuspendedManager returns(address account, uint8 percentage,
                                                                                  bool isDead, bool hasMinorChild) {
      DataStructures.HeirData memory heir = heirsData[pos];
