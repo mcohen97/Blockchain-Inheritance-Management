@@ -40,6 +40,31 @@ router.post("/managers", async function(req, res){
   }
 });
 
+router.get("/managers", async function(req, res){
+  try{
+    const executor = req.body.from;
+    const contract = contractService.getTestamentContract();
+
+    let count = await contract.methods.getManagersCount().call({
+      from: executor
+    });
+
+    let managers = [];
+
+    for(let i = 0; i < count; i++){
+      let manager = await contract.methods.getManagerInPos(i).call({
+        from: executor
+      });
+      managers.push(formatManagerResult(manager))
+    }
+ 
+    res.status(200).send(managers);
+
+  }catch(error){
+    res.status(500).send(`Cannot execute method: ${error.message}`);
+  }
+});
+
 router.get("/managers/:pos", async function(req, res){
   try{
     const executor = req.body.from;
@@ -50,14 +75,17 @@ router.get("/managers/:pos", async function(req, res){
       from: executor
     });
 
-    let withDate = result.debt == 0 ? undefined : utils.unixToDateString(result.withdrawalDate);
-    let response = {account: result.account, debt: result.debt, withdrawal_date: withDate, 
-      has_informed_decease: result.hasInformedDecease}
+    let response = formatManagerResult(result)
     res.status(200).send(response);
-
   }catch(error){
     res.status(500).send(`Cannot execute method: ${error.message}`);
   }
 });
 
 module.exports = router;
+
+function formatManagerResult(result) {
+  let withDate = result.debt == 0 ? undefined : utils.unixToDateString(result.withdrawalDate);
+  return {account: result.account, debt: result.debt, withdrawal_date: withDate, 
+    has_informed_decease: result.hasInformedDecease} 
+}

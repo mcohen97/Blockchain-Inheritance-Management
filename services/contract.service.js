@@ -35,7 +35,7 @@ class ContractService{
           arguments: []
         })
         .send({
-          gas: '5000000',
+          gas: '900000',
           from: executor,
         });
         
@@ -77,7 +77,7 @@ class ContractService{
         let contract = await this.getTestamentContract();
         await contract.methods.addOwnerData(ownerData.fullName, ownerData.id, dateUnix,
           ownerData.homeAddress,ownerData.telephone, ownerData.email).send({
-            gas: '1000000',
+            gas: '900000',
             from: owner
         });
         return {status: 200, message: 'OK'};
@@ -165,8 +165,4 @@ function compile(contractFileName, contractName){
   const bytecode = contract.evm;
   const bytecodePath = path.resolve(process.cwd(),'contracts', `${contractName}_bytecode.json`);
   fs.writeFileSync(bytecodePath, JSON.stringify(bytecode, null, 2));
-}
-
-function deployContract(arguments){
-  path.resolve(process.cwd(), 'contracts', `${contractName}_abi.json`);
 }
