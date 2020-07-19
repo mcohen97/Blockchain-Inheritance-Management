@@ -46,6 +46,7 @@ contract Testament {
         require(addUpTo100(_cutPercents), "Percentages must add up to 100");
         require(validFee(cancelFee, cancelFeePercent), "Invalid cancelation fee.");
         require(validFee(redFeeVal, redFeePercent), "Invalid reduction fee.");
+        require(managerFee >= managerMaxWithdraw, "Max withdrawal exceeds managers fee.");
 
         rules = _rules;
         owner = msg.sender;
@@ -103,7 +104,8 @@ contract Testament {
      return (manager.account, manager.debt, manager.withdrawalDate, manager.hasInformedDecease);
     }
 
-    function getInheritance() public view onlyNotSuspendedManager balanceReadAllowed returns (uint total, uint currentFunds) {
+    function getInheritance() public view onlyNotSuspendedManager returns (uint total, uint currentFunds) {
+        require(balanceVisible, "Not allowed by the testament's owner.");
         return (totalInheritance, address(this).balance);
     }
 
@@ -425,11 +427,6 @@ contract Testament {
 
     function allowBalanceRead(bool allowed) public onlyOwner {
         balanceVisible = allowed;
-    }
-
-    modifier balanceReadAllowed(){
-        require(balanceVisible, "Not allowed by the testament's owner.");
-        _;
     }
 
     modifier onlyOwner(){
