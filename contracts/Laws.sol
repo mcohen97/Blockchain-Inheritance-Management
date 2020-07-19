@@ -32,6 +32,14 @@ contract Laws {
         withdrawalFeePercent = newWithdrawalFeePercent;
     }
 
+    function changeWithdrawalFinePercent(uint8 newWithdrawalFinePercent) public onlyJudiciaryEmployee {
+        withdrawalFinePercent = newWithdrawalFinePercent;
+    }
+
+    function changeWithdrawalFineMaxDays(uint newWithdrawalFineMaxDays) public onlyJudiciaryEmployee {
+        withdrawalFineMaxDays = newWithdrawalFineMaxDays;
+    }
+
     function changeCharitableOrganization(address payable newCharitableOrganization) public onlyJudiciaryEmployee {
         charitableOrganization = newCharitableOrganization;
     }
