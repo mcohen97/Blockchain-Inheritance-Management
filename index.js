@@ -27,12 +27,12 @@ const timeConfigRoute = require('./routes/time_route');
 const inheritanceRoute = require('./routes/inheritance_route');
 const withdrawalsRoute = require('./routes/withdrawals_route');
 
-app.use('/api/contract', contractRoute);
-app.use('/api/contract/manangers', managersRoute);
-app.use('/api/contract/heirs', heirsRoute);
-app.use('/api/contract/time', timeConfigRoute);
-app.use('/api/contract/inheritance', inheritanceRoute);
-app.use('/api/contract/withdrawals', withdrawalsRoute);
+app.use('/api/testament', contractRoute);
+app.use('/api/testament/manangers', managersRoute);
+app.use('/api/testament/heirs', heirsRoute);
+app.use('/api/testament/time', timeConfigRoute);
+app.use('/api/testament/inheritance', inheritanceRoute);
+app.use('/api/testament/withdrawals', withdrawalsRoute);
 app.use('/api/laws', lawsRoute);
 
 app.listen(port, () => console.log('Listening on port 3000'));
