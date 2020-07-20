@@ -32,7 +32,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"from\": \"{{ADDRESS_7}}\"\n}",
+							"raw": "{\n    \"from\": \"{{ADDRESS_7}}\",\n    \"charitableOrganization\": \"{{ADDRESS_9}}\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -102,7 +102,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"from\": \"{{ADDRESS_7}}\",\r\n    \"dollarEtherConversion\": 40\r\n}",
+							"raw": "{\r\n    \"from\": \"{{ADDRESS_7}}\",\r\n    \"dollarToWeiConversion\": 40\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -312,6 +312,35 @@
 									"path": [
 										"managers",
 										"{{ADDRESS_6}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get All Managers",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"from\": \"{{ADDRESS_4}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{TESTAMENT_ROUTE}}/managers",
+									"host": [
+										"{{TESTAMENT_ROUTE}}"
+									],
+									"path": [
+										"managers"
 									]
 								}
 							},
@@ -1141,67 +1170,67 @@
 	],
 	"variable": [
 		{
-			"id": "34572c3d-b4de-4356-9d45-ea0f257fb1dc",
+			"id": "33e445a6-b969-4629-89b3-073bbd434b86",
 			"key": "URL",
 			"value": "http://localhost:3000"
 		},
 		{
-			"id": "0ff56346-b89b-41f8-a492-882fa98c3d8b",
+			"id": "36d841dd-2d18-4310-a69e-4f86e07d318b",
 			"key": "ADDRESS_0",
 			"value": "0x8c9a1E92F4101f4f5ab3A58b0963b1040e425b6F"
 		},
 		{
-			"id": "6e85e867-4c8d-4d09-840a-0ee394de06c4",
+			"id": "6bd9de58-7c6b-409b-bd7d-fed7c4b52e35",
 			"key": "ADDRESS_1",
 			"value": "0xF35b3ba2DE9dB8eEBcD5d128B53735e493c0BA64"
 		},
 		{
-			"id": "fd19754d-e3f6-4d55-8a0c-99803c0fb19f",
+			"id": "8e1d2b7a-c28d-4e5d-9f10-4efb84555e0e",
 			"key": "ADDRESS_2",
 			"value": "0x4A643DddC95aFa8A0f6E7439d9dc760aa84CdEB1"
 		},
 		{
-			"id": "484e1db3-e8b5-4f09-a990-859d3d469dea",
+			"id": "a0a43c2a-bb6a-4183-84c7-ae9f99dd77d8",
 			"key": "ADDRESS_3",
 			"value": "0x72a5D1bd8c6e5Feb7399EacE1bcDC6cEcdD5a79C"
 		},
 		{
-			"id": "4adf757d-ce7c-44dd-9200-f99b301d8659",
+			"id": "600b761e-94e1-45c9-bfd8-90c32b436898",
 			"key": "ADDRESS_4",
 			"value": "0x45F44Dec152224F336432568c8ACA7c9B98baFA8"
 		},
 		{
-			"id": "dd27f779-61e0-4bec-933b-cc27c48ae7e6",
+			"id": "b608dde5-14f1-4c04-aeee-075897ad39ff",
 			"key": "ADDRESS_5",
 			"value": "0xcC09F2d0d887f6098432E7C8BEc51b0B5aC205F9"
 		},
 		{
-			"id": "5505c3c9-bf82-41a4-bd47-f35e021dd5c8",
+			"id": "d94fd0de-210f-4f8a-a77d-f4cd8da6d9fc",
 			"key": "ADDRESS_6",
 			"value": "0xFEdae43693A435fb940a9881CCcD7f3Ff328c08F"
 		},
 		{
-			"id": "a181be7a-6b5a-4c72-ae31-f7ea01190918",
+			"id": "9084eaf2-550d-4f8d-b770-36a407aba626",
 			"key": "ADDRESS_7",
 			"value": "0xAe372f8F9697dc568AF1aD274351e56f5D467ceE"
 		},
 		{
-			"id": "8a2788eb-79d7-43aa-ae50-0c1d4652cd39",
+			"id": "f8fdc92a-9df5-48e2-aa6c-90ad789e6e7a",
 			"key": "ADDRESS_8",
 			"value": "0x5E6ecDA6875b4Dc8e8Ea6CC3De4b4E3c73453c0a"
 		},
 		{
-			"id": "d00c4b30-80b0-44bc-b231-e77dde57db3b",
+			"id": "35afecf0-1b7d-48bc-b1c4-75d1811e488f",
 			"key": "ADDRESS_9",
 			"value": "0x1DfC1E4a154df46C0d9F0Bd35D8E9350A8187e28"
 		},
 		{
-			"id": "d1c79713-f00b-4691-91ee-df3a2456a9d0",
+			"id": "142cd297-41c8-48e4-b54a-fd81a8ffdb64",
 			"key": "TESTAMENT_ROUTE",
 			"value": "http://localhost:3000/api/testament"
 		},
 		{
-			"id": "1e349a5f-eac9-4c89-b4b1-3487f5de9580",
+			"id": "2191af8d-03d1-4b75-b4b9-f6ff9f5ba9ea",
 			"key": "LAWS_ROUTE",
 			"value": "http://localhost:3000/api/laws"
 		}
