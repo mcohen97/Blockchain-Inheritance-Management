@@ -23,7 +23,7 @@ class ContractService{
     compile(lawsFile, contractLaws);
   }
 
-  async deployLaws(executor){
+  async deployLaws(executor, charitableOrganization){
     const bytecode = getContractBytecode(contractLaws);
     const abi = getContractAbi(contractLaws);
     const config = getConfig();
@@ -32,7 +32,7 @@ class ContractService{
       const result = await new web3.eth.Contract(abi)
         .deploy({
           data: '0x' + bytecode.object,
-          arguments: []
+          arguments: [charitableOrganization]
         })
         .send({
           gas: '900000',

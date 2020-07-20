@@ -14,9 +14,10 @@ contract Laws {
 
     uint public withdrawalFineMaxDays = 10;
 
-    address payable public charitableOrganization = 0x1DfC1E4a154df46C0d9F0Bd35D8E9350A8187e28;
+    address payable public charitableOrganization;
 
-    constructor() public {
+    constructor(address payable _charitableOrganization) public {
+        charitableOrganization = _charitableOrganization;
         judiciaryEmployees.push(DataStructures.JudiciaryEmployeeData(msg.sender));
     }
 
