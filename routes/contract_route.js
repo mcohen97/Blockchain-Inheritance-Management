@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const contractService = require('../services/contract.service');
+const contractService = require('../services/contract_service');
 const utils = require('../services/utils');
 const { default: Web3 } = require('web3');
 
@@ -24,7 +24,7 @@ router.post("/deploy", async function(req, res){
       body.is_cancel_fee_percent, body.reduction_fee, body.is_reduction_fee_percent, body.max_withdrawal_percentage,
       body.from, ownerInfo, body.inheritance_in_ethers, body.org_account);
 
-    res.status(result.status).send(result.message);
+    res.status(result.status).send(`${result.message} - Address: ${result.address}`);
   }catch(error){
     res.status(500).send(`Cannot deploy contract: ${error.message}`);
   }
@@ -120,7 +120,7 @@ router.post("/inform_owner_decease", async function(req, res){
       from: executor
   });
 
-  res.status(200).send('OK');
+  res.status(200).send('OK. Decease Informed.');
   }catch(error){
     res.status(500).send(`Cannot execute method: ${error.message}`);
   }
@@ -131,11 +131,11 @@ router.post("/inform_heir_decease", async function (req, res) {
     const executor = req.body.from;
     const heir = req.body.heir;
     const contract = contractService.getTestamentContract();
-    let result = await contract.methods.informHeirDecease(heir).send({
+    await contract.methods.informHeirDecease(heir).send({
       from: executor
     });
 
-    res.status(200).send(result);
+    res.status(200).send('OK. Decease Informed.');
   } catch (error) {
     res.status(500).send(`Cannot execute method: ${error.message}`);
   }

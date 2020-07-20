@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const contractService = require('../services/contract.service');
+const contractService = require('../services/contract_service');
 const { default: Web3 } = require('web3');
 
 router.post("/compile", function (req, res) {
@@ -12,11 +12,11 @@ router.post("/compile", function (req, res) {
   }
 });
 
-router.post("/deploy", function (req, res) {
+router.post("/deploy", async function (req, res) {
   try {
     const body = req.body;
-    contractService.deployLaws(body.from);
-    res.status(200).send('OK');
+    let address = await contractService.deployLaws(body.from);
+    res.status(200).send(`OK - Address: ${address}`);
   } catch (error) {
     res.status(500).send(new Error('Cannot deploy contract'));
   }

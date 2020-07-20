@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const contractService = require('../services/contract.service');
+const contractService = require('../services/contract_service');
 
 router.post("/month_length", async function (req, res) {
   try {

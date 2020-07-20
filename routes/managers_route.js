@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const contractService = require('../services/contract.service');
+const contractService = require('../services/contract_service');
 const utils = require('../services/utils');
 const { default: Web3 } = require('web3');
 

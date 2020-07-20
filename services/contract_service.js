@@ -41,6 +41,7 @@ class ContractService{
         
         config.lawsAddress = result.options.address;
         updateConfig(config);
+        return config.lawsAddress;
     }catch(error){
       let _error = error;
       console.log(error.message)
@@ -54,10 +55,13 @@ class ContractService{
     const bytecode = getContractBytecode(contractTestament);
     const abi = getContractAbi(contractTestament);
     const config = getConfig();
+    
+    if(!config.lawsAddress){
+      return {status: 400, message: 'Laws need to be compiled and deployed first'};
+    }
 
     try{
-      if(config.lawsAddress){
-        const result = await new web3.eth.Contract(abi)
+      const result = await new web3.eth.Contract(abi)
         .deploy({
           data: '0x' + bytecode.object,
           arguments: [heirs, percentages, managers, managerFee, cancellationFee, isCancFeePercentage,
@@ -80,11 +84,7 @@ class ContractService{
             gas: '900000',
             from: owner
         });
-        return {status: 200, message: 'OK'};
-      }else{
-        return {status: 400, message: 'Laws need to be compiled and deployed first'};
-      }
-
+        return {status: 200, message: 'OK', address: config.testamentAddress};
     }catch(error){
       console.log(error.message)
       throw error;
