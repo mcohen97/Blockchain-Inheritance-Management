@@ -32,8 +32,8 @@ const inheritanceRoute = require('./routes/inheritance_route');
 const withdrawalsRoute = require('./routes/withdrawals_route');
 
 app.use('/api/testament', contractRoute);
-app.use('/api/testament/manangers', managersRoute);
-app.use('/api/testament/heirs', heirsRoute);
+app.use('/api/testament', managersRoute);
+app.use('/api/testament', heirsRoute);
 app.use('/api/testament/time', timeConfigRoute);
 app.use('/api/testament/inheritance', inheritanceRoute);
 app.use('/api/testament/withdrawals', withdrawalsRoute);
