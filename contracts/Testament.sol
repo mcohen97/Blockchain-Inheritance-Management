@@ -255,7 +255,8 @@ contract Testament {
         totalInheritance += msg.value;
     }
 
-    function payDebt() public payable onlyManager{
+    function payDebt() public payable{
+        require(containsManager(msg.sender), "Only the testament's managers can perform this action.");
         uint pos = getManagerPos(msg.sender);
         DataStructures.ManagerData memory manager = managers[pos];
         bool suspended = hasExpiredDebt(manager);
@@ -286,8 +287,8 @@ contract Testament {
     }
 
     function reduceInheritance(uint8 cut) public onlyOwner {
-        uint reduction = (totalInheritance * cut) / 100;
         require(cut <= 100, "Invalid percentage");
+        uint reduction = (totalInheritance * cut) / 100;
         require(reduction <= address(this).balance, "Not enought funds currently.");
         uint fee;
         if(reductionFee.isFixed){
@@ -444,11 +445,6 @@ contract Testament {
     modifier onlyNotSuspendedManagerOrHeir(){
         require((containsManager(msg.sender) && !isManagerDebtExpired(msg.sender)) ||
                 containsHeir(msg.sender), "Only valid managers or heirs can perform this action.");
-        _;
-    }
-
-    modifier onlyManager(){
-        require(containsManager(msg.sender), "Only the testament's managers can perform this action.");
         _;
     }
 
