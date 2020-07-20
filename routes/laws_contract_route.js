@@ -15,7 +15,7 @@ router.post("/compile", function (req, res) {
 router.post("/deploy", async function (req, res) {
   try {
     const body = req.body;
-    let address = await contractService.deployLaws(body.from);
+    let address = await contractService.deployLaws(body.from, body.charitableOrganization);
     res.status(200).send(`OK - Address: ${address}`);
   } catch (error) {
     res.status(500).send(new Error('Cannot deploy contract'));
