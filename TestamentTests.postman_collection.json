@@ -1,0 +1,1239 @@
+{
+	"info": {
+		"_postman_id": "75c170eb-dcd7-4614-81e8-762f9946a210",
+		"name": "TestamentTests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Laws",
+			"item": [
+				{
+					"name": "Compile Laws",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{LAWS_ROUTE}}/compile",
+							"host": [
+								"{{LAWS_ROUTE}}"
+							],
+							"path": [
+								"compile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Deploy Laws",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"from\": \"{{ADDRESS_7}}\",\n    \"charitableOrganization\": \"{{ADDRESS_9}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{LAWS_ROUTE}}/deploy",
+							"host": [
+								"{{LAWS_ROUTE}}"
+							],
+							"path": [
+								"deploy"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add judiciary employee",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"from\": \"{{ADDRESS_7}}\",\r\n    \"judiciaryEmployee\": \"{{ADDRESS_6}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{LAWS_ROUTE}}/judiciaryEmployees",
+							"host": [
+								"{{LAWS_ROUTE}}"
+							],
+							"path": [
+								"judiciaryEmployees"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get laws",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/api/laws",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"laws"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update dollar to wei conversion",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"from\": \"{{ADDRESS_7}}\",\r\n    \"dollarToWeiConversion\": 40\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{LAWS_ROUTE}}/dollarToWeiConversion",
+							"host": [
+								"{{LAWS_ROUTE}}"
+							],
+							"path": [
+								"dollarToWeiConversion"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update withdrawal fee percent",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"from\": \"{{ADDRESS_7}}\",\r\n    \"withdrawalFeePercent\": 10\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{LAWS_ROUTE}}/withdrawalFeePercent",
+							"host": [
+								"{{LAWS_ROUTE}}"
+							],
+							"path": [
+								"withdrawalFeePercent"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update withdrawal fine percent",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"from\": \"{{ADDRESS_7}}\",\r\n    \"withdrawalFinePercent\": 4\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{LAWS_ROUTE}}/withdrawalFinePercent",
+							"host": [
+								"{{LAWS_ROUTE}}"
+							],
+							"path": [
+								"withdrawalFinePercent"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update withdrawal fine max days",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"from\": \"{{ADDRESS_7}}\",\r\n    \"withdrawalFineMaxDays\": 12\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{LAWS_ROUTE}}/withdrawalFineMaxDays",
+							"host": [
+								"{{LAWS_ROUTE}}"
+							],
+							"path": [
+								"withdrawalFineMaxDays"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update charitable organization",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"from\": \"{{ADDRESS_7}}\",\r\n    \"charitableOrganization\": \"{{ADDRESS_9}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{LAWS_ROUTE}}/charitableOrganization",
+							"host": [
+								"{{LAWS_ROUTE}}"
+							],
+							"path": [
+								"charitableOrganization"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Testament",
+			"item": [
+				{
+					"name": "Managers",
+					"item": [
+						{
+							"name": "Add Manager",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"from\": \"{{ADDRESS_0}}\",\n    \"manager\": \"{{ADDRESS_6}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{TESTAMENT_ROUTE}}/managers",
+									"host": [
+										"{{TESTAMENT_ROUTE}}"
+									],
+									"path": [
+										"managers"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Manager By Position",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"from\": \"{{ADDRESS_4}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{TESTAMENT_ROUTE}}/managers/1",
+									"host": [
+										"{{TESTAMENT_ROUTE}}"
+									],
+									"path": [
+										"managers",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Manager",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"from\": \"{{ADDRESS_0}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{TESTAMENT_ROUTE}}/managers/{{ADDRESS_6}}",
+									"host": [
+										"{{TESTAMENT_ROUTE}}"
+									],
+									"path": [
+										"managers",
+										"{{ADDRESS_6}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get All Managers",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"from\": \"{{ADDRESS_4}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{TESTAMENT_ROUTE}}/managers",
+									"host": [
+										"{{TESTAMENT_ROUTE}}"
+									],
+									"path": [
+										"managers"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Heirs",
+					"item": [
+						{
+							"name": "Add Heir",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"from\": \"{{ADDRESS_1}}\",\n    \"heir\": \"{{ADDRESS_6}}\",\n    \"percentage\": 41,\n    \"priority\": 1\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{TESTAMENT_ROUTE}}/heirs",
+									"host": [
+										"{{TESTAMENT_ROUTE}}"
+									],
+									"path": [
+										"heirs"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Heir By Position",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"from\": \"{{ADDRESS_4}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{TESTAMENT_ROUTE}}/heirs/0",
+									"host": [
+										"{{TESTAMENT_ROUTE}}"
+									],
+									"path": [
+										"heirs",
+										"0"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Heir",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"from\": \"{{ADDRESS_0}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{TESTAMENT_ROUTE}}/heirs/{{ADDRESS_6}}",
+									"host": [
+										"{{TESTAMENT_ROUTE}}"
+									],
+									"path": [
+										"heirs",
+										"{{ADDRESS_6}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Change Percentage of Heir",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"from\": \"{{ADDRESS_0}}\",\n    \"percentage\": 32\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{TESTAMENT_ROUTE}}/heirs/{{ADDRESS_1}}/percentage",
+									"host": [
+										"{{TESTAMENT_ROUTE}}"
+									],
+									"path": [
+										"heirs",
+										"{{ADDRESS_1}}",
+										"percentage"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Change Priority of Heir",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"from\": \"{{ADDRESS_0}}\",\n    \"priority\": 1\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{TESTAMENT_ROUTE}}/heirs/{{ADDRESS_1}}/priority",
+									"host": [
+										"{{TESTAMENT_ROUTE}}"
+									],
+									"path": [
+										"heirs",
+										"{{ADDRESS_1}}",
+										"priority"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Announce Minor Child",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"from\": \"{{ADDRESS_3}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{TESTAMENT_ROUTE}}/heirs/{{ADDRESS_2}}/minor",
+									"host": [
+										"{{TESTAMENT_ROUTE}}"
+									],
+									"path": [
+										"heirs",
+										"{{ADDRESS_2}}",
+										"minor"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get All Heirs",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"from\": \"{{ADDRESS_4}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{TESTAMENT_ROUTE}}/heirs",
+									"host": [
+										"{{TESTAMENT_ROUTE}}"
+									],
+									"path": [
+										"heirs"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Inform heir death",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"from\": \"{{ADDRESS_4}}\",\n    \"heir\": \"{{ADDRESS_1}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{TESTAMENT_ROUTE}}/inform_heir_decease",
+									"host": [
+										"{{TESTAMENT_ROUTE}}"
+									],
+									"path": [
+										"inform_heir_decease"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Time Config",
+					"item": [
+						{
+							"name": "Set Month Length To Second",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"from\": \"{{ADDRESS_4}}\",\n    \"length\": \"second\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{TESTAMENT_ROUTE}}/time/month_length",
+									"host": [
+										"{{TESTAMENT_ROUTE}}"
+									],
+									"path": [
+										"time",
+										"month_length"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Set Month Length To Minute",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"from\": \"{{ADDRESS_3}}\",\n    \"length\": \"minute\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{TESTAMENT_ROUTE}}/time/month_length",
+									"host": [
+										"{{TESTAMENT_ROUTE}}"
+									],
+									"path": [
+										"time",
+										"month_length"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Set Day Length To Second",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"from\": \"{{ADDRESS_4}}\",\n    \"length\": \"second\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{TESTAMENT_ROUTE}}/time/day_length",
+									"host": [
+										"{{TESTAMENT_ROUTE}}"
+									],
+									"path": [
+										"time",
+										"day_length"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Inheritance",
+					"item": [
+						{
+							"name": "Get Inheritance",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"from\": \"{{ADDRESS_3}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{TESTAMENT_ROUTE}}/inheritance",
+									"host": [
+										"{{TESTAMENT_ROUTE}}"
+									],
+									"path": [
+										"inheritance"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Set Inheritance Visibility",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"from\": \"{{ADDRESS_0}}\",\n    \"value\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{TESTAMENT_ROUTE}}/inheritance/visibility",
+									"host": [
+										"{{TESTAMENT_ROUTE}}"
+									],
+									"path": [
+										"inheritance",
+										"visibility"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Increase Inheritance",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"from\": \"{{ADDRESS_0}}\",\n    \"ammount\": 50000\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{TESTAMENT_ROUTE}}/inheritance/increase",
+									"host": [
+										"{{TESTAMENT_ROUTE}}"
+									],
+									"path": [
+										"inheritance",
+										"increase"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Reduce Inheritance",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"from\": \"{{ADDRESS_0}}\",\n    \"cut\": 20\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{TESTAMENT_ROUTE}}/inheritance/reduce",
+									"host": [
+										"{{TESTAMENT_ROUTE}}"
+									],
+									"path": [
+										"inheritance",
+										"reduce"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Claim Inheritance By Organization",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"from\": \"{{ADDRESS_8}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{TESTAMENT_ROUTE}}/inheritance/organization_claim",
+									"host": [
+										"{{TESTAMENT_ROUTE}}"
+									],
+									"path": [
+										"inheritance",
+										"organization_claim"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Claim Inheritance",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"from\": \"{{ADDRESS_4}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{TESTAMENT_ROUTE}}/inheritance/claim",
+									"host": [
+										"{{TESTAMENT_ROUTE}}"
+									],
+									"path": [
+										"inheritance",
+										"claim"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Withdrawals",
+					"item": [
+						{
+							"name": "Get withdrawal events",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"manager\": \"{{ADDRESS_4}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{TESTAMENT_ROUTE}}/withdrawals",
+									"host": [
+										"{{TESTAMENT_ROUTE}}"
+									],
+									"path": [
+										"withdrawals"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Pay Withdrawal Debt",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"from\": \"{{ADDRESS_4}}\",\n    \"ammount\": 3000\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{TESTAMENT_ROUTE}}/withdrawals/pay",
+									"host": [
+										"{{TESTAMENT_ROUTE}}"
+									],
+									"path": [
+										"withdrawals",
+										"pay"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Withdraw from testament",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"from\": \"{{ADDRESS_4}}\",\n    \"ammount\": 50000000000,\n    \"reason\": \"para pagar unas cuentas\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{TESTAMENT_ROUTE}}/withdrawals",
+									"host": [
+										"{{TESTAMENT_ROUTE}}"
+									],
+									"path": [
+										"withdrawals"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Compile Testament",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{TESTAMENT_ROUTE}}/compile",
+							"host": [
+								"{{TESTAMENT_ROUTE}}"
+							],
+							"path": [
+								"compile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Deploy Testament",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"from\": \"{{ADDRESS_0}}\",\n    \"heirs\": [\"{{ADDRESS_1}}\",\"{{ADDRESS_2}}\"],\n    \"percentages\":[50, 50],\n    \"managers\": [\"{{ADDRESS_3}}\", \"{{ADDRESS_4}}\", \"{{ADDRESS_5}}\"],\n    \"manager_fee\": 3,\n    \"cancellation_fee\": 100000,\n    \"is_cancel_fee_percent\": false,\n    \"reduction_fee\": 5,\n    \"is_reduction_fee_percent\": true,\n    \"max_withdrawal_percentage\": 2,\n    \"inheritance_in_ethers\": 1.4, \n    \"org_account\": \"{{ADDRESS_8}}\",\n    \"owner_personal_info\":{\n        \"full_name\": \"John Doe\",\n        \"id\": \"11111111\",\n        \"birth_date\": \"1940-04-23T18:25:43.511Z\",\n        \"home_address\": \"Merecedes y Cuareim\",\n        \"telephone\": \"132\",\n        \"email\": \"john.doe@domain.com\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{TESTAMENT_ROUTE}}/deploy",
+							"host": [
+								"{{TESTAMENT_ROUTE}}"
+							],
+							"path": [
+								"deploy"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Contract Information",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"from\": \"{{ADDRESS_4}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{TESTAMENT_ROUTE}}/information",
+							"host": [
+								"{{TESTAMENT_ROUTE}}"
+							],
+							"path": [
+								"information"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Owner Information",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"from\": \"{{ADDRESS_3}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{TESTAMENT_ROUTE}}/owner",
+							"host": [
+								"{{TESTAMENT_ROUTE}}"
+							],
+							"path": [
+								"owner"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Destroy contract",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"from\": \"{{ADDRESS_0}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/testament",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"testament"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "HeartBeat",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"from\": \"{{ADDRESS_0}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{TESTAMENT_ROUTE}}/heartbeat",
+							"host": [
+								"{{TESTAMENT_ROUTE}}"
+							],
+							"path": [
+								"heartbeat"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Last Signal",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"from\": \"{{ADDRESS_1}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{TESTAMENT_ROUTE}}/last_signal",
+							"host": [
+								"{{TESTAMENT_ROUTE}}"
+							],
+							"path": [
+								"last_signal"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Inform owners death",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"from\": \"{{ADDRESS_4}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{TESTAMENT_ROUTE}}/inform_owner_decease",
+							"host": [
+								"{{TESTAMENT_ROUTE}}"
+							],
+							"path": [
+								"inform_owner_decease"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "9cf0b2a9-7dcb-4413-8c61-79b36e32f770",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "337b9adf-bf4b-484e-a45f-52ad095dadca",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "33e445a6-b969-4629-89b3-073bbd434b86",
+			"key": "URL",
+			"value": "http://localhost:3000"
+		},
+		{
+			"id": "36d841dd-2d18-4310-a69e-4f86e07d318b",
+			"key": "ADDRESS_0",
+			"value": "0x8c9a1E92F4101f4f5ab3A58b0963b1040e425b6F"
+		},
+		{
+			"id": "6bd9de58-7c6b-409b-bd7d-fed7c4b52e35",
+			"key": "ADDRESS_1",
+			"value": "0xF35b3ba2DE9dB8eEBcD5d128B53735e493c0BA64"
+		},
+		{
+			"id": "8e1d2b7a-c28d-4e5d-9f10-4efb84555e0e",
+			"key": "ADDRESS_2",
+			"value": "0x4A643DddC95aFa8A0f6E7439d9dc760aa84CdEB1"
+		},
+		{
+			"id": "a0a43c2a-bb6a-4183-84c7-ae9f99dd77d8",
+			"key": "ADDRESS_3",
+			"value": "0x72a5D1bd8c6e5Feb7399EacE1bcDC6cEcdD5a79C"
+		},
+		{
+			"id": "600b761e-94e1-45c9-bfd8-90c32b436898",
+			"key": "ADDRESS_4",
+			"value": "0x45F44Dec152224F336432568c8ACA7c9B98baFA8"
+		},
+		{
+			"id": "b608dde5-14f1-4c04-aeee-075897ad39ff",
+			"key": "ADDRESS_5",
+			"value": "0xcC09F2d0d887f6098432E7C8BEc51b0B5aC205F9"
+		},
+		{
+			"id": "d94fd0de-210f-4f8a-a77d-f4cd8da6d9fc",
+			"key": "ADDRESS_6",
+			"value": "0xFEdae43693A435fb940a9881CCcD7f3Ff328c08F"
+		},
+		{
+			"id": "9084eaf2-550d-4f8d-b770-36a407aba626",
+			"key": "ADDRESS_7",
+			"value": "0xAe372f8F9697dc568AF1aD274351e56f5D467ceE"
+		},
+		{
+			"id": "f8fdc92a-9df5-48e2-aa6c-90ad789e6e7a",
+			"key": "ADDRESS_8",
+			"value": "0x5E6ecDA6875b4Dc8e8Ea6CC3De4b4E3c73453c0a"
+		},
+		{
+			"id": "35afecf0-1b7d-48bc-b1c4-75d1811e488f",
+			"key": "ADDRESS_9",
+			"value": "0x1DfC1E4a154df46C0d9F0Bd35D8E9350A8187e28"
+		},
+		{
+			"id": "142cd297-41c8-48e4-b54a-fd81a8ffdb64",
+			"key": "TESTAMENT_ROUTE",
+			"value": "http://localhost:3000/api/testament"
+		},
+		{
+			"id": "2191af8d-03d1-4b75-b4b9-f6ff9f5ba9ea",
+			"key": "LAWS_ROUTE",
+			"value": "http://localhost:3000/api/laws"
+		}
+	],
+	"protocolProfileBehavior": {}
+}
